@@ -1,0 +1,15 @@
+https://devcenter.heroku.com/articles/django-app-configuration
+
+Чтобы подключить heroku, надо
+heroku login
+heroku git:remote -a yourapp
+Также необходимо добавить имя базы в переменную среды, где yourapp - имя приложения в heroku
+для этого приложения
+heroku git:remote -a sch239
+
+postgres://dhcxkmpzbifqeo:SQAaiBoCsUfxFYUvc9OoXmKN-J@ec2-54-217-214-53.eu-west-1.compute.amazonaws.com:5432/diqbf71cvhca5 - адрес бд
+Также, что бд подгружалась, надо добавить в переменную среды адрес бд  DATABASE_URL
+
+Git add –A .
+Git commit  -m "commit text"
+Git push heroku master

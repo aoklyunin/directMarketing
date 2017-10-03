@@ -1,0 +1,68 @@
+{% extends "sworks/base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% block title %}Регистрация{% endblock %}
+
+{% block style_block %}
+    .register_form {
+    width: 500px;
+    margin: 0 auto;
+    }
+{% endblock %}
+
+{% block content %}
+<H1>Регистрация</H1>
+{% endblock %}
+
+{% block sub_content %}
+    <form method="post" action="." class="register_form">
+            {% csrf_token %}
+        <table>
+            <tr>
+                <td>{% bootstrap_field form.username %}</td>
+                <td>{% bootstrap_field form.password %}</td>
+                <td>{% bootstrap_field form.rep_password %}</td>
+            </tr>
+            <tr>
+                <td>{% bootstrap_field form.name %}</td>
+                <td>{% bootstrap_field form.second_name %}</td>
+                <td>{% bootstrap_field form.st_group %}</td>
+            </tr>
+            <tr>
+                <td colspan="3">{% bootstrap_field form.mail %}</td>
+
+            </tr>
+            <tr>
+                 <td colspan="3">{% bootstrap_field form.github_rep %}</td>
+            </tr>
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+            <div align="center">
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        Зарегистрироваться
+                    </button>
+                    <button type="reset" class="btn">
+                        Отмена
+                    </button>
+                {% endbuttons %}
+            </div>
+        </form>
+{% endblock %}

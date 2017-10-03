@@ -1,0 +1,70 @@
+{% extends "sworks/base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block style_block %}
+    .register_form {
+    width: 500px;
+    margin: 0 auto;
+    }
+{% endblock %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% block title %}Оценка{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated == False %}
+        <br><br>
+        <H1> Этот раздел Вам недоступен, необходимо войти</H1>
+        <br><br>
+    {% else %}
+        <br>
+        <h2>{{ m.task.task_name }} </h2>
+        <h3>{{ student.user.last_name }} {{ student.user.first_name }}</h3>
+        <table>
+            <tr>
+                <td>
+                    <a class="btn btn-primary " role="button" href="..\..\..\marks\">Назад</a>
+                </td>
+                <td>
+                    <form method="post" action="." class="register_form">
+                        {% csrf_token %}
+                        {% bootstrap_field form.mark %}
+
+                        <div align="center">
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                    Изменить оценку
+                                </button>
+                            {% endbuttons %}
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+    {% endif %}
+{% endblock %}
+
+{% block sub_content %}
+    {% if user.is_authenticated == False %}
+    {% else %}
+        <br>
+
+        {% for ar in arr %}
+
+            {% for  a in ar %}
+                <a href="{{ a }}"
+                   class="btn btn-primary">Задание {{ forloop.parentloop.counter }}.{{ forloop.counter }} </a>
+
+            {% endfor %}
+            <br><br>
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

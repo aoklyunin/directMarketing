@@ -1,0 +1,60 @@
+{% extends "sworks/base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% block title %}Список попыток{% endblock %}
+{% block style_block %}
+    .namediv {
+    width:13em;
+    }
+    tasknamediv{
+    width:13em;
+    }
+
+{% endblock %}
+
+{% block content %}
+<h1>Список оценок</h1>
+{% endblock %}
+{% block sub_content %}
+{% if user.is_staff %}
+
+<table class="table">
+    <tr>
+        <th>Фамилия Имя</th>
+        <th>Задание</th>
+        <th>Ссылка</th>
+        <th>Проверить</th>
+
+    </tr>
+    {% for mark in mark_list %}
+        <tr>
+            <td class="namediv" >
+                {{ mark.student.user.first_name }}
+                {{ mark.student.user.last_name }}
+
+            </td>
+            <td class="tasknamediv">
+                {{ mark.task.task_name }}
+            </td>
+            <td>
+                {{ mark.m_value }}
+            </td>
+          
+            <td>
+                <a href="/mark/detail/{{ mark.id }}/" class="btn btn-default" rel="button">Обсуждение</a>
+
+        </tr>
+    {% endfor %}
+</table>
+{% else %}
+    Вам недоступен этот раздел
+{%  endif %}
+
+{% endblock %}

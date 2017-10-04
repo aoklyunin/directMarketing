@@ -116,7 +116,7 @@ def index(request):
                 messages.success(request, "успешный вход")
             else:
                 messages.error(request, "пара логин-пароль не найдена")
-    template = 'mainApp/index.html'
+    template = 'progressus/index.html'
     it = InfoText.objects.get(pageName="index")
     context = {
         "user": request.user,

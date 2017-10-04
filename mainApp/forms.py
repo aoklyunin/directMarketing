@@ -2,7 +2,7 @@
 # модуль с формами
 from django import forms
 
-from mainApp.models import Task
+#from mainApp.models import Task
 
 
 a = '''

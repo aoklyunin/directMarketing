@@ -11,7 +11,6 @@ admin.site.register(Customer)
 admin.site.register(MarketCamp)
 admin.site.register(WorkerMarketCamp)
 admin.site.register(Admin)
-admin.site.register(InfoText)
 
 # если нужно сделать своё представление модели в админке, нужно убрать её регистрацию из списка выше
 UserAdmin.list_display = ('email', 'first_name', 'last_name', 'is_staff', 'username')

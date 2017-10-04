@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-
+a = '''
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.http import JsonResponse
@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from mainApp.forms import LoginForm, AttemptForm, AddTaskForm, AddAttemptForm, MarkForm, FloatForm
 from .models import Student, Task, AttemptComment, Mark
 
-a = '''
+
 # состояние не принятой задачи
 STATE_NOT_SENDED_TO_CHECKING = 0
 # состояние не принятого офрмления

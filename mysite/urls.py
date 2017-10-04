@@ -10,7 +10,7 @@ admin.autodiscover()
 
 urlpatterns = [
     # добавить задание
-    url(r'^addTask/$', mainApp.views.addTask),
+   # url(r'^addTask/$', mainApp.views.addTask),
     # панель администратора
     url(r'^admin/', include(admin.site.urls)),
     # выход из сайта
@@ -28,7 +28,7 @@ urlpatterns = [
   #  # принять попытку
   #  url(r'^mark/mark/(?P<mark_id>[0-9]+)/(?P<state_val>[0-9]+)/$', mainApp.views.doMark),
     # личный кабинет
-    url(r'^personal/$', mainApp.views.personal),
+   # url(r'^personal/$', mainApp.views.personal),
     # стартовая страница
     url(r'^', mainApp.auth.index, name='index'),
 

@@ -86,7 +86,7 @@
 			<div class="row">
 				<h1 class="lead">Алиска - самая самая</h1>
 				<p class="tagline">Можете не верить, но это - факт</p>
-				<p><a class="btn btn-default btn-lg" role="button">Да</a> <a class="btn btn-action btn-lg" role="button">Стопудово ДА!</a></p>
+				<p><a class="btn btn-default btn-lg" id="btnTest" role="button">Да</a> <a class="btn btn-action btn-lg" role="button" id="btnTest2">Стопудово ДА!</a></p>
 			</div>
 		</div>
 	</header>
@@ -280,5 +280,16 @@
 	<script src="{% static 'js/headroom.min.js'"></script>
 	<script src="{% static 'js/jQuery.headroom.min.js'"></script>
 	<script src="{% static 'js/template.js'"></script>
+
+<script>
+	$(document).ready(function(){
+    $('#btnTest').click(function(){
+        $('.alert').show('Оке, бро')
+    })
+    $('#btnTest2').click(function(){
+        $('.alert').show('Давай пятюню')
+    })
+});
+</script>
 </body>
 </html>

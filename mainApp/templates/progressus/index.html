@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load staticfiles %}
+
+
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
@@ -8,24 +10,40 @@
 	
 	<title>Progressus - Free business bootstrap template by GetTemplate</title>
 
-	<link rel="shortcut icon" href="/templates/progressus/assets/images/gt_favicon.png">
+	<link rel="shortcut icon" href="{% static 'images/gt_favicon.png' %}">
 	
 	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-	<link rel="stylesheet" href="/templates/progressus/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/templates/progressus/assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 
-	<!-- Custom styles for our template -->
-	<link rel="stylesheet" href="/templates/progressus/assets/css/bootstrap-theme.css" media="screen" >
-	<link rel="stylesheet" href="/templates/progressus/assets/css/main.css">
+        	<!-- Custom styles for our template -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}" media="screen" >
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
-	<script src="/templates/progressus/assets/js/html5shiv.js"></script>
-	<script src="/templates/progressus/assets/js/respond.min.js"></script>
+	<script src="/assets/js/html5shiv.js"></script>
+	<script src="/assets/trap template by GetTemplate</title>
+
+	<link rel="shortcut icon" href="/assets/images/gt_favicon.png">
+
+	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+
+        	<!-- Custom styles for our template -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}" media="screen" >
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="{% static 'js/html5shiv.js' %}"></script>
+	<script src="{% static 'js/respond.min.js' %}"></script>js/respond.min.js"></script>
 	<![endif]-->
 </head>
 
 <body class="home">
+
 	<!-- Fixed navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -160,10 +178,10 @@
 			<div class="wrapper clearfix">
 				<!-- AddThis Button BEGIN -->
 				<div class="addthis_toolbox addthis_default_style">
-				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+				<!--<a class="addthis_button_facebook_like" fb:like:layout"="button_count"></a> -->
 				<a class="addthis_button_tweet"></a>
 				<a class="addthis_button_linkedin_counter"></a>
-				<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+				<!--<a class="addthis_button_google_plusone" "g:plusone:size"="medium"></a>%}-->
 				</div>
 				<!-- AddThis Button END -->
 			</div>

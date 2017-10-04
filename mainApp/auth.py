@@ -7,13 +7,13 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from sworks.forms import RegisterForm, LoginForm
-from sworks.models import Student, Task, Mark, InfoText
+#from mainApp.forms import RegisterForm, LoginForm
+from mainApp.models import InfoText
 
 
 # метод регистрации
 def register(request):
-    # если post запрос
+    '''# если post запрос
     if request.method == 'POST':
         # строим форму на основе запроса
         form = RegisterForm(request.POST)
@@ -31,7 +31,7 @@ def register(request):
                         'second_name': form.cleaned_data["second_name"],
                         }
                 # перерисовываем окно
-                return render(request, "sworks/register.html", {
+                return render(request, "mainApp/register.html", {
                     'form': RegisterForm(initial=data),
                     'ins_form': LoginForm()
                 })
@@ -76,7 +76,7 @@ def register(request):
                             'second_name': form.cleaned_data["second_name"],
                             }
                     # рисуем окно регистрации
-                    return render(request, "sworks/register.html", {
+                    return render(request, "mainApp/register.html", {
                         'form': RegisterForm(initial=data),
                         'ins_form': LoginForm()
                     })
@@ -85,10 +85,10 @@ def register(request):
             return HttpResponseRedirect("/")
     else:
         # возвращаем простое окно регистрации
-        return render(request, "sworks/register.html", {
+        return render(request, "mainApp/register.html", {
             'form': RegisterForm(),
             'login_form': LoginForm()
-        })
+        })'''
 
 
 # выход из системы
@@ -116,11 +116,11 @@ def index(request):
                 messages.success(request, "успешный вход")
             else:
                 messages.error(request, "пара логин-пароль не найдена")
-    template = 'sworks/index.html'
+    template = 'mainApp/index.html'
     it = InfoText.objects.get(pageName="index")
     context = {
         "user": request.user,
-        "login_form": LoginForm(),
+       # "login_form": LoginForm(),
         "it": it
     }
     return render(request, template, context)

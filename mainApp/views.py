@@ -7,9 +7,10 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from sworks.forms import LoginForm, AttemptForm, AddTaskForm, AddAttemptForm, MarkForm, FloatForm
+from mainApp.forms import LoginForm, AttemptForm, AddTaskForm, AddAttemptForm, MarkForm, FloatForm
 from .models import Student, Task, AttemptComment, Mark
 
+a = '''
 # состояние не принятой задачи
 STATE_NOT_SENDED_TO_CHECKING = 0
 # состояние не принятого офрмления
@@ -52,7 +53,7 @@ def addTask(request):
             'ins_form': LoginForm()
         }
         # выводим страницу создания задания
-        return render(request, "sworks/addTask.html", {
+        return render(request, "mainApp/addTask.html", {
             "task_form": AddTaskForm(initial=initial_data),
             "login_form": LoginForm(),
             "user": request.user
@@ -73,7 +74,7 @@ def personal(request):
     for mark in mark_list:
         sum += mark.m_value
 
-    return render(request, "sworks/personal.html", {
+    return render(request, "mainApp/personal.html", {
         'login_form': LoginForm(),
         'mark_list': mark_list,
         'sum': sum,
@@ -99,7 +100,7 @@ def mark_detail(request, mark_id):
             mark.comment.add(comment_object)
     form = AttemptForm()
 
-    return render(request, "sworks/mark_detail.html", {
+    return render(request, "mainApp/mark_detail.html", {
         "mark": mark,
         "text_form": form,
         "login_form": LoginForm(),
@@ -122,7 +123,7 @@ def markMakeNeedCheck(request, mark_id):
 def markNeedCheckList(request):
     if request.user.is_staff:
         mark_list = Mark.objects.order_by('-add_date').filter(state=4)
-        template = 'sworks/markNeedCheckList.html'
+        template = 'mainApp/markNeedCheckList.html'
         context = {
             "mark_list": mark_list,
         }
@@ -161,7 +162,7 @@ def doMark(request, state_val, mark_id):
 def mark_list_accepted(request):
     if request.user.is_staff:
         mark_list = Mark.objects.order_by('-add_date').filter(state=2)
-        template = 'sworks/markAcceptedList.html'
+        template = 'mainApp/markAcceptedList.html'
         context = {
             "mark_list": mark_list,
             'form': FloatForm(initial={'val': '0.0'}),
@@ -174,7 +175,7 @@ def mark_list_accepted(request):
 def mark_list_not_accepted(request):
     if request.user.is_staff:
         mark_list = Mark.objects.order_by('-add_date').filter(state=1)
-        template = 'sworks/markNotAcceptedList.html'
+        template = 'mainApp/markNotAcceptedList.html'
         context = {
             "mark_list": mark_list,
             'form': FloatForm(initial={'val': '0.0'}),
@@ -187,10 +188,11 @@ def mark_list_not_accepted(request):
 def mark_list_marked(request):
     if request.user.is_staff:
         mark_list = Mark.objects.order_by('student').filter(state=3)
-        template = 'sworks/markMarkedList.html'
+        template = 'mainApp/markMarkedList.html'
         context = {
             "mark_list": mark_list,
         }
         return render(request, template, context)
     else:
         return HttpResponseRedirect('/')
+'''

@@ -2,9 +2,10 @@
 # модуль с формами
 from django import forms
 
-from sworks.models import Task
+from mainApp.models import Task
 
 
+a = '''
 # форма добавления попытки
 class AddAttemptForm(forms.Form):
     # задание
@@ -89,3 +90,5 @@ class MarkForm(forms.Form):
     mark = forms.CharField(max_length=1,
                            widget=forms.Textarea(attrs={'rows': 1, 'cols': 2}),
                            label="")
+                           
+'''

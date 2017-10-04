@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 
 from localCode.moodle import MoodleHelper
-from sworks.models import Student, Task, Mark, TaskType, ProgramCode, CodeLanguage
+from mainApp.models import Student, Task, Mark, TaskType, ProgramCode, CodeLanguage
 
-
+a = '''
 # по заданию и кол-ву баллов получить оценку
 def getValBySum(task, cnt):
     s = str(int(cnt))
@@ -97,3 +97,4 @@ class Command(BaseCommand):
 
             except:
                 pass
+'''

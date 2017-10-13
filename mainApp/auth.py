@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-#from mainApp.forms import RegisterForm, LoginForm
+# from mainApp.forms import RegisterForm, LoginForm
 from mainApp.models import InfoText
 
 
@@ -97,7 +97,6 @@ def logout_view(request):
     return HttpResponseRedirect("../../../../")
 
 
-# стартовая страница
 def index(request):
     # обработка входа
     if request.method == "POST":
@@ -120,7 +119,26 @@ def index(request):
     it = InfoText.objects.get(pageName="index")
     context = {
         "user": request.user,
-       # "login_form": LoginForm(),
+        # "login_form": LoginForm(),
+        "it": it
+    }
+    return render(request, template, context)
+
+
+def signin(request):
+    template = 'progressus/signin.html'
+    it = InfoText.objects.get(pageName="signin")
+    context = {
+        "user": request.user,
+        "it": it
+    }
+    return render(request, template, context)
+
+def signup(request):
+    template = 'progressus/signup.html'
+    it = InfoText.objects.get(pageName="signup")
+    context = {
+        "user": request.user,
         "it": it
     }
     return render(request, template, context)

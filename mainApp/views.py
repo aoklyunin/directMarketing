@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 import datetime
+
+from django.contrib import messages
+from django.shortcuts import render
+
+from mainApp import auth
+from mainApp.models import InfoText
+
 a = '''
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -196,3 +203,4 @@ def mark_list_marked(request):
     else:
         return HttpResponseRedirect('/')
 '''
+

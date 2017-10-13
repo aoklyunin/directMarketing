@@ -5,9 +5,6 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-
 
 <html>
 <head>
@@ -78,8 +75,22 @@
                 </li>
                 <li><a href="/contact/">Контакты</a></li>
 
-                <li><a class="btn" href="/signin/">Войти / Зарегистрироваться</a></li>
+
                {% endblock %}
+
+                {% if user.is_authenticated %}
+                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/personal/main/">Профиль</a></li>
+                        <li><a href="/personal/marketing/">Кампании</a></li>
+                        <li><a href="/personal/balance/">Баланс</a></li>
+                    </ul>
+                </li>
+                     <li><a class="btn" href="/signout/">Выйти</a></li>
+                {% else %}
+                     <li><a class="btn" href="/signin/">Войти / Зарегистрироваться</a></li>
+                {% endif %}
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -203,7 +214,6 @@
 <script src="{% static 'js/jQuery.headroom.min.js'"></script>
 <script src="{% static 'js/template.js'"></script>
 {% block footer_script %} {% endblock %}
-
 
 </body>
 </html>

@@ -10,19 +10,19 @@ from django.utils import timezone
 
 
 # класс исполнителя
-class Worker(models.Model):
+class Consumer(models.Model):
     # пользователь
     user = models.OneToOneField(User)
     # ссылка на VK
-    vk_link = models.TextField(max_length=10000)
+    vk_link = models.TextField(max_length=10000,default="")
     # ссылка на инсту
-    insta_link = models.TextField(max_length=10000)
+    insta_link = models.TextField(max_length=10000, default="")
     # ссылка на инсту
-    fb_link = models.TextField(max_length=10000)
+    fb_link = models.TextField(max_length=10000,default="")
     # Баланс
     balance = models.IntegerField(default=0)
     # Киви-кошелёк
-    kiwi = models.TextField(max_length=100)
+    qiwi = models.TextField(max_length=100,default="")
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name + '(' + str(
@@ -33,10 +33,10 @@ class Worker(models.Model):
 
 
 class Customer(models.Model):
-    name = models.TextField(max_length=1000)
+    companyName = models.TextField(max_length=1000, default="")
     user = models.OneToOneField(User)
     # Киви-кошелёк
-    kiwi = models.TextField(max_length=100)
+    qiwi = models.TextField(max_length=100, default="")
     # Баланс
     balance = models.IntegerField(default=0)
 
@@ -76,7 +76,7 @@ class WorkerMarketCamp(models.Model):
     # сслыка на запись
     link = models.TextField(max_length=1000)
     # исполнитель
-    worker = models.ForeignKey(Worker)
+    worker = models.ForeignKey(Consumer)
 
 
 class Admin(models.Model):

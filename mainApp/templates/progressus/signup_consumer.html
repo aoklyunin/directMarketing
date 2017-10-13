@@ -7,13 +7,11 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
 
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Вход {%endblock %}
+{% block title %} Регистрация {%endblock %}
 
 
 {% block menu %}
@@ -28,7 +26,6 @@
                 </li>
                 <li><a href="/contact/">Контакты</a></li>
 
-
                {% endblock %}
 
 
@@ -40,47 +37,55 @@
 	<!-- container -->
 	<div class="container">
 
-
-
 		<div class="row">
-			
+
 			<!-- Article main content -->
 			<article class="col-xs-12 maincontent">
 				<header class="page-header">
-					<h1 class="page-title">Войти</h1>
+					<h1 class="page-title">Регистрация</h1>
 				</header>
-				
+
 				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<h3 class="thin text-center">Войдите в систему</h3>
-							<p class="text-center text-muted">Если вы ещё не зарегистрированы в ситеме, <a href="/signup/">Зарегистрируйтесь</a></p>
+							<h3 class="thin text-center">Регистрация нового аккаунта</h3>
+							<p class="text-center text-muted">Если вы уже зарегистрированы, <a href="/signin/">Войдите</a>.</p>
+							<hr>
 
 							<form method="post">
-								{% csrf_token %}
+{% csrf_token %}
+
 								<div class="top-margin">
-									{% bootstrap_field form.login %}
+								{% bootstrap_field form.mail %}
 								</div>
-								<div class="top-margin">
+
+								<div class="row top-margin">
+									<div class="col-sm-6">
 									{% bootstrap_field form.password %}
+									</div>
+									<div class="col-sm-6">
+									{% bootstrap_field form.rep_password %}
+									</div>
 								</div>
 
 								<hr>
-
-								<div class="row">
-									<div class="col-lg-8">
-										<b><a href="">Забыли пароль?</a></b>
+								<div class="row top-margin">
+									<div class="col-sm-6">
+										{% bootstrap_field form.acceptedTerms %}
 									</div>
-									<div class="col-lg-4 text-right">
-										<button class="btn btn-action" type="submit">Войти</button>
+									<div class="col-sm-6 text-right">
+										<button class="btn btn-action" type="submit">Регистрация</button>
 									</div>
 								</div>
 							</form>
 						</div>
+						<div class="container">
+
+					</div>
 					</div>
 
 				</div>
-				
+
 			</article>
 			<!-- /Article -->
 <div class="container">
@@ -98,6 +103,5 @@
 </div>
 		</div>
 	</div>	<!-- /container -->
-	
 
-	{% endblock %}
+ {% endblock %}

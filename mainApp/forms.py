@@ -2,7 +2,72 @@
 # модуль с формами
 from django import forms
 
-#from mainApp.models import Task
+
+# форма регистрации
+class RegisterConsumerForm(forms.Form):
+    # пароль
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
+                               label="Пароль")
+    # повтор пароля
+    rep_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
+        label="Повторите пароль")
+
+    # почта
+    mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'example@gmail.com'}),
+                           label="Адрес эл. почты")
+
+    acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/consumer_terms/'>Условиями</a>")
+
+
+# форма регистрации
+class RegisterCustomerForm(RegisterConsumerForm):
+    # имя
+    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Генри'}), label="Имя")
+    # фамилия
+    second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Форд'}),
+                                  label="Фамилия")
+    # почта
+    mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'henry@ford.com'}),
+                           label="Адрес эл. почты")
+
+    acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/customer_terms/'>Условиями</a>")
+
+
+# форма регистрации
+class CustomerForm(forms.Form):
+    # имя
+    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Space X'}), label="Название компании")
+    # киви кошелёк
+    qiwi = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '+7 999 888 77 66'}),
+                                  label="Киви-кошелёк")
+
+
+# форма регистрации
+class ConsumerForm(forms.Form):
+    # имя
+    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Илон'}),
+                           label="Имя")
+    # имя
+    second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Маск'}),
+                           label="Фамилия")
+
+    # киви кошелёк
+    qiwi = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '+7 999 888 77 66'}),
+                           label="Киви-кошелёк")
+
+# форма логина
+class LoginForm(forms.Form):
+    # имя пользователя
+    login = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Логин'}),
+                               label="")
+    # пароль
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}), label="")
+
+    widgets = {
+        'password': forms.PasswordInput(),
+    }
+
 
 
 a = '''
@@ -42,46 +107,7 @@ class AddTaskForm(forms.Form):
                                label="Дата опубликовая")
 
 
-# форма логина
-class LoginForm(forms.Form):
-    # имя пользователя
-    username = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Логин'}),
-                               label="")
-    # пароль
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}), label="")
 
-    widgets = {
-        'password': forms.PasswordInput(),
-    }
-
-
-# форма регистрации
-class RegisterForm(forms.Form):
-    # логин
-    username = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'mylogin'}),
-                               label="Логин")
-    # пароль
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
-                               label="Пароль")
-    # повтор пароля
-    rep_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
-        label="Повторите пароль")
-    # класс
-    github_rep = forms.CharField(widget=forms.Textarea(
-        attrs={'rows': 1, 'cols': 20, 'placeholder': 'https://github.com/aoklyunin/csi-students'}),
-                                 label="Ссылка на github репозиторий")
-    # группа
-    st_group = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'P4135'}),
-                               label="номер группы")
-    # почта
-    mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'example@gmail.com'}),
-                           label="Адрес эл. почты")
-    # имя
-    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Иван'}), label="Имя")
-    # фамилия
-    second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Иванов'}),
-                                  label="Фамилия")
 
 
 # форма для оценки

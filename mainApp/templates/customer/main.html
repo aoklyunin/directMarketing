@@ -47,34 +47,30 @@
 			<!-- Article main content -->
 			<article class="col-xs-12 maincontent">
 				<header class="page-header">
-					<h1 class="page-title">Войти</h1>
+					<h1 class="page-title">Профиль компании</h1>
 				</header>
 				
 				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<h3 class="thin text-center">Войдите в систему</h3>
-							<p class="text-center text-muted">Если вы ещё не зарегистрированы в ситеме, <a href="/signup/">Зарегистрируйтесь</a></p>
+							<h3 class="thin text-center">Здравствуйте, {{u.user.first_name}} {{u.user.last_name}}!</h3>
+							<p class="text-center text-muted">{{u.user.email}}</p>
 
 							<form method="post">
-								{% csrf_token %}
-								<div class="top-margin">
-									{% bootstrap_field form.login %}
-								</div>
-								<div class="top-margin">
-									{% bootstrap_field form.password %}
-								</div>
 
 								<hr>
-
-								<div class="row">
-									<div class="col-lg-8">
-										<b><a href="">Забыли пароль?</a></b>
-									</div>
-									<div class="col-lg-4 text-right">
-										<button class="btn btn-action" type="submit">Войти</button>
-									</div>
+								{% csrf_token %}
+								<div class="top-margin">
+									{% bootstrap_field form.name %}
 								</div>
+								<div class="top-margin">
+									{% bootstrap_field form.qiwi %}
+								</div>
+
+
+									<div class="col-lg-4 text-right">
+										<button class="btn btn-action" type="submit">Изменить</button>
+									</div>
 							</form>
 						</div>
 					</div>
@@ -83,19 +79,7 @@
 				
 			</article>
 			<!-- /Article -->
-<div class="container">
-    {% if messages %}
-    <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
-            {% for message in messages %}
-            <div {% if message.tags %} class="alert {{ message.tags }}" {% endif %}>
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-</div>
+
 		</div>
 	</div>	<!-- /container -->
 	

@@ -69,6 +69,15 @@ class LoginForm(forms.Form):
     }
 
 
+# форма логина
+class PaymentForm(forms.Form):
+    # имя пользователя
+    value = forms.FloatField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '100.00'}),
+                               label="Cумма")
+
+
+
+
 
 a = '''
 # форма добавления попытки
@@ -118,3 +127,4 @@ class MarkForm(forms.Form):
                            label="")
                            
 '''
+

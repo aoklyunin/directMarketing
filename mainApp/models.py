@@ -62,10 +62,11 @@ class ConsumerTransaction(models.Model):
 class CustomerTransaction(models.Model):
     states = ['Ожидает оплаты', 'В обработке', 'Отклонена', 'Выполнена']
     # комментарий транзакции
-    tc = models.TextField(max_length=100,default="")
+    tc = models.TextField(max_length=100, default="")
     comments = models.ManyToManyField(Comment)
     customer = models.ForeignKey(Customer)
     state = models.IntegerField(default=0)
+    value = models.FloatField(default=0)
     dt = models.DateTimeField(default=datetime.datetime.now())
 
 

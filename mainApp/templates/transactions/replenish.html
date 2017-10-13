@@ -46,39 +46,32 @@
         <!-- Article main content -->
         <article class="col-xs-12 maincontent">
             <header class="page-header">
-                <h1 class="page-title">Профиль пользователя</h1>
+                <h1 class="page-title">Пополнение баланса</h1>
             </header>
 
             <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h3 class="thin text-center">Здравствуйте, {{u.user.first_name}} {{u.user.last_name}}!</h3>
-                        <p class="text-center text-muted">{{u.user.email}}</p>
+                        <h3 class="thin text-center">Укажите сумму пополнения</h3>
+                        <p class="text-center text-muted">Для пополнения баланса переведите деньги на указанный QIWI-кошелёк, после
+                        чего нажмите на кнопку "оплачено" в деталях заявки</p>
 
                         <form method="post">
 
                             <hr>
+                                <b> Номер QIWI кошелька: {{ qiwi }} </b><br><br>
                             {% csrf_token %}
+                            <div class="col-lg-4">
+                                    {% bootstrap_field form.value %}
 
+                            </div><br>
+<div class="row widget">
 
-                            <div class="row">
 
                                 <div class="col-lg-4">
-                                    {% bootstrap_field form.second_name %}
+                                    <button class="btn btn-action" type="submit">Создать заявку</button>
                                 </div>
-                                <div class="col-lg-4">
-                                    {% bootstrap_field form.name %}
-                                </div>
- <div class="col-lg-4">
-                                {% bootstrap_field form.qiwi %}
-                            </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4 text-right">
-                                    <button class="btn btn-action" type="submit">Изменить</button>
-                                </div>
-                            </div>
+</div>
                         </form>
                     </div>
                 </div>

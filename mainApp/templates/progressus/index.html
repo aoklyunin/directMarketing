@@ -14,6 +14,20 @@
 {% load bootstrap3 %}
 
 
+{% block menu %}
+                <li class="active"><a href="/">Главная</a></li>
+                <li><a href="/about/">О нас</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Как это работает<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/customer/">Заказчику</a></li>
+                        <li class="active"><a href="/consumer/">Исполнителю</a></li>
+                    </ul>
+                </li>
+                <li><a href="/contact/">Контакты</a></li>
+
+
+               {% endblock %}
 
   {% block content %}
 

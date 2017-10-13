@@ -5,6 +5,7 @@ from django.contrib import admin
 import mainApp.staticViews
 import mainApp.auth
 import mainApp.views
+import mainApp.transactionViews
 
 # автоопределение администратора
 admin.autodiscover()
@@ -25,5 +26,8 @@ urlpatterns = [
     url(r'^personal/main/$', mainApp.views.personal_main),
     url(r'^personal/balance/$', mainApp.views.personal_balance),
     url(r'^personal/marketing/$', mainApp.views.personal_marketing),
+    url(r'^transactions/replenish/$', mainApp.transactionViews.replenish),
+    url(r'^transactions/withdraw/$', mainApp.transactionViews.withdraw),
+    url(r'^transactions/customer_detail/(?P<tid>[0-9])/$', mainApp.transactionViews.customer_detail),
     url(r'^', mainApp.staticViews.index, name='index')
 ]

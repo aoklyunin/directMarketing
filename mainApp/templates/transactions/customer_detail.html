@@ -13,7 +13,7 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Вход {%endblock %}
+{% block title %} Заявка № {{id}} от {{date}} {%endblock %}
 
 
 {% block content %}
@@ -30,37 +30,46 @@
         <!-- Article main content -->
         <article class="col-xs-12 maincontent">
             <header class="page-header">
-                <h1 class="page-title">Пополнить счёт</h1>
+                <h1 class="page-title">Заявка № {{id}} от {{date}}</h1>
             </header>
 
-            <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-                <div class="panel panel-default">
+            Состояние : {{state}}
+<br>
+            {% if need_pay %}
+                <a href="/transactions/customer_transaction_set_user_payed/{{id}}/" class="btn btn-success">
+                    Перевод выполнен
+                </a>
+            {%endif%}
+            <br>
+  <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default">
                     <div class="panel-body">
-                        <h3 class="thin text-center">Порядок действий</h3>
-                        <p class="text-center text-muted">{{u.user.email}}</p>
-
-                        <form method="post">
-
-                            <hr>
-                            {% csrf_token %}
+                        <h3 class="thin text-center">Диалог</h3>
+                        <br><br>
 
 
+
+    {% if comments %}
+
+            {% for c in comments %}
+                {{c.author.first_name}}: {{c.text}}<br>
+            {% endfor %}
+
+                            {%else%}
+                            Пока что сообщений нет
+
+    {% endif %}
+
+<br><br>
+                         <form method="post">
+{% csrf_token %}
                             <div class="row">
-
-                                <div class="col-lg-4">
-                                    {% bootstrap_field form.second_name %}
-                                </div>
-                                <div class="col-lg-4">
-                                    {% bootstrap_field form.name %}
-                                </div>
- <div class="col-lg-4">
-                                {% bootstrap_field form.qiwi %}
-                            </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4 text-right">
-                                    <button class="btn btn-action" type="submit">Изменить</button>
+                                 <div class="col-lg-4" >
+                                 {% bootstrap_field form.value %}
+                                 </div>
+                                <div class="col-lg-4 ">
+                                    <button class="btn btn-action" type="submit">Отправить</button>
                                 </div>
                             </div>
                         </form>
@@ -69,6 +78,7 @@
 
             </div>
 
+    </div>
         </article>
         <!-- /Article -->
 

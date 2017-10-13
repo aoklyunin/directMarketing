@@ -78,18 +78,33 @@
 
                {% endblock %}
 
+
+
                 {% if user.is_authenticated %}
-                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет<b class="caret"></b></a>
+                    {% if user.is_staff %}
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Админ<b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li><a href="/withdraw/admin/">Вывод</a></li>
+                        <li><a href="/replenish/admin/">Внесение</a></li>
+                    </ul>
+                    </li>
+                    {% else %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
                         <li><a href="/personal/main/">Профиль</a></li>
                         <li><a href="/personal/marketing/">Кампании</a></li>
                         <li><a href="/personal/balance/">Баланс</a></li>
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                 {% endif %}
                      <li><a class="btn" href="/signout/">Выйти</a></li>
+
+
                 {% else %}
                      <li><a class="btn" href="/signin/">Войти / Зарегистрироваться</a></li>
+
                 {% endif %}
             </ul>
         </div><!--/.nav-collapse -->

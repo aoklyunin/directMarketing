@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
 
-from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -22,7 +20,7 @@ def personal_main(request):
             us = Customer.objects.get(user=request.user)
             flg = 2
         except:
-            HttpResponseRedirect('/')
+            return HttpResponseRedirect('/')
 
     if flg == 1:
         if request.method == 'POST':

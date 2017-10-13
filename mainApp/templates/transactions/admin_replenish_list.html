@@ -1,0 +1,70 @@
+{% extends "progressus/base.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{% block title %} Вход {%endblock %}
+
+
+
+{% block content %}
+
+
+<header id="head" class="secondary"></header>
+
+<!-- container -->
+<div class="container">
+
+
+    <div class="row">
+
+        <br><br>
+
+        {% if transactions %}
+
+            <table width="100%">
+                <th>
+                    <td>Дата</td>
+                    <td>Сумма</td>
+                    <td >Киви</td>
+                </th>
+            {% for t in transactions %}
+                <tr>
+                    <td></td>
+            <td> {{t.date}}</td>
+            <td> {{t.value}}</td>
+            <td> {{t.qiwi}}</td>
+            <td > <a href="/replenish/admin/accept/{{t.tid}}/" class="btn btn-success">Принять</a></td>
+                    <td > <a href="/transactions/customer_detail/{{t.tid}}/" class="btn btn-default">обсуждение</a></td>
+
+                    <td > <a href="/replenish/admin/reject/{{t.tid}}/" class="btn btn-danger">Отклонить</a></td>
+              </tr>
+            {% endfor %}
+                 </table>
+        </div>
+
+								{%else%}
+							<p class="text-center text-muted">Пока что нет транзакций</p>
+
+            {% endif %}
+</div>
+
+
+        </article>
+        <!-- /Article -->
+
+    </div>
+</div>    <!-- /container -->
+
+
+{% endblock %}

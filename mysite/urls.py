@@ -29,5 +29,13 @@ urlpatterns = [
     url(r'^transactions/replenish/$', mainApp.transactionViews.replenish),
     url(r'^transactions/withdraw/$', mainApp.transactionViews.withdraw),
     url(r'^transactions/customer_detail/(?P<tid>[0-9])/$', mainApp.transactionViews.customer_detail),
+    url(r'^transactions/customer_transaction_set_user_payed/(?P<tid>[0-9])/$', mainApp.transactionViews.customer_transaction_set_user_payed),
+    url(r'^replenish/admin/$', mainApp.transactionViews.replanishAdmin),
+    url(r'^replenish/admin/reject/(?P<tid>[0-9])/$', mainApp.transactionViews.replanishAdminReject),
+    url(r'^replenish/admin/accept/(?P<tid>[0-9])/$', mainApp.transactionViews.replanishAdminAccept),
+    url(r'^replenish/admin/complete/$', mainApp.transactionViews.replanishAdminComplete),
+    url(r'^replenish/admin/rejected/$', mainApp.transactionViews.replanishAdminRejected),
+    url(r'^replenish/admin/not-complete/$', mainApp.transactionViews.replanishAdminNotComplete),
+    url(r'^withdraw/admin/$', mainApp.transactionViews.withdrawAdmin),
     url(r'^', mainApp.staticViews.index, name='index')
 ]

@@ -37,10 +37,11 @@ class RegisterCustomerForm(RegisterConsumerForm):
 # форма регистрации
 class CustomerForm(forms.Form):
     # имя
-    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Space X'}), label="Название компании")
+    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Space X'}),
+                           label="Название компании")
     # киви кошелёк
     qiwi = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '+7 999 888 77 66'}),
-                                  label="Киви-кошелёк")
+                           label="Киви-кошелёк")
 
 
 # форма регистрации
@@ -50,17 +51,18 @@ class ConsumerForm(forms.Form):
                            label="Имя")
     # имя
     second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Маск'}),
-                           label="Фамилия")
+                                  label="Фамилия")
 
     # киви кошелёк
     qiwi = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '+7 999 888 77 66'}),
                            label="Киви-кошелёк")
 
+
 # форма логина
 class LoginForm(forms.Form):
     # имя пользователя
     login = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Логин'}),
-                               label="")
+                            label="")
     # пароль
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}), label="")
 
@@ -73,10 +75,14 @@ class LoginForm(forms.Form):
 class PaymentForm(forms.Form):
     # имя пользователя
     value = forms.FloatField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '100.00'}),
-                               label="Cумма")
+                             label="Cумма")
 
 
-
+# форма логина
+class TextForm(forms.Form):
+    # имя пользователя
+    value = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 20, 'placeholder': 'введите вопрос'}),
+                            label="")
 
 
 a = '''
@@ -127,4 +133,3 @@ class MarkForm(forms.Form):
                            label="")
                            
 '''
-

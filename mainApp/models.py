@@ -14,15 +14,15 @@ class Consumer(models.Model):
     # пользователь
     user = models.OneToOneField(User)
     # ссылка на VK
-    vk_link = models.TextField(max_length=10000,default="")
+    vk_link = models.TextField(max_length=10000, default="")
     # ссылка на инсту
     insta_link = models.TextField(max_length=10000, default="")
     # ссылка на инсту
-    fb_link = models.TextField(max_length=10000,default="")
+    fb_link = models.TextField(max_length=10000, default="")
     # Баланс
-    balance = models.IntegerField(default=0)
+    balance = models.FloatField(default=0)
     # Киви-кошелёк
-    qiwi = models.TextField(max_length=100,default="")
+    qiwi = models.TextField(max_length=100, default="")
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name + '(' + str(
@@ -38,7 +38,35 @@ class Customer(models.Model):
     # Киви-кошелёк
     qiwi = models.TextField(max_length=100, default="")
     # Баланс
-    balance = models.IntegerField(default=0)
+    balance = models.FloatField(default=0)
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User)
+    text = models.TextField(max_length=10000, default="")
+    image = models.ImageField()
+    dt = models.DateTimeField(default=datetime.datetime.now())
+
+
+class ConsumerTransaction(models.Model):
+    states = ['В обработке', 'Отклонена', 'Выполнена']
+    # комментарий транзакции
+    tc = models.TextField(max_length=100, default="")
+    comments = models.ManyToManyField(Comment)
+    consumer = models.ForeignKey(Consumer)
+    state = models.IntegerField(default=0)
+    value = models.FloatField(default=0)
+    dt = models.DateTimeField(default=datetime.datetime.now())
+
+
+class CustomerTransaction(models.Model):
+    states = ['Ожидает оплаты', 'В обработке', 'Отклонена', 'Выполнена']
+    # комментарий транзакции
+    tc = models.TextField(max_length=100,default="")
+    comments = models.ManyToManyField(Comment)
+    customer = models.ForeignKey(Customer)
+    state = models.IntegerField(default=0)
+    dt = models.DateTimeField(default=datetime.datetime.now())
 
 
 class MarketCamp(models.Model):

@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from mainApp.forms import ConsumerForm, CustomerForm
-from mainApp.models import Consumer, Customer
+from mainApp.models import Consumer, Customer, CustomerTransaction, ConsumerTransaction
 
 
 def personal_main(request):
@@ -24,7 +24,6 @@ def personal_main(request):
         except:
             HttpResponseRedirect('/')
 
-    print(flg)
     if flg == 1:
         if request.method == 'POST':
             # строим форму на основе запроса
@@ -68,21 +67,33 @@ def personal_balance(request):
 
     flg = 0
     try:
-        Consumer.objects.get(user=request.user)
+        u = Consumer.objects.get(user=request.user)
         flg = 1
     except:
         try:
-            Customer.objects.get(user=request.user)
+            u = Customer.objects.get(user=request.user)
             flg = 2
         except:
             HttpResponseRedirect('/')
 
     if flg == 1:
-        template = 'consumer/main.html'
+        ts = ConsumerTransaction.objects.filter(consumer=u).order_by('dt')
+        transactions = []
+        for t in ts:
+            transactions.append({"date": t.dt, "value": t.value, "state": ConsumerTransaction.states[t.state],
+                                 "tid": t.id})
+        template = 'consumer/balance.html'
     else:
-        template = 'customer/main.html'
+        ts = CustomerTransaction.objects.filter(customer=u).order_by('dt')
+        transactions = []
+        for t in ts:
+            transactions.append({"date": t.dt, "value": t.value, "state": ConsumerTransaction.states[t.state],
+                                 "tid": t.id})
+        template = 'customer/balance.html'
     context = {
         "user": request.user,
+        "u": u,
+        "transactions": transactions,
     }
     return render(request, template, context)
 
@@ -103,9 +114,9 @@ def personal_marketing(request):
             HttpResponseRedirect('/')
 
     if flg == 1:
-        template = 'consumer/main.html'
+        template = 'consumer/marketing.html'
     else:
-        template = 'customer/main.html'
+        template = 'customer/marketing.html'
     context = {
         "user": request.user,
     }

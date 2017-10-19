@@ -6,6 +6,7 @@ from django.db import models
 # Create your models here.
 
 from mainApp.models import Comment
+from mysite.settings import MEDIA_URL
 
 
 class Customer(models.Model):
@@ -29,10 +30,9 @@ class ReplenishTransaction(models.Model):
 
 
 class MarketCamp(models.Model):
-    platforms = ["ВК", "Инстаграм", "FB"]
-
+    platforms = ["-", "ВК", "Инстаграм", "FB"]
     # картинка для кампании
-    image = models.ImageField()
+    image = models.ImageField(upload_to='', default=MEDIA_URL+"template.jpg")
     # желаемое описание
     description = models.TextField(max_length=100000)
     # цена просмотра
@@ -53,3 +53,15 @@ class MarketCamp(models.Model):
     placeTarget = models.TextField(max_length=1000)
     # заказчик
     customer = models.ForeignKey(Customer)
+    # цена клика
+    clickPrice = models.FloatField(default=0)
+    # работает ли
+    isActive = models.BooleanField(default=False)
+    # старт
+    startTime = models.DateTimeField(default=datetime.datetime.now())
+    # конец
+    endTime = models.DateTimeField(default=datetime.datetime.now())
+
+    PLATFORM_CHOICES = []
+    for i in range(len(platforms)):
+        PLATFORM_CHOICES.append((str(i), platforms[i]))

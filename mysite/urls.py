@@ -7,7 +7,13 @@ import mainApp.auth
 import mainApp.views
 import mainApp.transactionViews
 
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+
 # автоопределение администратора
+from mysite import settings
+
 admin.autodiscover()
 
 urlpatterns = [
@@ -33,7 +39,6 @@ urlpatterns = [
     # that happens at the myapp/url.py level
     url(r'^adminPanel/', include('adminPanel.urls')),
     url(r'^customer/', include('customer.urls')),
-
     url(r'^', mainApp.staticViews.index, name='index')
 
 ]

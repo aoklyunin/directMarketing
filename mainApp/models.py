@@ -28,3 +28,4 @@ class InfoText(models.Model):
 
     def __str__(self):
         return self.pageName
+

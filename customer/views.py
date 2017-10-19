@@ -2,7 +2,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from customer.models import Customer, ReplenishTransaction
+from customer.forms import MarketCampForm
+from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
 from mainApp.forms import CustomerForm, PaymentForm, TextForm
 from mainApp.models import Comment
@@ -60,7 +61,7 @@ def balance(request):
 
 
 def campanies(request):
-    if not request.user.is_authenticated:
+    if not (is_member(request.user, "customers")):
         HttpResponseRedirect('/')
 
     try:
@@ -68,10 +69,66 @@ def campanies(request):
     except:
         HttpResponseRedirect('/')
 
+    cms = MarketCamp.objects.filter(customer=us).order_by('startTime')
+    campanies = []
+    for t in cms:
+        campanies.append(
+            {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
+             "platform": MarketCamp.platforms[t.platform],
+             "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
+             "startTime": t.startTime.strftime("%d.%m.%y"),
+             "endTime": t.endTime.strftime("%d.%m.%y"),
+             "image": t.image})
+
     template = 'customer/campanies.html'
     context = {
+        'campanies': campanies,
+        'caption': "Рекламные кампании"
     }
     return render(request, template, context)
+
+
+def detailCampany(request, tid):
+    print("works")
+    mc = MarketCamp.objects.get(id=tid)
+
+    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
+        return HttpResponseRedirect('/')
+
+    if request.method == 'POST':
+        # строим форму на основе запроса
+        form = MarketCampForm(request.POST,request.FILES)
+        # если форма заполнена корректно
+        if form.is_valid():
+            mc.image = form.cleaned_data['image']
+            mc.description = form.cleaned_data['description']
+            mc.viewPrice = form.cleaned_data['viewPrice']
+            mc.budget = form.cleaned_data['budget']
+            mc.platform = int(form.cleaned_data['platform'])
+            mc.save()
+            return HttpResponseRedirect('/customer/campanies/')
+
+
+    ef = MarketCampForm(instance=mc)
+
+    ef.fields["platform"].initial = mc.platform
+
+    template = 'customer/detail_campany.html'
+    context = {
+        "form": ef,
+        "id": tid,
+    }
+    return render(request, template, context)
+
+
+def createCampany(request):
+    try:
+        u = Customer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+    cm = MarketCamp.objects.create(customer=u)
+
+    return HttpResponseRedirect('/customer/campany/detail/' + str(cm.pk) + "/")
 
 
 def replenish(request):
@@ -98,7 +155,7 @@ def replenish(request):
 
 def replenish_detail(request, tid):
     ct = ReplenishTransaction.objects.get(id=tid)
-    if not(is_member(request.user, "admins") or request.user == ct.customer.user):
+    if not (is_member(request.user, "admins") or request.user == ct.customer.user):
         return HttpResponseRedirect('/')
 
     if request.method == 'POST':
@@ -123,7 +180,6 @@ def replenish_detail(request, tid):
 def terms(request):
     template = 'customer/terms.html'
     context = {
-        "user": request.user,
     }
     return render(request, template, context)
 
@@ -136,4 +192,3 @@ def replenish_set_payed(request, tid):
         return HttpResponseRedirect('/customer/replenish_detail/' + str(tid) + "/")
     else:
         return HttpResponseRedirect('/')
-

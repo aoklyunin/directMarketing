@@ -3,6 +3,7 @@
 from django import forms
 
 
+
 # форма регистрации
 class RegisterConsumerForm(forms.Form):
     # пароль

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
+from django.urls import reverse
 
 from consumer.models import Consumer, WithdrawTransaction
 from customer.models import Customer, ReplenishTransaction
@@ -120,3 +122,6 @@ def personal_marketing(request):
         "user": request.user,
     }
     return render(request, template, context)
+
+def index(request):
+    return render_to_response('myapp/index.html')

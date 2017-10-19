@@ -55,13 +55,6 @@ def contact(request):
     return render(request, template, context)
 
 
-def customer_terms(request):
-    template = 'progressus/customer_terms.html'
-    context = {
-        "user": request.user,
-    }
-    return render(request, template, context)
-
 
 def consumer_terms(request):
     template = 'progressus/consumer_terms.html'

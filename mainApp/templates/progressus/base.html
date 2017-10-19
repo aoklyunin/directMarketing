@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load bootstrap3 %}
+{% load user_tags %}
 
 {# Load CSS and JavaScript #}
 {% bootstrap_css %}
@@ -78,27 +79,38 @@
 
                {% endblock %}
 
-
-
                 {% if user.is_authenticated %}
-                    {% if user.is_staff %}
+                    {% if request.user|has_group:"admins"%}
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Админ<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/withdraw/admin/">Вывод</a></li>
-                        <li><a href="/replenish/admin/">Внесение</a></li>
+                        <li><a href="/adminPanel/withdraw/">Вывод</a></li>
+                        <li><a href="/adminPanel/replenish/ ">Внесение</a></li>
                     </ul>
                     </li>
-                    {% else %}
+                    {% endif %}
+                    {% if request.user|has_group:"customers"%}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                        <li><a href="/personal/main/">Профиль</a></li>
-                        <li><a href="/personal/marketing/">Кампании</a></li>
-                        <li><a href="/personal/balance/">Баланс</a></li>
+                        <li><a href="/customer/">Профиль</a></li>
+                        <li><a href="/customer/campanies/">Кампании</a></li>
+                        <li><a href="/customer/balance/">Баланс</a></li>
                         </ul>
                     </li>
-                 {% endif %}
+                    {% endif %}
+
+                    {% if request.user|has_group:"consumers" %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Личный кабинет<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/consumer/">Профиль</a></li>
+                            <li><a href="/consumer/campanies/">Кампании</a></li>
+                            <li><a href="/consumer/balance/">Баланс</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+
                      <li><a class="btn" href="/signout/">Выйти</a></li>
 
 

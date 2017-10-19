@@ -13,7 +13,7 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Вход {%endblock %}
+{% block title %} Баланс {%endblock %}
 
 
 {% block menu %}
@@ -48,7 +48,7 @@
 			<article class="col-xs-12 maincontent">
 				<header class="page-header">
 					<h1 class="page-title">Ваш баланс: {{u.balance}}</h1>
-					<a href="/transactions/replenish/" class="btn btn-primary"> Пополнить</a>
+					<a href="/customer/replenish/" class="btn btn-primary"> Пополнить</a>
 				</header>
 
 
@@ -65,7 +65,7 @@
             <div> {{t.date}}</div>
             <div> {{t.value}}</div>
             <div> {{t.state}}</div>
-            <div> <a href="/transaction/detail/{{t.tid}}" class="btn btn-default">Обсуждение</a></div>
+            <div> <a href="/customer/replenish_detail/{{t.tid}}/" class="btn btn-default">Детали</a></div>
             {% endfor %}
         </div>
 

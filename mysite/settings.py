@@ -39,7 +39,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainApp',
-    'bootstrap3'
+    'bootstrap3',
+    'replenish',
+    'adminPanel',
+    'consumer',
+    'customer',
 )
 
 from django.contrib.messages import constants as messages

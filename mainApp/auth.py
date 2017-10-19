@@ -6,8 +6,11 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from consumer.models import Consumer
+from customer.models import Customer
+from mainApp.code import is_member
 from mainApp.forms import RegisterCustomerForm, RegisterConsumerForm, LoginForm
-from mainApp.models import InfoText, Customer, Consumer
+from mainApp.models import InfoText
 
 
 def signin(request):
@@ -22,7 +25,13 @@ def signin(request):
             if user is not None and user.is_active:
                 # входим на сайт
                 auth.login(request, user)
-                return HttpResponseRedirect("/personal/main/")
+                if is_member(user, "admins"):
+                    return HttpResponseRedirect("/adminPanel/")
+                if is_member(user, "consumers"):
+                    return HttpResponseRedirect("/consumer/")
+                if is_member(user, "customers"):
+                    return HttpResponseRedirect("/customer/")
+                return HttpResponseRedirect('/')
             else:
                 messages.error(request, "пара логин-пароль не найдена")
     form = LoginForm()
@@ -81,7 +90,7 @@ def signup_customer(request):
                         c = Customer.objects.create(user=user)
                         # сохраняем студента
                         c.save()
-                        return HttpResponseRedirect("/personal/main/")
+                        return HttpResponseRedirect("/customer/")
                     else:
                         messages.error("Ошибка создания пользователя")
                 except:
@@ -130,7 +139,7 @@ def signup_consumer(request):
                         c = Consumer.objects.create(user=user)
                         # сохраняем студента
                         c.save()
-                        return HttpResponseRedirect("/personal/main/")
+                        return HttpResponseRedirect("/consumer/")
                     else:
                         messages.error("Ошибка создания пользователя")
 

@@ -3,8 +3,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from consumer.models import Consumer, WithdrawTransaction
+from customer.models import Customer, ReplenishTransaction
 from mainApp.forms import ConsumerForm, CustomerForm
-from mainApp.models import Consumer, Customer, CustomerTransaction, ConsumerTransaction
 
 
 def personal_main(request):
@@ -75,17 +76,17 @@ def personal_balance(request):
             HttpResponseRedirect('/')
 
     if flg == 1:
-        ts = ConsumerTransaction.objects.filter(consumer=u).order_by('dt')
+        ts = WithdrawTransaction.objects.filter(consumer=u).order_by('dt')
         transactions = []
         for t in ts:
-            transactions.append({"date": t.dt, "value": t.value, "state": ConsumerTransaction.states[t.state],
+            transactions.append({"date": t.dt, "value": t.value, "state": WithdrawTransaction.states[t.state],
                                  "tid": t.id})
         template = 'consumer/balance.html'
     else:
-        ts = CustomerTransaction.objects.filter(customer=u).order_by('dt')
+        ts = ReplenishTransaction.objects.filter(customer=u).order_by('dt')
         transactions = []
         for t in ts:
-            transactions.append({"date": t.dt, "value": t.value, "state": ConsumerTransaction.states[t.state],
+            transactions.append({"date": t.dt, "value": t.value, "state": WithdrawTransaction.states[t.state],
                                  "tid": t.id})
         template = 'customer/balance.html'
     context = {

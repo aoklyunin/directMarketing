@@ -9,37 +9,6 @@ from django.db import models
 from django.utils import timezone
 
 
-# класс исполнителя
-class Consumer(models.Model):
-    # пользователь
-    user = models.OneToOneField(User)
-    # ссылка на VK
-    vk_link = models.TextField(max_length=10000, default="")
-    # ссылка на инсту
-    insta_link = models.TextField(max_length=10000, default="")
-    # ссылка на инсту
-    fb_link = models.TextField(max_length=10000, default="")
-    # Баланс
-    balance = models.FloatField(default=0)
-    # Киви-кошелёк
-    qiwi = models.TextField(max_length=100, default="")
-
-    def __str__(self):
-        return self.user.first_name + ' ' + self.user.last_name + '(' + str(
-            self.st_group) + ')'
-
-    def __unicode__(self):
-        return self.user.first_name + ' ' + self.user.last_name
-
-
-class Customer(models.Model):
-    companyName = models.TextField(max_length=1000, default="")
-    user = models.OneToOneField(User)
-    # Киви-кошелёк
-    qiwi = models.TextField(max_length=100, default="")
-    # Баланс
-    balance = models.FloatField(default=0)
-
 
 class Comment(models.Model):
     author = models.ForeignKey(User)
@@ -48,69 +17,6 @@ class Comment(models.Model):
     dt = models.DateTimeField(default=datetime.datetime.now())
 
 
-class ConsumerTransaction(models.Model):
-    states = ['В обработке', 'Отклонена', 'Выполнена']
-    # комментарий транзакции
-    tc = models.TextField(max_length=100, default="")
-    comments = models.ManyToManyField(Comment)
-    consumer = models.ForeignKey(Consumer)
-    state = models.IntegerField(default=0)
-    value = models.FloatField(default=0)
-    dt = models.DateTimeField(default=datetime.datetime.now())
-
-
-class CustomerTransaction(models.Model):
-    states = ['Ожидает оплаты', 'В обработке', 'Отклонена', 'Выполнена']
-    # комментарий транзакции
-    tc = models.TextField(max_length=100, default="")
-    comments = models.ManyToManyField(Comment)
-    customer = models.ForeignKey(Customer)
-    state = models.IntegerField(default=0)
-    value = models.FloatField(default=0)
-    dt = models.DateTimeField(default=datetime.datetime.now())
-
-
-class MarketCamp(models.Model):
-    platforms = ["ВК", "Инстаграм", "FB"]
-
-    # картинка для кампании
-    image = models.ImageField()
-    # желаемое описание
-    description = models.TextField(max_length=100000)
-    # цена просмотра
-    viewPrice = models.FloatField(default=1)
-    # бюджет
-    budget = models.FloatField(default=0)
-    # набор фраз, мб потом вообще регулярка
-    phrases = models.TextField(max_length=100000)
-    # кол-во просмотров, сколько хотят
-    targetViewCnt = models.IntegerField(default=0)
-    # кол-во просмотров, сколько сейчас
-    curViewCnt = models.IntegerField(default=0)
-    # площадка
-    platform = models.IntegerField(default=0)
-    # возростной таргетинг: первый байт нижняя граница, второй - верхняя
-    ageTarget = models.IntegerField(default=0)
-    # таргетинг по городу или региону
-    placeTarget = models.TextField(max_length=1000)
-    # заказчик
-    customer = models.ForeignKey(Customer)
-
-
-class WorkerMarketCamp(models.Model):
-    # маркетинговая компания
-    marketCamp = models.ForeignKey(MarketCamp)
-    # просмотров от пользователя
-    viewCnt = models.IntegerField(default=0)
-    # сслыка на запись
-    link = models.TextField(max_length=1000)
-    # исполнитель
-    worker = models.ForeignKey(Consumer)
-
-
-class Admin(models.Model):
-    # пользователь
-    user = models.OneToOneField(User)
 
 
 class InfoText(models.Model):

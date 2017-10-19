@@ -1,0 +1,48 @@
+{% extends "progressus/base.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{% block title %} Вход {%endblock %}
+
+
+{% block content %}
+
+
+<header id="head" class="secondary"></header>
+
+<!-- container -->
+<div class="container">
+
+
+    <div class="row">
+
+        <!-- Article main content -->
+        <article class="col-xs-12 maincontent">
+            <header class="page-header">
+                <h1 class="page-title">Заявки на пополнение</h1>
+            </header>
+
+
+                        <a href="/replenish/admin/not-complete/" class="btn btn-default">Не выполненные</a>
+                        <a href="/replenish/admin/complete/" class="btn btn-success">Выполненные</a>
+ <a href="/replenish/admin/rejected/" class="btn btn-danger">Выполненные</a>
+
+        </article>
+        <!-- /Article -->
+
+    </div>
+</div>    <!-- /container -->
+
+
+{% endblock %}

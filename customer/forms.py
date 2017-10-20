@@ -9,7 +9,7 @@ class MarketCampForm(ModelForm):
 
     class Meta:
         model = MarketCamp
-        fields = {'description', 'viewPrice', 'budget','image'}
+        fields = {'description', 'viewPrice', 'budget', 'image', 'startTime', 'endTime'}
         widgets = {
             'description': Textarea(),
             'viewPrice': TextInput(attrs={}),
@@ -21,6 +21,10 @@ class MarketCampForm(ModelForm):
             'description': 'Текст',
             'viewPrice': 'Цена просмотра',
             'budget': 'Бюджет',
+            'startTime': 'Старт кампании',
+            'endTime': 'Конец кампании',
+            'image': 'Картинка кампании',
+
         }
 
         error_messages = {
@@ -35,8 +39,7 @@ class MarketCampForm(ModelForm):
         # there's a `fields` property now
 
         self.fields['platform'].choices = MarketCamp.PLATFORM_CHOICES
-        self.fields['image'].upload_to = '/pictures/'
         self.fields['image'].required = False
-
-
-
+        self.fields['startTime'].widget.attrs['id'] = 'startTime'
+        self.fields['endTime'].widget.attrs['id'] = 'endTime'
+        self.fields['endTime'].widget.attrs['class'] = 'form_datetime'

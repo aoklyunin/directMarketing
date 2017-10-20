@@ -13,51 +13,94 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Регистрация {%endblock %}
+{% block title %} Кампания № {{id}} {%endblock %}
+
+
+{% block content %}
+
+
+<header id="head" class="secondary"></header>
+
+<!-- container -->
+<div class="container">
+
+    <div class="row">
+        <!-- Article main content -->
+        <article class="col-xs-12 maincontent">
+            <header class="page-header">
+                <h1 class="page-title">Кампания № {{id}}</h1>
+            </header>
+            <div class="col-md-4" align="center">
+                <form action="" method="post" class="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                {% bootstrap_field form.description %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% bootstrap_field form.viewPrice %}
+                            </td>
+                            <td>
+                                {% bootstrap_field form.budget %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% bootstrap_field form.startTime %}
+                            </td>
+                            <td>
+                                {% bootstrap_field form.endTime %}
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td colspan="2" valign="center">
+                                {% bootstrap_field form.image %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% bootstrap_field form.platform %}
+                            </td>
+                            <td align="center" valign="bottom">
+                                {% buttons %}
+                                <button type="submit" class="btn btn-primary"
+                                        {% if disableModify %}
+                                        disabled
+                                        {%endif%}>
+                                    Сохранить
+                                </button>
+                                {% endbuttons %}
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+        </article>
+    </div>
+</div>    <!-- /container -->
+
+{% endblock %}
+
+
+{% block footer_script %}
+
+<script type="text/javascript">
+      $('.form_datetime').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
+    });
 
 
 
-  {% block content %}
+</script>
 
-
-	<header id="head" class="secondary"></header>
-
-	<!-- container -->
-	<div class="container">
-
-		<div class="row">
-			<!-- Article main content -->
-			<article class="col-xs-12 maincontent">
-				<header class="page-header">
-					<h1 class="page-title">Кампания № {{id}}</h1>
-				</header>
-
-
-							<div class="col-md-4" align="center">
-								<form action="" method="post" class="form" enctype="multipart/form-data">
-  {% csrf_token %}
-									<table><tr><td colspan="2">
-  {% bootstrap_field form.description %}</td>
-										</tr><tr><td>
-  {% bootstrap_field form.viewPrice %}
-										</td><td>
-  {% bootstrap_field form.budget %}
-										</td></tr><tr><td valign="center">
-										{% bootstrap_field form.image %}</td><td>
-  {% buttons %}
-    <button type="submit" class="btn btn-primary">
-  Сохранить
-    </button>
-  {% endbuttons %}</td></tr>
-										</table>
-</form>
-
-
-
-				</article>
-</div></center>
-
-
-	</div>	<!-- /container -->
-
- {% endblock %}
+{%endblock %}

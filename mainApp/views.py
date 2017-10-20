@@ -125,3 +125,7 @@ def personal_marketing(request):
 
 def index(request):
     return render_to_response('myapp/index.html')
+
+
+def test(request):
+    return render_to_response('mainApp/test.html')

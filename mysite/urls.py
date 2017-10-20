@@ -19,7 +19,6 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^about/$', mainApp.staticViews.about),
-    url(r'^customer/$', mainApp.staticViews.customer),
     url(r'^consumer/$', mainApp.staticViews.consumer),
     url(r'^contact/$', mainApp.staticViews.contact),
     url(r'^signin/$', mainApp.auth.signin),
@@ -31,6 +30,7 @@ urlpatterns = [
     url(r'^personal/main/$', mainApp.views.personal_main),
     url(r'^personal/balance/$', mainApp.views.personal_balance),
     url(r'^personal/marketing/$', mainApp.views.personal_marketing),
+    url(r'^test/$', mainApp.views.test),
 
     url(r'^transactions/withdraw/$', mainApp.transactionViews.withdraw),
 

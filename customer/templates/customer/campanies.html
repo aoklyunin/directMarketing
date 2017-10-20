@@ -14,19 +14,23 @@
 {% load bootstrap3 %}
 
 {% block title %} {{caption}} {%endblock %}
-
-{% block content %}
-
 {%block style_block %}
 .table{
 border-spacing: 20px 20px;
 }
-
+.not-active {
+pointer-events: none;
+cursor: default;
+}
 .td{
-  padding: 5px;
+padding: 5px;
 }
 
-{%endblock%}
+{% endblock %}
+
+
+{% block content %}
+
 
 <header id="head" class="secondary"></header>
 
@@ -56,8 +60,8 @@ border-spacing: 20px 20px;
             </th>
             {% for t in campanies %}
             <tr>
-<td></td>
-                <td> <img src="{% static t.image.url %}"></td>
+                <td></td>
+                <td><img src="{% static t.image.url %}"></td>
 
                 <td align="center"> {{t.viewPrice}}</td>
                 <td align="center"> {{t.curViewCnt}}/{{t.targetViewCnt}}</td>
@@ -69,12 +73,19 @@ border-spacing: 20px 20px;
                     {%endif%}
                 </td>
                 <td align="center"> ( {{t.startTime}}-{{t.endTime}})</td>
-                {% if t.isActive %}
-                <td><a href="/customer/campany/stop/{{t.cid}}/" class="btn btn-danger">Остановить</a></td>
-                {%else%}
-                <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-success">Настройки</a></td>
-                <td><a href="/customer/campany/start/{{t.cid}}/" class="btn btn-default">Запустить</a></td>
+                {% if t.adminApproved %}
+                    {% if t.isActive %}
+                    <td><a href="/customer/campany/stop/{{t.cid}}/" class="btn btn-danger">Остановить</a></td>
+                    {%else%}
+                    <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-info ">Настройки</a></td>
 
+                    <td><a href="/customer/campany/start/{{t.cid}}/"
+                       class="btn     {% if t.canNotActivate %} btn-default not-active{%else%} btn-primary{%endif%}   "
+                    >Запустить</a></td>
+
+                    {%endif%}
+                {% else %}
+                <td>Ждём проверки модератора</td>
                 {%endif%}
             </tr>
             {% endfor %}
@@ -82,7 +93,7 @@ border-spacing: 20px 20px;
     </div>
 
     {%else%}
-    <p class="text-center text-muted">Пока что нет кампаний</p>
+    <p class="text-center text-muted">Пока что у Вас нет кампаний</p>
 
     {% endif %}
 </div>

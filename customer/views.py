@@ -78,7 +78,10 @@ def campanies(request):
              "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
              "startTime": t.startTime.strftime("%d.%m.%y"),
              "endTime": t.endTime.strftime("%d.%m.%y"),
-             "image": t.image})
+             "image": t.image,
+             "adminApproved": t.adminApproved,
+             "canNotActivate": (t.curViewCnt >= t.targetViewCnt) or (us.balance < t.budget),
+             })
 
     template = 'customer/campanies.html'
     context = {
@@ -89,7 +92,6 @@ def campanies(request):
 
 
 def detailCampany(request, tid):
-    print("works")
     mc = MarketCamp.objects.get(id=tid)
 
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
@@ -97,28 +99,62 @@ def detailCampany(request, tid):
 
     if request.method == 'POST':
         # строим форму на основе запроса
-        form = MarketCampForm(request.POST,request.FILES)
+        form = MarketCampForm(request.POST, request.FILES)
         # если форма заполнена корректно
         if form.is_valid():
-            mc.image = form.cleaned_data['image']
+            if form.cleaned_data['image'] != "template.jpg":
+                mc.image = form.cleaned_data['image']
             mc.description = form.cleaned_data['description']
             mc.viewPrice = form.cleaned_data['viewPrice']
             mc.budget = form.cleaned_data['budget']
+            mc.targetViewCnt = mc.budget / mc.viewPrice
             mc.platform = int(form.cleaned_data['platform'])
             mc.save()
             return HttpResponseRedirect('/customer/campanies/')
 
-
-    ef = MarketCampForm(instance=mc)
-
-    ef.fields["platform"].initial = mc.platform
+    form = MarketCampForm(instance=mc)
+    form.fields["platform"].initial = mc.platform
+    form.fields["image"].initial = None
 
     template = 'customer/detail_campany.html'
     context = {
-        "form": ef,
+        "form": form,
         "id": tid,
+        "disableModify": mc.isActive,
     }
     return render(request, template, context)
+
+
+def startCampany(request, tid):
+    mc = MarketCamp.objects.get(id=tid)
+
+    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
+        return HttpResponseRedirect('/')
+
+    if not ((mc.curViewCnt >= mc.targetViewCnt) or (mc.customer.balance < mc.budget)):
+        mc.customer.balance -= mc.budget
+        mc.isActive = True
+        mc.save()
+        mc.customer.save()
+
+    return HttpResponseRedirect('/customer/campanies/')
+
+
+def stopCampany(request, tid):
+    mc = MarketCamp.objects.get(id=tid)
+
+    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
+        return HttpResponseRedirect('/')
+
+    mc.budget = mc.budget - mc.curViewCnt*mc.viewPrice
+    mc.targetViewCnt -= mc.curViewCnt
+    mc.customer.balance += mc.budget
+    mc.customer.save()
+    mc.curViewCnt = 0
+    mc.isActive = False
+    mc.save()
+
+    return HttpResponseRedirect('/customer/campanies/')
 
 
 def createCampany(request):

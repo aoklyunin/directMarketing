@@ -32,7 +32,7 @@ class ReplenishTransaction(models.Model):
 class MarketCamp(models.Model):
     platforms = ["-", "ВК", "Инстаграм", "FB"]
     # картинка для кампании
-    image = models.ImageField(upload_to='', default=MEDIA_URL+"template.jpg")
+    image = models.ImageField(upload_to='', default="template.jpg")
     # желаемое описание
     description = models.TextField(max_length=100000)
     # цена просмотра
@@ -61,6 +61,8 @@ class MarketCamp(models.Model):
     startTime = models.DateTimeField(default=datetime.datetime.now())
     # конец
     endTime = models.DateTimeField(default=datetime.datetime.now())
+    # админ одобрил
+    adminApproved = models.BooleanField(default=False)
 
     PLATFORM_CHOICES = []
     for i in range(len(platforms)):

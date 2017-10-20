@@ -109,6 +109,7 @@ def detailCampany(request, tid):
             mc.budget = form.cleaned_data['budget']
             mc.targetViewCnt = mc.budget / mc.viewPrice
             mc.platform = int(form.cleaned_data['platform'])
+            mc.adminApproved = False
             mc.save()
             return HttpResponseRedirect('/customer/campanies/')
 
@@ -131,7 +132,7 @@ def startCampany(request, tid):
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
         return HttpResponseRedirect('/')
 
-    if not ((mc.curViewCnt >= mc.targetViewCnt) or (mc.customer.balance < mc.budget)):
+    if (not ((mc.curViewCnt >= mc.targetViewCnt) or (mc.customer.balance < mc.budget))) and mc.adminApproved:
         mc.customer.balance -= mc.budget
         mc.isActive = True
         mc.save()
@@ -146,7 +147,7 @@ def stopCampany(request, tid):
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
         return HttpResponseRedirect('/')
 
-    mc.budget = mc.budget - mc.curViewCnt*mc.viewPrice
+    mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
     mc.targetViewCnt -= mc.curViewCnt
     mc.customer.balance += mc.budget
     mc.customer.save()
@@ -228,3 +229,24 @@ def replenish_set_payed(request, tid):
         return HttpResponseRedirect('/customer/replenish_detail/' + str(tid) + "/")
     else:
         return HttpResponseRedirect('/')
+
+
+def campamy_discuss(request, tid):
+    ct = MarketCamp.objects.get(id=tid)
+    if not (is_member(request.user, "admins") or request.user == ct.customer.user):
+        return HttpResponseRedirect('/')
+
+    if request.method == 'POST':
+        # строим форму на основе запроса
+        form = TextForm(request.POST)
+        if form.is_valid():
+            c = Comment.objects.create(author=request.user, text=form.cleaned_data["value"])
+            ct.comments.add(c)
+
+    template = 'customer/campany_discuss.html'
+    context = {
+        "comments": ct.comments.order_by('dt'),
+        "form": TextForm(),
+        "id": tid,
+    }
+    return render(request, template, context)

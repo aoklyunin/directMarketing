@@ -62,8 +62,11 @@ class MarketCamp(models.Model):
     # конец
     endTime = models.DateTimeField(default=datetime.datetime.now())
     # админ одобрил
-    adminApproved = models.BooleanField(default=False)
+    adminApproved = models.IntegerField(default=0)
+    # комментарии
+    comments = models.ManyToManyField(Comment)
 
+    APPROVE_STATES = ["Обрабатывается", "Принята", "Отклонена"]
     PLATFORM_CHOICES = []
     for i in range(len(platforms)):
         PLATFORM_CHOICES.append((str(i), platforms[i]))

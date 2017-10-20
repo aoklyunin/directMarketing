@@ -6,6 +6,10 @@ from adminPanel.withdrawViews import *
 
 urlpatterns = [
     url(r'^replenish/$', replenish),
+    url(r'^campanies/$', campanies),
+    url(r'^campany/detail/(?P<tid>[0-9]+)/$', detailCampany),
+    url(r'^campany/approve/(?P<tid>[0-9]+)/$', approveCampany),
+    url(r'^campany/dismiss/(?P<tid>[0-9]+)/$', dismissCampany),
     url(r'^replenish/reject/(?P<tid>[0-9]+)/$', replenishReject),
     url(r'^replenish/accept/(?P<tid>[0-9]+)/$', replenishAccept),
     url(r'^replenish/accepted/$', replanishAccepted),

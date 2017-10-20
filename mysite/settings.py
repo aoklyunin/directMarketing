@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'mainApp',
     'bootstrap3',
-    'replenish',
     'adminPanel',
     'consumer',
     'customer',

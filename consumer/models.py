@@ -50,3 +50,7 @@ class ConsumerMarketCamp(models.Model):
     link = models.TextField(max_length=1000)
     # исполнитель
     worker = models.ForeignKey(Consumer)
+    # тип участи
+    joinType = models.IntegerField(default=0)
+    # типы участия
+    joinTypes = ["Не участвую", "Участвую", "Участвовал"]

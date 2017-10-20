@@ -11,7 +11,7 @@ from mainApp.models import Comment
 
 def index(request):
     if not request.user.is_authenticated:
-        HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
     try:
         us = Customer.objects.get(user=request.user)
@@ -40,12 +40,12 @@ def index(request):
 
 def balance(request):
     if not request.user.is_authenticated:
-        HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
     try:
         u = Customer.objects.get(user=request.user)
     except:
-        HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
     ts = ReplenishTransaction.objects.filter(customer=u).order_by('dt')
     transactions = []
@@ -62,12 +62,12 @@ def balance(request):
 
 def campanies(request):
     if not (is_member(request.user, "customers")):
-        HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
     try:
         us = Customer.objects.get(user=request.user)
     except:
-        HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
     cms = MarketCamp.objects.filter(customer=us).order_by('startTime')
     campanies = []

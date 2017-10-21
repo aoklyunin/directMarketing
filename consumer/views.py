@@ -244,23 +244,39 @@ def leaveCampany(request, tid):
 
     return HttpResponseRedirect('/customer/campanies/')
 
+href = 'http://directpr.herokuapp.com'
 
-def loginVK(request):
+def getCode(request):
     return HttpResponseRedirect(
-        'http://oauth.vk.com/authorize?client_id=5229876&redirect_uri=http://directpr.herokuapp.com/consumer/vk/processAnswerR/&response_type=token&scope=wall')
+        'http://oauth.vk.com/authorize?client_id='+settings.VK_APP_ID+
+        '&redirect_uri='+href+
+        '/consumer/vk/processCode/&response_type=code&scope=wall')
 
 
-def vkProcessR(request):
-    return render(request, "consumer/vkProcess.html", {})
+def processCode(request):
+    return render(request, "consumer/vkProcessCode.html", {})
 
 
-def vkProcess(request, access_token, user_id):
+def getToken(request, code):
+    return HttpResponseRedirect(
+        'https://oauth.vk.com/access_token?client_id='+settings.VK_APP_ID+
+        '&client_secret='+settings.VK_APP_ID+'&redirect_uri='+href+'/consumer/vk/processToken/&code='+code)
+
+    #    'http://oauth.vk.com/authorize?client_id=5229876&redirect_uri=http://directpr.herokuapp.com/consumer/vk/processAnswer/&response_type=code&scope=wall')
+
+
+def processToken(request):
+    return render(request, "consumer/vkProcessToken.html", {})
+
+
+
+def saveToken(request, token, us_id):
     #  print(access_token)
     # print(user_id)
     try:
         u = Consumer.objects.get(user=request.user)
-        u.vk_token = access_token
-        u.vk_id = user_id
+        u.vk_token = token
+        u.vk_id = us_id
         u.save()
     except:
         return HttpResponseRedirect('/')

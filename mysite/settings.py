@@ -164,6 +164,6 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_URL = '/static/'
 
 
-VK_APP_ID = 6228569
-VK_API_SECRET = '8IQPRYzC0cGJ30uuL86j'
+VK_APP_ID = '5229876'
+VK_API_SECRET = 'JwZwPypPy8Z1LkAxrast'
 

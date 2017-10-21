@@ -268,24 +268,14 @@ def processCode(request):
         except:
             token = request.GET["access_token"]
             uid = request.GET["user_id"]
-            return render(request, "consumer/vkSaveToken.html", {"token": token,
-                                                                 "uid": uid})
-
-
-def saveToken(request, token, us_id):
-    return render(request, "consumer/vkProcessToken.html", {'token': token, 'uid': us_id})
-
-    #  print(access_token)
-    # print(user_id)
-    #  try:
-    #      u = Consumer.objects.get(user=request.user)
-    #     u.vk_token = token
-    #      u.vk_id = us_id
-    #      u.save()
-    #  except:
-    #     return HttpResponseRedirect('/')
-
-    #  return HttpResponseRedirect('/consumer/')
+            try:
+                u = Consumer.objects.get(user=request.user)
+                u.vk_token = token
+                u.vk_id = uid
+                u.save()
+                return HttpResponseRedirect('/consumer/')
+            except:
+                return HttpResponseRedirect('/')
 
 
 def postVKview(request):

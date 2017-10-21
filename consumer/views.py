@@ -1,3 +1,6 @@
+import json
+
+import requests
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, render_to_response
 
@@ -8,6 +11,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from consumer.form import ConsumerForm
+from consumer.localCode import postVK
 from consumer.models import Consumer, WithdrawTransaction
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
@@ -44,8 +48,15 @@ def index(request):
                                  'qiwi': us.qiwi, 'autoParticipate': us.autoParticipate})
     template = 'consumer/index.html'
 
+    try:
+        r = requests.get('https://api.vk.com/method/users.get?user_ids='+str(us.vk_id)).json()
+        uid = r['response']['uid']
+    except:
+        uid = 0
+
     context = {
         "u": us,
+        "uid":  uid,
         "form": form,
     }
     return render(request, template, context)
@@ -236,8 +247,7 @@ def leaveCampany(request, tid):
 
 def loginVK(request):
     return HttpResponseRedirect(
-        'http://oauth.vk.com/authorize?client_id=6228599&redirect_uri=http://directPR.herokuapp.com/consumer/vk/processAnswerR/&response_type=token&scope=' + str(
-            8192 + 65536))
+        'http://oauth.vk.com/authorize?client_id=5229876&redirect_uri=http://directpr.herokuapp.com/consumer/vk/processAnswerR/&response_type=token&scope=wall')
 
 
 def vkProcessR(request):
@@ -245,8 +255,8 @@ def vkProcessR(request):
 
 
 def vkProcess(request, access_token, user_id):
-  #  print(access_token)
-   # print(user_id)
+    #  print(access_token)
+    # print(user_id)
     try:
         u = Consumer.objects.get(user=request.user)
         u.vk_token = access_token
@@ -254,5 +264,17 @@ def vkProcess(request, access_token, user_id):
         u.save()
     except:
         return HttpResponseRedirect('/')
+
+    return HttpResponseRedirect('/consumer/')
+
+
+def postVKview(request):
+    try:
+        u = Consumer.objects.get(user=request.user)
+
+    except:
+        return HttpResponseRedirect('/')
+
+    postVK(u)
 
     return HttpResponseRedirect('/consumer/')

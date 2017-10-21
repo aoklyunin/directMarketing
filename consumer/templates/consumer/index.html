@@ -109,19 +109,15 @@
 $(document).ready(function(){
     $("#b").click(function(e) {
         e.preventDefault();
-        $.ajax({
-            type: "GET",
-            url: "https://api.vk.com/method/users.get",
-            data: {
-                user_ids: '{{u.vk_id}}',
-               // access_token:  '{{u.vk_id}}',
-                fields:'bdate'
-            },
-            dataType:"json",
+        var theRequest = $.ajax({
+            type: "POST",
+            url: "https://api.vk.com/method/users.get?user_ids={{u.vk_id}}&fields=bdate",
+            dataType:"jsonp",
             success:function(data){
-               alert(obj);
-               alert('ye');
-            },
+         //       var p_data = $.parseJSON(data);
+                alert(theRequest.responseText);
+                alert('ye');
+               },
             error: function(data) {
                 alert(data.responseText);
             }

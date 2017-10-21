@@ -1,8 +1,13 @@
 
 <script type="text/javascript">
-    alert({{code}}
+
     var params = (window.location.hash.substr(1)).split("&");
-    window.location.replace("/consumer/vk/getToken/"+params[0].split("=")[1]+"/");
+
+    if (params[0].split("=")[1]=='access_token'){
+        window.location.replace("/consumer/vk/saveToken/"+params[2].split("=")[1]+"/"+params[0].split("=")[1]+"/");
+    }else{
+        window.location.replace("/consumer/vk/getToken/"+params[0].split("=")[1]+"/");
+    }
 
 </script>
 

@@ -259,7 +259,7 @@ def processCode(request):
     code = request.GET["code"]
     r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                      '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
-                     '/consumer/vk/processToken/&code=' + code).json()
+                     '/consumer/vk/processCode/&code=' + code).json()
 
     try:
         text = r['error'] + " " + r['error_description']

@@ -261,7 +261,7 @@ def processCode(request):
 def getToken(request, code):
     return HttpResponseRedirect(
         'https://oauth.vk.com/access_token?client_id='+settings.VK_APP_ID+
-        '&client_secret='+settings.VK_APP_ID+'&redirect_uri='+href+'/consumer/vk/processToken/&code='+code)
+        '&client_secret='+settings.VK_API_SECRET+'&redirect_uri='+href+'/consumer/vk/processToken/&code='+code)
 
     #    'http://oauth.vk.com/authorize?client_id=5229876&redirect_uri=http://directpr.herokuapp.com/consumer/vk/processAnswer/&response_type=code&scope=wall')
 

@@ -84,7 +84,7 @@ def replenishReject(request, tid):
 
 def replenishAccept(request, tid):
     if not is_member(request.user, "admins"):
-        return HttpResponseRedirect('/replenish/')
+        return HttpResponseRedirect('/')
 
     ts = ReplenishTransaction.objects.get(id=tid)
     c = ts.customer

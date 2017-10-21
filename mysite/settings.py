@@ -162,3 +162,8 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
+
+
+VK_APP_ID = '6228512'
+VK_API_SECRET = '8IQPRYzC0cGJ30uuL86j'
+

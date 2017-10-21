@@ -1,21 +1,27 @@
+from django.contrib.auth.models import AnonymousUser
+from django.shortcuts import render, render_to_response
+
+# Create your views here.
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 
-# Create your views here.
-from consumer.models import Consumer
+from consumer.form import ConsumerForm
+from consumer.models import Consumer, WithdrawTransaction
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
-from mainApp.forms import CustomerForm, PaymentForm, TextForm, ConsumerForm
+from mainApp.forms import PaymentForm, TextForm
 from mainApp.models import Comment
+from mysite import settings
+
+from django.shortcuts import redirect
 
 
 def index(request):
     if not request.user.is_authenticated:
-        HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
     try:
         us = Consumer.objects.get(user=request.user)
@@ -30,10 +36,12 @@ def index(request):
             us.qiwi = form.cleaned_data['qiwi']
             us.user.first_name = form.cleaned_data['name']
             us.user.last_name = form.cleaned_data['second_name']
+            us.user.save()
+            us.autoParticipate = form.cleaned_data['autoParticipate']
             us.save()
 
     form = ConsumerForm(initial={'name': us.user.first_name, 'second_name': us.user.last_name,
-                                 'qiwi': us.qiwi})
+                                 'qiwi': us.qiwi, 'autoParticipate': us.autoParticipate})
     template = 'consumer/index.html'
 
     context = {
@@ -48,19 +56,82 @@ def balance(request):
         return HttpResponseRedirect('/')
 
     try:
-        u = Customer.objects.get(user=request.user)
+        u = Consumer.objects.get(user=request.user)
     except:
-       return  HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
-    ts = ReplenishTransaction.objects.filter(customer=u).order_by('dt')
+    ts = WithdrawTransaction.objects.filter(consumer=u).order_by('dt')
     transactions = []
     for t in ts:
-        transactions.append({"date": t.dt, "value": t.value, "state": ReplenishTransaction.states[t.state],
+        transactions.append({"date": t.dt, "value": t.value, "state": WithdrawTransaction.states[t.state],
                              "tid": t.id})
-    template = 'customer/balance.html'
+    template = 'consumer/balance.html'
     context = {
         "u": u,
         "transactions": transactions,
+    }
+    return render(request, template, context)
+
+
+def withdraw(request):
+    try:
+        u = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    if request.method == 'POST':
+        # строим форму на основе запроса
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            t = WithdrawTransaction.objects.create(consumer=u, value=form.cleaned_data["value"])
+            return HttpResponseRedirect('/consumer/balance/')
+
+    template = 'consumer/withdraw.html'
+    context = {
+        "form": PaymentForm(),
+    }
+    return render(request, template, context)
+
+
+def autoWithdraw(request, tp):
+    try:
+        u = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    u.autoWithDraw = tp == '1'
+    u.save()
+
+    return HttpResponseRedirect('/consumer/balance/')
+
+
+def withdraw_detail(request, tid):
+    ct = WithdrawTransaction.objects.get(id=tid)
+    if not (is_member(request.user, "admins") or request.user == ct.consumer.user):
+        return HttpResponseRedirect('/')
+
+    if request.method == 'POST':
+        # строим форму на основе запроса
+        form = TextForm(request.POST)
+        if form.is_valid():
+            c = Comment.objects.create(author=request.user, text=form.cleaned_data["value"])
+            ct.comments.add(c)
+
+    template = 'consumer/withdraw_detail.html'
+    context = {
+        "id": tid,
+        "need_pay": ct.state == 0,
+        "date": ct.dt.strftime("%d.%m.%y"),
+        "state": WithdrawTransaction.states[ct.state],
+        "comments": ct.comments.order_by('dt'),
+        "form": TextForm(),
+    }
+    return render(request, template, context)
+
+
+def terms(request):
+    template = 'consumer/terms.html'
+    context = {
     }
     return render(request, template, context)
 
@@ -146,7 +217,7 @@ def joinCampany(request, tid):
     return HttpResponseRedirect('/customer/campanies/')
 
 
-def leaveCamapany(request, tid):
+def leaveCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
 
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
@@ -163,64 +234,30 @@ def leaveCamapany(request, tid):
     return HttpResponseRedirect('/customer/campanies/')
 
 
-def withdraw(request):
-    try:
-        u = Customer.objects.get(user=request.user)
-    except:
-        return HttpResponseRedirect('/')
+def loginVK(request):
+    return redirect('https://oauth.vk.com/authorize',
+                    {'client_id': settings.VK_APP_ID,
+                     'redirect_uri': 'https://oauth.vk.com/blank.html',
+                     'display': 'popup',
+                     'scope': 65536 + 8192,
+                     'response_type': 'token',
+                     'v': '5.68'})
 
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            t = ReplenishTransaction.objects.create(customer=u, value=form.cleaned_data["value"])
-            return HttpResponseRedirect('/customer/replenish_detail/' + str(t.pk) + "/")
 
-    template = 'customer/replenish.html'
-    qiwi = "+7 921 583 28 98"
+def vkTest(request):
+    print(settings.VK_APP_ID)
+    template = 'consumer/vkTest.html'
     context = {
-        "form": PaymentForm(),
-        "qiwi": qiwi,
+        "VK_APP_ID": settings.VK_APP_ID,
+        "VK_COMPLETE_URL": "/cosumer/vklink/",
     }
     return render(request, template, context)
 
 
-def withdraw_detail(request, tid):
-    ct = ReplenishTransaction.objects.get(id=tid)
-    if not (is_member(request.user, "admins") or request.user == ct.customer.user):
-        return HttpResponseRedirect('/')
-
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = TextForm(request.POST)
-        if form.is_valid():
-            c = Comment.objects.create(author=request.user, text=form.cleaned_data["value"])
-            ct.comments.add(c)
-
-    template = 'customer/replenish_detail.html'
+def vkLink(request):
+    print(request)
+    template = 'consumer/vkLink.html'
     context = {
-        "id": tid,
-        "need_pay": ct.state == 0,
-        "date": ct.dt.strftime("%d.%m.%y"),
-        "state": ReplenishTransaction.states[ct.state],
-        "comments": ct.comments.order_by('dt'),
-        "form": TextForm(),
+        "VK_APP_ID": settings.VK_APP_ID,
     }
     return render(request, template, context)
-
-
-def terms(request):
-    template = 'customer/terms.html'
-    context = {
-    }
-    return render(request, template, context)
-
-
-def withdraw_set_payed(request, tid):
-    ct = ReplenishTransaction.objects.get(id=tid)
-    if ct.customer.user == request.user:
-        ct.state = 1
-        ct.save()
-        return HttpResponseRedirect('/customer/replenish_detail/' + str(tid) + "/")
-    else:
-        return HttpResponseRedirect('/')

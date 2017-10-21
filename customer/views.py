@@ -179,7 +179,7 @@ def replenish(request):
         form = PaymentForm(request.POST)
         if form.is_valid():
             t = ReplenishTransaction.objects.create(customer=u, value=form.cleaned_data["value"])
-            return HttpResponseRedirect('/customer/replenish_detail/' + str(t.pk) + "/")
+            return HttpResponseRedirect('/customer/replenish/detail/' + str(t.pk) + "/")
 
     template = 'customer/replenish.html'
     qiwi = "+7 921 583 28 98"

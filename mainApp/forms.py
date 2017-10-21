@@ -45,24 +45,11 @@ class CustomerForm(forms.Form):
                            label="Киви-кошелёк")
 
 
-# форма регистрации
-class ConsumerForm(forms.Form):
-    # имя
-    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Илон'}),
-                           label="Имя")
-    # имя
-    second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Маск'}),
-                                  label="Фамилия")
-
-    # киви кошелёк
-    qiwi = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '+7 999 888 77 66'}),
-                           label="Киви-кошелёк")
-
 
 # форма логина
 class LoginForm(forms.Form):
     # имя пользователя
-    login = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Логин'}),
+    login = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Адрес почты'}),
                             label="")
     # пароль
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}), label="")

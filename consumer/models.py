@@ -22,6 +22,11 @@ class Consumer(models.Model):
     balance = models.FloatField(default=0)
     # Киви-кошелёк
     qiwi = models.TextField(max_length=100, default="")
+    # автоматический вывод
+    autoWithDraw = models.BooleanField(default=True)
+    # автоматическое участие во всех кампаниях
+    autoParticipate = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name

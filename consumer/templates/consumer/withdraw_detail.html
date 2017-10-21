@@ -33,14 +33,8 @@
                 <h1 class="page-title">Заявка № {{id}} от {{date}}</h1>
             </header>
 
-            {% if need_pay %} <i>Если вы уже сделали перевод, нажмите на кнопку "Перевод выполнен"</i><br> {%endif%}
             Состояние : {{state}}
-            <br>
-            {% if need_pay %}
-            <a href="/customer/replenish_set_payed/{{id}}/" class="btn btn-success">
-                Перевод выполнен
-            </a>
-            {%endif%}
+
             <br>
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">

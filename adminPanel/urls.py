@@ -16,6 +16,11 @@ urlpatterns = [
     url(r'^replenish/rejected/$', replenishRejected),
     url(r'^replenish/not-accepted/$', replenishNotAccepted),
     url(r'^withdraw/$', withdraw),
+    url(r'^withdraw/reject/(?P<tid>[0-9]+)/$', withdrawReject),
+    url(r'^withdraw/accept/(?P<tid>[0-9]+)/$', withdrawAccept),
+    url(r'^withdraw/accepted/$', withdrawAccepted),
+    url(r'^withdraw/rejected/$', withdrawRejected),
 
+    url(r'^withdraw/not-accepted/$', withdrawNotAccepted),
     url(r'^', index, name='index')
 ]

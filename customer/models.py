@@ -30,7 +30,8 @@ class ReplenishTransaction(models.Model):
 
 
 class MarketCamp(models.Model):
-    platforms = ["-", "ВК", "Инстаграм", "FB"]
+    #platforms = ["-", "ВК", "Инстаграм", "FB"]
+    platforms = ["-", "ВК"]
     # картинка для кампании
     image = models.ImageField(upload_to='', default="template.jpg")
     # желаемое описание

@@ -255,7 +255,8 @@ def getCode(request):
 
 
 def processCode(request):
-    return render(request, "consumer/vkProcessCode.html", {})
+
+    return render(request, "consumer/vkProcessCode.html", {"get":request.GET["code"]})
 
 
 def getToken(request, code):

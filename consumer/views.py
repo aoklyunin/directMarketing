@@ -240,7 +240,7 @@ def loginVK(request):
             8192 + 65536))
 
 
-def vkProcess(request):
+def vkProcessR(request):
     return render(request, "consumer/vkProcess.html", {})
 
 

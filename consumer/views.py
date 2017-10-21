@@ -255,7 +255,7 @@ def vkTest(request):
         "VK_APP_ID": settings.VK_APP_ID,
         "VK_COMPLETE_URL": "/cosumer/vklink/",
     }
-    return render(request, template, context)
+    return HttpResponseRedirect('/consumer/')
 
 
 def vkLink(request):

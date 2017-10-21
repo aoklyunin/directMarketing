@@ -246,7 +246,7 @@ def vkTest(request):
     except:
         return HttpResponseRedirect('/')
 
-    c.vk_token = request.GET['access_token']
+    #c.vk_token = request.GET['access_token']
     c.vk_id = request.GET['user_id']
     c.save()
 

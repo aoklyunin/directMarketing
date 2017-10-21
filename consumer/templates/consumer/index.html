@@ -98,10 +98,37 @@
         <!-- /Article -->
 <br>
     {{u.vk_token}}<br>
-    {{u.vk_id}}
 
+<div class="btn btn-default" id="b">Инфа</div>
     </div>
 </div>    <!-- /container -->
+{% endblock %}
+{% block footer_script %}
+<script>
 
-
+$(document).ready(function(){
+    $("#b").click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "https://api.vk.com/method/users.get",
+            data: {
+                user_ids: '{{u.vk_id}}',
+                access_token:  '{{u.vk_id}}',
+                fields:'bdate'
+            },
+            success:function(data){
+               // var obj = jQuery.parseJSON(data);
+               // alert(obj);
+               alert('ye');
+            },
+            error: function(data) {
+               var obj = jQuery.parseJSON(data);
+               alert(obj);
+               alert('no');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

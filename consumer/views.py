@@ -246,6 +246,7 @@ def leaveCampany(request, tid):
 
 href = 'http://directpr.herokuapp.com'
 
+
 def getCode(request):
     return HttpResponseRedirect(
         'http://oauth.vk.com/authorize?client_id='+settings.VK_APP_ID+

@@ -260,6 +260,7 @@ def processCode(request):
     '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processToken/&code=' + code).json()
 
+
     return render(request, "consumer/vkProcessCode.html", {"get" :r["access_token"] })
 
 

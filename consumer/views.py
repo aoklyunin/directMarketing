@@ -235,13 +235,7 @@ def leaveCampany(request, tid):
 
 
 def loginVK(request):
-    return redirect('https://oauth.vk.com/authorize',
-                    {'client_id': settings.VK_APP_ID,
-                     'redirect_uri': 'https://oauth.vk.com/blank.html',
-                     'display': 'popup',
-                     'scope': 65536 + 8192,
-                     'response_type': 'token',
-                     'v': '5.68'})
+    return redirect('/consumer/vktest/')
 
 
 def vkTest(request):

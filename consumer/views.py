@@ -261,7 +261,7 @@ def processCode(request):
         r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                      '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processCode/&code=' + code).json()
-        return render(request, "consumer/vkProcessCode.html", {"get": text})
+        return render(request, "consumer/vkProcessCode.html", {"get": code})
 
     except:
         #code = request.GET["code"]
@@ -270,10 +270,6 @@ def processCode(request):
         except:
             text = r["access_token"]
         return  text
-
-
-def processToken(request):
-    return render(request, "consumer/vkProcessToken.html", {})
 
 
 def saveToken(request, token, us_id):

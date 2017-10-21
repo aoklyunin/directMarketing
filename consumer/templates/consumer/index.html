@@ -114,19 +114,16 @@ $(document).ready(function(){
             url: "https://api.vk.com/method/users.get",
             data: {
                 user_ids: '{{u.vk_id}}',
-                access_token:  '{{u.vk_id}}',
+               // access_token:  '{{u.vk_id}}',
                 fields:'bdate'
             },
+            dataType:"json",
             success:function(data){
-               // var obj = jQuery.parseJSON(data);
-               // alert(obj);
+               alert(obj);
                alert('ye');
             },
             error: function(data) {
-               var obj = jQuery.parseJSON(data);
-                alert('no');
-               alert(data);
-
+                alert(data.responseText);
             }
         });
     });

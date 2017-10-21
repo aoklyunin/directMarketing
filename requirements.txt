@@ -9,7 +9,7 @@ requests==2.9.1
 django-tables2==1.2.6
 setuptools==20.10.1
 lxml==3.4.2
-django-social-auth=0.7.28
+django-social-auth==0.7.28
 oauth2>=1.5.167
 python_openid>=2.2
 selenium>=2.29.0

@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from consumer.views import balance, campanies, index, terms, detailCampany, leaveCampany, joinCampany, withdraw_detail, \
-    withdraw, autoWithdraw, loginVK, vkTest, vkLink
+    withdraw, autoWithdraw, loginVK, vkProcess
 
 urlpatterns = [
 
@@ -14,8 +14,8 @@ urlpatterns = [
     url(r'^withdraw/$', withdraw),
     url(r'^withdraw/auto/(?P<tp>[0-9])/$', autoWithdraw),
     url(r'^terms/$', terms),
-    url(r'^login/vk/$', loginVK),
-    url(r'^vktest/$', vkTest),
-    url(r'^vklink/$', vkLink),
+    url(r'^vk/getToken/$', loginVK),
+    url(r'^vk/processAnswer/(?P<user_id>[0-9]+)/(?P<access_token>[0-9a-zA-Z]+)/$', vkProcess),
+    url(r'^vk/processAnswer/$', vkProcess),
     url(r'^', index)
 ]

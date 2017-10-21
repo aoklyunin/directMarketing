@@ -236,32 +236,21 @@ def leaveCampany(request, tid):
 
 def loginVK(request):
     return HttpResponseRedirect(
-        'http://oauth.vk.com/authorize?client_id=6228599&redirect_uri=http://directPR.herokuapp.com/consumer/vktest/&response_type=token&scope=' + str(
+        'http://oauth.vk.com/authorize?client_id=6228599&redirect_uri=http://directPR.herokuapp.com/consumer/vk/processAnswer/&response_type=token&scope=' + str(
             8192 + 65536))
 
 
-def vkTest(request):
+def vkProcess(request):
+    return render(request, "consumer/vkProcess.html", {})
+
+
+def vkProcess(request, access_token, user_id):
     try:
-        c = Consumer.objects.get(user=request.user)
+        u = Consumer.objects.get(user=request.user)
+        u.vk_token = access_token
+        u.vk_id = user_id
+        u.save()
     except:
         return HttpResponseRedirect('/')
 
-    #c.vk_token = request.GET['access_token']
-    c.vk_id = request.GET['user_id']
-    c.save()
-
-    template = 'consumer/vkTest.html'
-    context = {
-        "VK_APP_ID": settings.VK_APP_ID,
-        "VK_COMPLETE_URL": "/cosumer/vklink/",
-    }
     return HttpResponseRedirect('/consumer/')
-
-
-def vkLink(request):
-    print(request)
-    template = 'consumer/vkLink.html'
-    context = {
-        "VK_APP_ID": settings.VK_APP_ID,
-    }
-    return render(request, template, context)

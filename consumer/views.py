@@ -49,14 +49,14 @@ def index(request):
     template = 'consumer/index.html'
 
     try:
-        r = requests.get('https://api.vk.com/method/users.get?user_ids='+str(us.vk_id)).json()
+        r = requests.get('https://api.vk.com/method/users.get?user_ids=' + str(us.vk_id)).json()
         uid = r['response']['uid']
     except:
         uid = 0
 
     context = {
         "u": us,
-        "uid":  uid,
+        "uid": uid,
         "form": form,
     }
     return render(request, template, context)
@@ -244,24 +244,29 @@ def leaveCampany(request, tid):
 
     return HttpResponseRedirect('/customer/campanies/')
 
+
 href = 'http://directpr.herokuapp.com'
 
 
 def getCode(request):
     return HttpResponseRedirect(
-        'http://oauth.vk.com/authorize?client_id='+settings.VK_APP_ID+
-        '&redirect_uri='+href+
+        'http://oauth.vk.com/authorize?client_id=' + settings.VK_APP_ID +
+        '&redirect_uri=' + href +
         '/consumer/vk/processCode/&response_type=code&scope=wall')
 
 
 def processCode(request):
     code = request.GET["code"]
     r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
-    '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
+                     '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processToken/&code=' + code).json()
 
+    try:
+        text = r['error'] + " " + r['error_description']
+    except:
+        text = r["access_token"]
 
-    return render(request, "consumer/vkProcessCode.html", {"get" :r["access_token"] })
+    return render(request, "consumer/vkProcessCode.html", {"get": text})
 
 
 def getToken(request, code):
@@ -270,7 +275,6 @@ def getToken(request, code):
 
 def processToken(request):
     return render(request, "consumer/vkProcessToken.html", {})
-
 
 
 def saveToken(request, token, us_id):

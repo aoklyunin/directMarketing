@@ -236,7 +236,7 @@ def leaveCampany(request, tid):
 
 def loginVK(request):
     return HttpResponseRedirect(
-        'http://oauth.vk.com/authorize?client_id=6228599&redirect_uri=http://directPR.herokuapp.com/consumer/vk/processAnswer/&response_type=token&scope=' + str(
+        'http://oauth.vk.com/authorize?client_id=6228599&redirect_uri=http://directPR.herokuapp.com/consumer/vk/processAnswerR/&response_type=token&scope=' + str(
             8192 + 65536))
 
 
@@ -245,6 +245,8 @@ def vkProcessR(request):
 
 
 def vkProcess(request, access_token, user_id):
+  #  print(access_token)
+   # print(user_id)
     try:
         u = Consumer.objects.get(user=request.user)
         u.vk_token = access_token

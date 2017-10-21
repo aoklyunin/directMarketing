@@ -16,6 +16,6 @@ urlpatterns = [
     url(r'^terms/$', terms),
     url(r'^vk/getToken/$', loginVK),
     url(r'^vk/processAnswer/(?P<user_id>[0-9]+)/(?P<access_token>[0-9a-zA-Z]+)/$', vkProcess),
-    url(r'^vk/processAnswer/$', vkProcessR),
+    url(r'^vk/processAnswerR/$', vkProcessR),
     url(r'^', index)
 ]

@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from consumer.views import balance, campanies, index, terms, detailCampany, leaveCampany, joinCampany, withdraw_detail, \
-    withdraw, autoWithdraw, getCode, processCode, getToken, postVKview, processToken, saveToken
+    withdraw, autoWithdraw, getCode, processCode, postVKview, processToken, saveToken
 
 urlpatterns = [
 

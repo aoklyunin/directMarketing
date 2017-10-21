@@ -256,21 +256,20 @@ def getCode(request):
 
 
 def processCode(request):
-    code = request.GET["code"]
-    r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
+    try:
+        code = request.GET["code"]
+        r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                      '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processCode/&code=' + code).json()
+        return render(request, "consumer/vkProcessCode.html", {"get": text})
 
-    try:
-        text = r['error'] + " " + r['error_description']
     except:
-        text = r["access_token"]
-
-    return render(request, "consumer/vkProcessCode.html", {"get": text})
-
-
-def getToken(request, code):
-    return HttpResponseRedirect('/')
+        #code = request.GET["code"]
+        try:
+            text = r['error'] + " " + r['error_description']
+        except:
+            text = r["access_token"]
+        return  text
 
 
 def processToken(request):

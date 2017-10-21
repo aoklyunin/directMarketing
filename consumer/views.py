@@ -235,11 +235,21 @@ def leaveCampany(request, tid):
 
 
 def loginVK(request):
-    return redirect('/consumer/vktest/')
+    return HttpResponseRedirect(
+        'http://oauth.vk.com/authorize?client_id=6228599&redirect_uri=http://directPR.herokuapp.com/consumer/vktest/&response_type=token&scope=' + str(
+            8192 + 65536))
 
 
 def vkTest(request):
-    print(settings.VK_APP_ID)
+    try:
+        c = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    c.vk_token = request.GET['access_token']
+    c.vk_id = request.GET['user_id']
+    c.save()
+
     template = 'consumer/vkTest.html'
     context = {
         "VK_APP_ID": settings.VK_APP_ID,

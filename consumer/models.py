@@ -13,7 +13,9 @@ class Consumer(models.Model):
     # пользователь
     user = models.OneToOneField(User)
     # ссылка на VK
-    vk_link = models.TextField(max_length=10000, default="")
+    vk_token = models.TextField(max_length=10000, default="")
+    # id
+    vk_id = models.IntegerField(default=0)
     # ссылка на инсту
     insta_link = models.TextField(max_length=10000, default="")
     # ссылка на инсту

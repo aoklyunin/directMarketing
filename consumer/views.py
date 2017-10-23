@@ -258,7 +258,7 @@ def getCode(request):
 
 def processCode(request):
     try:
-        us = Customer.objects.get(user=request.user)
+        us = Consumer.objects.get(user=request.user)
     except:
         return HttpResponseRedirect('/')
 

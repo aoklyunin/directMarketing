@@ -256,7 +256,6 @@ def getCode(request):
         '/consumer/vk/processCode/&response_type=code&scope=wall+offline')
 
 
-
 def processCode(request):
     try:
         us = Customer.objects.get(user=request.user)
@@ -269,8 +268,8 @@ def processCode(request):
         code = request.GET["code"]
         print(code)
         r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
-                     '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
-                     '/consumer/vk/processCode/&code=' + code).json()
+                         '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
+                         '/consumer/vk/processCode/&code=' + code).json()
         us.vk_token = r["access_token"]
         us.vk_id = int(r["user_id"])
         us.save()
@@ -286,6 +285,10 @@ def postVKview(request):
     except:
         return HttpResponseRedirect('/')
 
-    postVK(u)
+    r = postVK(u)
 
-    return HttpResponseRedirect('/consumer/')
+    template = 'consumer/text.html'
+    context = {
+        "text": r,
+    }
+    return render(request, template, context)

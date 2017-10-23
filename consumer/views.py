@@ -249,6 +249,7 @@ href = 'http://directpr.herokuapp.com'
 
 
 def getCode(request):
+    print("get code called")
     return HttpResponseRedirect(
         'http://oauth.vk.com/authorize?client_id=' + settings.VK_APP_ID +
         '&redirect_uri=' + href +
@@ -256,8 +257,11 @@ def getCode(request):
 
 
 def processCode(request):
+    print("processCode called")
     try:
+        print(request.GET)
         code = request.GET["code"]
+        print(code)
         return HttpResponseRedirect('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                                     '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                                     '/consumer/vk/processCode/&code=' + code)

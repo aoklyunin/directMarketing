@@ -256,6 +256,7 @@ def getCode(request):
         '/consumer/vk/processCode/&response_type=code&scope=wall+offline')
 
 
+
 def processCode(request):
     try:
         print("processCode called")

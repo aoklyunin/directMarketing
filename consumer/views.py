@@ -12,7 +12,7 @@ from django.shortcuts import render
 
 from consumer.form import ConsumerForm
 from consumer.localCode import postVK
-from consumer.models import Consumer, WithdrawTransaction
+from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
@@ -147,104 +147,6 @@ def terms(request):
     return render(request, template, context)
 
 
-def campanies(request, tp):
-    if not (is_member(request.user, "customers")):
-        return HttpResponseRedirect('/')
-
-    try:
-        us = Customer.objects.get(user=request.user)
-    except:
-        return HttpResponseRedirect('/')
-
-    cms = MarketCamp.objects.filter(customer=us).order_by('startTime')
-    campanies = []
-    for t in cms:
-        campanies.append(
-            {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
-             "platform": MarketCamp.platforms[t.platform],
-             "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
-             "startTime": t.startTime.strftime("%d.%m.%y"),
-             "endTime": t.endTime.strftime("%d.%m.%y"),
-             "image": t.image,
-             "adminApproved": t.adminApproved,
-             "canNotActivate": (t.curViewCnt >= t.targetViewCnt) or (us.balance < t.budget),
-             })
-
-    template = 'customer/campanies.html'
-    context = {
-        'campanies': campanies,
-        'caption': "Рекламные кампании"
-    }
-    return render(request, template, context)
-
-
-def detailCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-
-    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return HttpResponseRedirect('/')
-
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = MarketCampForm(request.POST, request.FILES)
-        # если форма заполнена корректно
-        if form.is_valid():
-            if form.cleaned_data['image'] != "template.jpg":
-                mc.image = form.cleaned_data['image']
-            mc.description = form.cleaned_data['description']
-            mc.viewPrice = form.cleaned_data['viewPrice']
-            mc.budget = form.cleaned_data['budget']
-            mc.targetViewCnt = mc.budget / mc.viewPrice
-            mc.platform = int(form.cleaned_data['platform'])
-            mc.adminApproved = False
-            mc.save()
-            return HttpResponseRedirect('/customer/campanies/')
-
-    form = MarketCampForm(instance=mc)
-    form.fields["platform"].initial = mc.platform
-    form.fields["image"].initial = None
-
-    template = 'customer/detail_campany.html'
-    context = {
-        "form": form,
-        "id": tid,
-        "disableModify": mc.isActive,
-    }
-    return render(request, template, context)
-
-
-def joinCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-
-    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return HttpResponseRedirect('/')
-
-    if (not ((mc.curViewCnt >= mc.targetViewCnt) or (mc.customer.balance < mc.budget))) and mc.adminApproved:
-        mc.customer.balance -= mc.budget
-        mc.isActive = True
-        mc.save()
-        mc.customer.save()
-
-    return HttpResponseRedirect('/customer/campanies/')
-
-
-def leaveCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-
-    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return HttpResponseRedirect('/')
-
-    mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
-    mc.targetViewCnt -= mc.curViewCnt
-    mc.customer.balance += mc.budget
-    mc.customer.save()
-    mc.curViewCnt = 0
-    mc.isActive = False
-    mc.save()
-
-    return HttpResponseRedirect('/customer/campanies/')
-
-
 href = 'http://directpr.herokuapp.com'
 
 
@@ -292,3 +194,128 @@ def postVKview(request):
         "text": r,
     }
     return render(request, template, context)
+
+
+def campaniesMain(request):
+    template = 'consumer/campaniesMain.html'
+    context = {
+    }
+    return render(request, template, context)
+
+
+def campanies(request, tp):
+    try:
+        us = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    # не участвует
+    if tp == '0':
+        lst = []
+        for c in ConsumerMarketCamp.objects.filter(worker=us):
+            lst.append(c.marketCamp.id)
+
+        cms = MarketCamp.objects.exclude(id__in=lst)
+        campanies = []
+        for t in cms:
+            campanies.append(
+                {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
+                 "platform": MarketCamp.platforms[t.platform],
+                 "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
+                 "startTime": t.startTime.strftime("%d.%m.%y"),
+                 "endTime": t.endTime.strftime("%d.%m.%y"),
+                 "image": t.image,
+                 "adminApproved": t.adminApproved,
+                 "canNotActivate": (t.curViewCnt >= t.targetViewCnt) or (us.balance < t.budget),
+                 })
+        template = 'consumer/m_campanies.html'
+        context = {
+            'campanies': campanies,
+            'caption': "Рекламные кампании"
+        }
+        return render(request, template, context)
+    # участвует
+    elif tp == '1':
+        campanies = []
+        for c in ConsumerMarketCamp.objects.filter(worker=us):
+            t = c.marketCamp
+            campanies.append(
+                {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
+                 "platform": MarketCamp.platforms[t.platform],
+                 "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
+                 "startTime": t.startTime.strftime("%d.%m.%y"),
+                 "endTime": t.endTime.strftime("%d.%m.%y"),
+                 "image": t.image,
+                 "adminApproved": t.adminApproved,
+                 "canNotActivate": (t.curViewCnt >= t.targetViewCnt) or (us.balance < t.budget),
+                 })
+        template = 'consumer/m_campanies.html'
+        context = {
+            'campanies': campanies,
+            'caption': "Рекламные кампании"
+        }
+        return render(request, template, context)
+    # участвовал
+    elif tp == '2':
+        return HttpResponseRedirect('/consumer/campanies/')
+
+
+def detailCampany(request, tid):
+    m = MarketCamp.objects.get(id=tid)
+
+    if not (is_member(request.user, "admins") or (is_member(request.user, "consumers"))):
+        return HttpResponseRedirect('/')
+
+    try:
+        us = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    try:
+        cm = ConsumerMarketCamp.objects.get(marketCamp=m, worker=us)
+        state = ConsumerMarketCamp.joinTypes[cm.joinType]
+        viewCnt = cm.viewCnt
+    except:
+        state = 0
+        viewCnt = 0
+
+    context = {
+        "m": m,
+        "id": tid,
+        "state": state,
+        "viewCnt": viewCnt,
+    }
+    return render(request, 'consumer/detail_campany.html', context)
+
+
+def joinCampany(request, tid):
+    mc = MarketCamp.objects.get(id=tid)
+    if not (is_member(request.user, "admins") or (is_member(request.user, "consumers"))):
+        return HttpResponseRedirect('/')
+
+    try:
+        us = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    cmc = ConsumerMarketCamp.objects.create(marketCamp=mc, worker=us, joinType=1)
+    cmc.save()
+
+    return HttpResponseRedirect('/consumer/campanies/0/')
+
+
+def leaveCampany(request, tid):
+    mc = MarketCamp.objects.get(id=tid)
+
+    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
+        return HttpResponseRedirect('/')
+
+    mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
+    mc.targetViewCnt -= mc.curViewCnt
+    mc.customer.balance += mc.budget
+    mc.customer.save()
+    mc.curViewCnt = 0
+    mc.isActive = False
+    mc.save()
+
+    return HttpResponseRedirect('/customer/campanies/')

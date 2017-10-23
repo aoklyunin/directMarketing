@@ -30,50 +30,40 @@
             <header class="page-header">
                 <h1 class="page-title">Кампания № {{id}}</h1>
             </header>
-            <div class="col-md-4" align="center">
+            <div class="col-md-8" align="center">
                 <form action="" method="post" class="form" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table>
                         <tr>
-                            <td colspan="2">
-                                {% bootstrap_field form.description %}
+                            <td colspan="3">
+                                Описание: {{m.description }}
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                {% bootstrap_field form.viewPrice %}
+                                 Цена просмотра: {{m.viewPrice }}
                             </td>
-                            <td>
-                                {% bootstrap_field form.budget %}
+                             <td>
+                                Платформа: {{ m.platform }}
                             </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {% bootstrap_field form.startTime %}
-                            </td>
-                            <td>
-                                {% bootstrap_field form.endTime %}
-                            </td>
+                            <td>Просмотров: {{viewCnt}}</td>
                         </tr>
                         <tr>
 
-                            <td colspan="2" valign="center">
-                                {% bootstrap_field form.image %}
+                            <td colspan="3" valign="center">
+                               <img src="{% static m.image.url %}">
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                {% bootstrap_field form.platform %}
-                            </td>
-                            <td align="center" valign="bottom">
-                                {% buttons %}
-                                <button type="submit" class="btn btn-primary"
-                                        {% if disableModify %}
-                                        disabled
-                                        {%endif%}>
-                                    Сохранить
-                                </button>
-                                {% endbuttons %}
+                                {%ifequal state 0 %}
+                                    <a class="btn btn-primary" href="/consumer/campany/join/{{id}}/">Участвовать</a>
+                                {%endifequal%}
+
+                                {%ifequal state 1 %}
+                                    <a class="btn btn-primary" href="/consumer/campany/leave/{{id}}">Завершить участие</a>
+                                {%endifequal%}
+
                             </td>
                         </tr>
                     </table>

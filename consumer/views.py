@@ -259,6 +259,11 @@ def getCode(request):
 
 def processCode(request):
     try:
+        us = Customer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    try:
         print("processCode called")
         print(request.GET)
         code = request.GET["code"]
@@ -266,14 +271,11 @@ def processCode(request):
         r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                      '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processCode/&code=' + code).json()
+        us.vk_token = r["access_token"]
+        us.vk_id = int(r["user_id"])
+        us.save()
 
-        template = 'consumer/vkSaveToken.html'
-        context = {
-            'token': r["access_token"],
-            'uid': r["user_id"],
-            'expires_in': r["expires_in"],
-        }
-        return render(request, template, context)
+        return HttpResponseRedirect('/consumer/')
     except:
         return HttpResponseRedirect('/consumer/')
 
@@ -281,7 +283,6 @@ def processCode(request):
 def postVKview(request):
     try:
         u = Consumer.objects.get(user=request.user)
-
     except:
         return HttpResponseRedirect('/')
 

@@ -258,28 +258,20 @@ def getCode(request):
 
 def processCode(request):
     print("processCode called")
-    try:
-        print(request.GET)
-        code = request.GET["code"]
-        print(code)
-        return HttpResponseRedirect('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
-                                    '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
-                                    '/consumer/vk/processCode/&code=' + code)
-    except:
-        try:
-            text = request.GET["error"] + " " + request.GET['error_description']
-            return render(request, "consumer/vkErrorPage.html", {"text": text})
-        except:
-            token = request.GET["access_token"]
-            uid = request.GET["user_id"]
-            try:
-                u = Consumer.objects.get(user=request.user)
-                u.vk_token = token
-                u.vk_id = uid
-                u.save()
-                return HttpResponseRedirect('/consumer/')
-            except:
-                return HttpResponseRedirect('/')
+    print(request.GET)
+    code = request.GET["code"]
+    print(code)
+    r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
+                     '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
+                     '/consumer/vk/processCode/&code=' + code).json()
+
+    template = 'customer/vkSaveToken.html'
+    context = {
+        'token': r["access_token"],
+        'uid': r["user_id"],
+        'expires_in': r["expires_in"],
+    }
+    return render(request, template, context)
 
 
 def postVKview(request):

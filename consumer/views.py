@@ -265,7 +265,7 @@ def processCode(request):
                      '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processCode/&code=' + code).json()
 
-    template = 'customer/vkSaveToken.html'
+    template = 'consumer/vkSaveToken.html'
     context = {
         'token': r["access_token"],
         'uid': r["user_id"],

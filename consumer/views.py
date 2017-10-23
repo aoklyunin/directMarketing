@@ -253,25 +253,28 @@ def getCode(request):
     return HttpResponseRedirect(
         'http://oauth.vk.com/authorize?client_id=' + settings.VK_APP_ID +
         '&redirect_uri=' + href +
-        '/consumer/vk/processCode/&response_type=code&scope=wall')
+        '/consumer/vk/processCode/&response_type=code&scope=wall+offline')
 
 
 def processCode(request):
-    print("processCode called")
-    print(request.GET)
-    code = request.GET["code"]
-    print(code)
-    r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
+    try:
+        print("processCode called")
+        print(request.GET)
+        code = request.GET["code"]
+        print(code)
+        r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                      '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                      '/consumer/vk/processCode/&code=' + code).json()
 
-    template = 'consumer/vkSaveToken.html'
-    context = {
-        'token': r["access_token"],
-        'uid': r["user_id"],
-        'expires_in': r["expires_in"],
-    }
-    return render(request, template, context)
+        template = 'consumer/vkSaveToken.html'
+        context = {
+            'token': r["access_token"],
+            'uid': r["user_id"],
+            'expires_in': r["expires_in"],
+        }
+        return render(request, template, context)
+    except:
+        return HttpResponseRedirect('/consumer/')
 
 
 def postVKview(request):

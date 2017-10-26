@@ -56,9 +56,11 @@ def index(request):
     except:
         uid = 0
         error = ''
+        r = ''
 
     context = {
         "u": us,
+        "r": r,
         "uid": uid,
         "errors": error,
         "form": form,

@@ -72,6 +72,13 @@ class TextForm(forms.Form):
     value = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 20, 'placeholder': 'введите вопрос'}),
                             label="")
 
+# форма логина
+class PostIdForm(forms.Form):
+    # имя пользователя
+    id = forms.IntegerField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'введите id'}),
+                            label="id записи")
+
+
 
 a = '''
 # форма добавления попытки

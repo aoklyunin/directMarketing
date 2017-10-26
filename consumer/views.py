@@ -51,18 +51,13 @@ def index(request):
     try:
         r = requests.get('https://api.vk.com/method/users.get?user_ids=' + str(us.vk_id) + "&access_token=" + str(
             us.vk_token)).json()
-        error = r['error']
-        uid = int(r['response']['uid'])
+        uid = r['response'][0]['uid']
     except:
         uid = 0
-        error = ''
-        r = ''
 
     context = {
         "u": us,
-        "r": r,
         "uid": uid,
-        "errors": error,
         "form": form,
     }
     return render(request, template, context)

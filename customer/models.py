@@ -66,6 +66,8 @@ class MarketCamp(models.Model):
     adminApproved = models.IntegerField(default=0)
     # комментарии
     comments = models.ManyToManyField(Comment)
+    # id записи VK
+    vkPostID = models.IntegerField(default=0)
 
     APPROVE_STATES = ["Обрабатывается", "Принята", "Отклонена"]
     PLATFORM_CHOICES = []

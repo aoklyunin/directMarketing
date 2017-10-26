@@ -4,6 +4,7 @@ from django.shortcuts import render
 from customer.forms import MarketCampForm
 from customer.models import MarketCamp
 from mainApp.code import is_member
+from mainApp.forms import PostIdForm
 
 
 def index(request):
@@ -35,15 +36,23 @@ def campanies(request):
 
 def detailCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
-    print(mc.adminApproved)
 
     if not (is_member(request.user, "admins")):
         return HttpResponseRedirect('/')
 
+    if request.method == 'POST':
+        # строим форму на основе запроса
+        form = PostIdForm(request.POST)
+        if form.is_valid():
+            mc.vkPostID = form.cleaned_data["id"]
+            mc.save()
+
+    form = PostIdForm(initial={"id": mc.vkPostID})
     template = 'adminPanel/detail_campany.html'
     context = {
         "mc": mc,
         "id": tid,
+        "form": form,
     }
     return render(request, template, context)
 

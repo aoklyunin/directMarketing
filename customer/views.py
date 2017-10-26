@@ -105,6 +105,7 @@ def detailCampany(request, tid):
             if form.cleaned_data['image'] != "template.jpg":
                 mc.image = form.cleaned_data['image']
             mc.description = form.cleaned_data['description']
+            mc.description = form.cleaned_data['description']
             mc.viewPrice = form.cleaned_data['viewPrice']
             mc.budget = form.cleaned_data['budget']
             mc.targetViewCnt = mc.budget / mc.viewPrice

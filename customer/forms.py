@@ -24,7 +24,6 @@ class MarketCampForm(ModelForm):
             'startTime': 'Старт кампании',
             'endTime': 'Конец кампании',
             'image': 'Картинка кампании',
-
         }
 
         error_messages = {

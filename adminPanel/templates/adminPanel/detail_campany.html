@@ -59,21 +59,34 @@
                             {% ifequal 1 mc.platform %}
                                 Вконтакте
                             {%endifequal%}
-
+                        </td> <td>
+                            <a href="https://vk.com/direct_pr?w=wall-155745173_{{mc.vkPostID}}">Запись ВК: </a>
                         </td>
                     </tr>
                      <tr>
                         <td colspan="2">
                           <img src="{% static mc.image.url %}">
                         </td>
+                    </tr><br>
+                    <tr>
+                        <td><a href="/adminPanel/campany/approve/{{id}}/" class="btn btn-success ">Принять</a></td>
+                 <td><a href="/adminPanel/campany/dismiss/{{id}}/" class="btn btn-danger ">Отклонить</a></td>
                     </tr>
-
+                    <tr>
+                        <form action="." method="post">
+                             {% csrf_token %}
+                            <td>
+                           {% bootstrap_field form.id %}
+                            </td><td>
+                            <button class="btn btn-action" type="submit">Сохранить</button>
+                        </td>
+                        </form>
+                    </tr>
 
                 </table>
                 <br>
 
-                 <td><a href="/adminPanel/campany/approve/{{id}}/" class="btn btn-success ">Принять</a></td>
-                 <td><a href="/adminPanel/campany/dismiss/{{id}}/" class="btn btn-danger ">Отклонить</a></td>
+
         </article>
     </div>
 </div>    <!-- /container -->

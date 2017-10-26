@@ -52,7 +52,7 @@ def index(request):
         r = requests.get('https://api.vk.com/method/users.get?user_ids=' + str(us.vk_id) + "&access_token=" + str(
             us.vk_token)).json()
         error = r['error']
-        uid = r['response']['uid']
+        uid = int(r['response']['uid'])
     except:
         uid = 0
         error = ''

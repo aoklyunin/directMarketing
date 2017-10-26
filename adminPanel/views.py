@@ -1,6 +1,9 @@
+from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from adminPanel.forms import ConsumerViewsForm
+from consumer.models import ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import MarketCamp
 from mainApp.code import is_member
@@ -14,7 +17,7 @@ def index(request):
 def campanies(request):
     if not (is_member(request.user, "admins")):
         HttpResponseRedirect('/')
-    cms = MarketCamp.objects.exclude(adminApproved=1).order_by('startTime')
+    cms = MarketCamp.objects.all().order_by('startTime')
 
     campanies = []
     for t in cms:
@@ -78,3 +81,45 @@ def dismissCampany(request, tid):
     mc.save()
 
     return HttpResponseRedirect('/adminPanel/campanies/')
+
+
+def generateData():
+    arr = []
+    for mc in ConsumerMarketCamp.objects.filter(joinType=1):
+        arr.append({'link': str(mc.link),
+                    'cnt': str(mc.viewCnt),
+                    'id': str(mc.pk)})
+    return arr
+
+
+def consumerViews(request):
+    if not (is_member(request.user, "admins")):
+        return HttpResponseRedirect('/')
+
+    Formset = formset_factory(ConsumerViewsForm)
+    if request.method == 'POST':
+        formset = Formset(request.POST, request.FILES)
+        if formset.is_valid():
+            for form in formset.forms:
+                if form.is_valid:
+                    d = form.cleaned_data
+                    # print(form.id)
+                    try:
+                        cnt = d["cnt"]
+                        id = d["id"]
+                        cm = ConsumerMarketCamp.objects.get(pk=id)
+                        m = cm.marketCamp
+                        m.curViewCnt += cnt-cm.viewCnt
+                        m.save()
+                        cm.viewCnt = cnt
+                        cm.save()
+
+                    except:
+                        print("ошибка работы формы из формсета")
+                else:
+                    print("form is not valid")
+
+    c = {'formset': Formset(initial=generateData()),
+
+         }
+    return render(request, "adminPanel/consumerViews.html", c)

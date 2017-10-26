@@ -227,7 +227,7 @@ def replenish_set_payed(request, tid):
     if ct.customer.user == request.user:
         ct.state = 1
         ct.save()
-        return HttpResponseRedirect('/customer/replenish_detail/' + str(tid) + "/")
+        return HttpResponseRedirect('/customer/replenish/detail/' + str(tid) + "/")
     else:
         return HttpResponseRedirect('/')
 

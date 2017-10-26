@@ -56,14 +56,7 @@
                         </tr>
                         <tr>
                             <td>
-                                {%ifequal state 0 %}
-                                    <a class="btn btn-primary" href="/consumer/campany/join/{{id}}/">Участвовать</a>
-                                {%endifequal%}
-
-                                {%ifequal state 1 %}
-                                    <a class="btn btn-primary" href="/consumer/campany/leave/{{id}}">Завершить участие</a>
-                                {%endifequal%}
-
+                                 <a href="https://vk.com/direct_pr?w=wall-155745173_{{m.vkPostID}}">Запись ВК: </a>
                             </td>
                         </tr>
                     </table>
@@ -88,9 +81,6 @@
 		forceParse: 0,
         showMeridian: 1
     });
-
-
-
 </script>
 
 {%endblock %}

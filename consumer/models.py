@@ -56,7 +56,7 @@ class ConsumerMarketCamp(models.Model):
     # сслыка на запись
     link = models.TextField(max_length=1000)
     # исполнитель
-    worker = models.ForeignKey(Consumer)
+    consumer = models.ForeignKey(Consumer)
     # тип участи
     joinType = models.IntegerField(default=0)
     # типы участия

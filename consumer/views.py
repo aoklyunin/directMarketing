@@ -11,7 +11,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from consumer.form import ConsumerForm
-from consumer.localCode import postVK
+from consumer.localCode import postVK, getReposts, leaveCampany
 from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
@@ -194,8 +194,14 @@ def postVKview(request):
 
 
 def campaniesMain(request):
+    try:
+        u = Consumer.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
     template = 'consumer/campaniesMain.html'
     context = {
+        "id": u.pk,
     }
     return render(request, template, context)
 
@@ -208,6 +214,7 @@ def campanies(request, tp):
 
     # не участвует
     if tp == '0':
+        print("Неактивные")
         lst = []
         for c in ConsumerMarketCamp.objects.filter(worker=us):
             lst.append(c.marketCamp.id)
@@ -233,8 +240,9 @@ def campanies(request, tp):
         return render(request, template, context)
     # участвует
     elif tp == '1':
+        print("Активные")
         campanies = []
-        for c in ConsumerMarketCamp.objects.filter(worker=us):
+        for c in ConsumerMarketCamp.objects.filter(worker=us,joinType = 1):
             t = c.marketCamp
             campanies.append(
                 {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
@@ -285,34 +293,27 @@ def detailCampany(request, tid):
     return render(request, 'consumer/detail_campany.html', context)
 
 
-def joinCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-    if not (is_member(request.user, "admins") or (is_member(request.user, "consumers"))):
+def process(request):
+    if not (is_member(request.user, "admins") or is_member(request.user, "consumers")):
         return HttpResponseRedirect('/')
 
     try:
-        us = Consumer.objects.get(user=request.user)
+        u = Consumer.objects.get(user=request.user)
     except:
         return HttpResponseRedirect('/')
 
-    cmc = ConsumerMarketCamp.objects.create(marketCamp=mc, worker=us, joinType=1)
-    cmc.save()
+    reposts = getReposts(u.vk_id, u.vk_token)
+    for m in MarketCamp.objects.all():
+        for r in reposts:
+            if (m.vkPostID == r["cpid"]) and (r["copy_owner_id"] == MarketCamp.group_id):
+                try:
+                    cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=u)
+                    if not m.isActive:
+                        leaveCampany(cm)
+                except:
+                    if m.isActive:
+                        cm = ConsumerMarketCamp.objects.create(marketCamp=m, consumer=u, joinType=1,
+                                                               link="https://vk.com/wall"+str(u.vk_id)+"_"+str(r["id"]))
+                        cm.save()
 
-    return HttpResponseRedirect('/consumer/campanies/0/')
-
-
-def leaveCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-
-    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return HttpResponseRedirect('/')
-
-    mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
-    mc.targetViewCnt -= mc.curViewCnt
-    mc.customer.balance += mc.budget
-    mc.customer.save()
-    mc.curViewCnt = 0
-    mc.isActive = False
-    mc.save()
-
-    return HttpResponseRedirect('/customer/campanies/')
+    return HttpResponseRedirect('/consumer/campanies/')

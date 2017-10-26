@@ -30,6 +30,8 @@ class ReplenishTransaction(models.Model):
 
 
 class MarketCamp(models.Model):
+    # id группы ВК
+    group_id = -155745173
     #platforms = ["-", "ВК", "Инстаграм", "FB"]
     platforms = ["-", "ВК"]
     # картинка для кампании

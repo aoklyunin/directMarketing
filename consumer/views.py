@@ -60,7 +60,7 @@ def index(request):
     context = {
         "u": us,
         "uid": uid,
-        "error": error,
+        "errors": error,
         "form": form,
     }
     return render(request, template, context)

@@ -69,9 +69,9 @@
                                 <div class="col-lg-4">
                                     {% bootstrap_field form.name %}
                                 </div>
- <div class="col-lg-4">
-                                {% bootstrap_field form.qiwi %}
-                            </div>
+                                <div class="col-lg-4">
+                                    {% bootstrap_field form.qiwi %}
+                                </div>
                             </div>
 
                             <div class="row">
@@ -82,26 +82,25 @@
                                     <button class="btn btn-action" type="submit">Изменить</button>
                                 </div>
                             </div>
-                              <div class="row">
-                                  <div class="col-lg-12">
-                                      <a href="/consumer/vk/getCode/" class="btn ">Добавить ВК</a>
-                                      <a href="/consumer/vk/post/" class="btn ">Запостить</a>
-                                  </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    {% ifequal uid 0%}
+                                        <a href="/consumer/vk/getCode/" class="btn ">Связать ВК</a>
+                                    {%else%}
+                                        ВК связан
+                                    {%endifequal %}
                                 </div>
-                              </div>
-                        </form>
+                            </div>
                     </div>
+                    </form>
                 </div>
-
             </div>
 
-        </article>
-        <!-- /Article -->
-<br>
-    {{u.vk_token}}<br>
-
-<div class="btn btn-default" id="b">Инфа</div>
     </div>
+
+    </article>
+    <!-- /Article -->
+
 </div>    <!-- /container -->
 {% endblock %}
 {% block footer_script %}
@@ -125,5 +124,6 @@ $(document).ready(function(){
         });
     });
 });
+
 </script>
 {% endblock %}

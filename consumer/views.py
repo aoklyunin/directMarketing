@@ -49,7 +49,7 @@ def index(request):
     template = 'consumer/index.html'
 
     try:
-        r = requests.get('https://api.vk.com/method/users.get?user_ids=' + str(us.vk_id)).json()
+        r = requests.get('https://api.vk.com/method/users.get?user_ids=' + str(us.vk_id)+"&access_token="+str(us.vk_token)).json()
         uid = r['response']['uid']
     except:
         uid = 0
@@ -151,7 +151,6 @@ href = 'http://directpr.herokuapp.com'
 
 
 def getCode(request):
-    print("get code called")
     return HttpResponseRedirect(
         'http://oauth.vk.com/authorize?client_id=' + settings.VK_APP_ID +
         '&redirect_uri=' + href +
@@ -165,10 +164,7 @@ def processCode(request):
         return HttpResponseRedirect('/')
 
     try:
-        print("processCode called")
-        print(request.GET)
         code = request.GET["code"]
-        print(code)
         r = requests.get('https://oauth.vk.com/access_token?client_id=' + settings.VK_APP_ID +
                          '&client_secret=' + settings.VK_API_SECRET + '&redirect_uri=' + href +
                          '/consumer/vk/processCode/&code=' + code).json()

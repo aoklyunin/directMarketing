@@ -54,7 +54,6 @@ padding: 5px;
             <td align="center">Цена за просмотр</td>
             <td align="center">Кол-во просмотров</td>
             <td align="center">Платформа</td>
-            <td align="center">Состояние</td>
             <td align="center">Время проведения</td>
             </th>
             {% for t in campanies %}
@@ -63,17 +62,9 @@ padding: 5px;
                 <td><img src="{% static t.image.url %}"></td>
 
                 <td align="center"> {{t.viewPrice}}</td>
-                <td align="center"> {{t.curViewCnt}}/{{t.targetViewCnt}}</td>
+                <td align="center"> {{t.viewCnt}}</td>
                 <td align="center"> {{t.platform}}</td>
-                <td align="center"> {% if t.isActive %}
-                    Запущена
-                    {%else%}
-                    Готовится
-                    {%endif%}
-                </td>
                 <td align="center"> ( {{t.startTime}}-{{t.endTime}})</td>
-
-
                 <td><a href="/consumer/campany/detail/{{t.cid}}/" class="btn btn-success">Детали</a></td>
 
             </tr>

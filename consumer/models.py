@@ -53,6 +53,8 @@ class ConsumerMarketCamp(models.Model):
     marketCamp = models.ForeignKey(MarketCamp)
     # просмотров от пользователя
     viewCnt = models.IntegerField(default=0)
+    # id поста на странице пользователя
+    postId = models.IntegerField(default=0)
     # сслыка на запись
     link = models.TextField(max_length=1000)
     # исполнитель

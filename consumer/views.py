@@ -11,7 +11,8 @@ from django.shortcuts import render
 # Create your views here.
 
 from consumer.form import ConsumerForm
-from consumer.localCode import postVK, getReposts, leaveCampany, getRepostedCompanies, getViewCnt
+from consumer.localCode import postVK, getReposts, leaveCampany, getRepostedCompanies, getViewCnt, \
+    getNotRepostedCompanies
 from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
@@ -216,16 +217,18 @@ def campanies(request, tp):
     if tp == '0':
         print("Неактивные")
         campanies = []
-        for c in ConsumerMarketCamp.objects.filter(consumer=us).filter(joinType=1):
-            t = c.marketCamp
-            campanies.append(
-                {"viewPrice": t.viewPrice,
-                 "platform": MarketCamp.platforms[t.platform],
-                 "cid": t.id, "viewCnt": t.curViewCnt,
-                 "startTime": t.startTime.strftime("%d.%m.%y"),
-                 "endTime": t.endTime.strftime("%d.%m.%y"),
-                 "image": t.image,
-                 })
+        for m in MarketCamp.objects.filter(isActive=True):
+            try:
+                ConsumerMarketCamp.objects.get(consumer=us, marketCamp=m)
+            except:
+                campanies.append(
+                    {"viewPrice": m.viewPrice,
+                     "platform": MarketCamp.platforms[m.platform],
+                     "cid": m.id, "viewCnt": m.curViewCnt,
+                     "startTime": m.startTime.strftime("%d.%m.%y"),
+                     "endTime": m.endTime.strftime("%d.%m.%y"),
+                     "image": m.image,
+                     })
         template = 'consumer/m_campanies.html'
         context = {
             'campanies': campanies,
@@ -241,7 +244,7 @@ def campanies(request, tp):
             campanies.append(
                 {"viewPrice": t.viewPrice,
                  "platform": MarketCamp.platforms[t.platform],
-                 "cid": t.id, "viewCnt": t.curViewCnt,
+                 "cid": t.id, "viewCnt": c.viewCnt,
                  "startTime": t.startTime.strftime("%d.%m.%y"),
                  "endTime": t.endTime.strftime("%d.%m.%y"),
                  "image": t.image,
@@ -254,7 +257,24 @@ def campanies(request, tp):
         return render(request, template, context)
     # участвовал
     elif tp == '2':
-        return HttpResponseRedirect('/consumer/campanies/')
+        print("Участвовал")
+        campanies = []
+        for c in ConsumerMarketCamp.objects.filter(consumer=us).filter(joinType=2):
+            t = c.marketCamp
+            campanies.append(
+                {"viewPrice": t.viewPrice,
+                 "platform": MarketCamp.platforms[t.platform],
+                 "cid": t.id, "viewCnt": t.curViewCnt,
+                 "startTime": t.startTime.strftime("%d.%m.%y"),
+                 "endTime": t.endTime.strftime("%d.%m.%y"),
+                 "image": t.image,
+                 })
+        template = 'consumer/m_campanies.html'
+        context = {
+            'campanies': campanies,
+            'caption': "Участвовал"
+        }
+        return render(request, template, context)
 
 
 def detailCampany(request, tid):
@@ -295,34 +315,51 @@ def process(request):
         return HttpResponseRedirect('/')
 
     for c in ConsumerMarketCamp.objects.all():
-        id = c.consumer.vk_id
-        post_id = c.postId
-        cnt = getViewCnt(id, post_id, c.consumer.vk_token)
-        c.viewCnt = cnt
-        c.save()
+        try:
+            id = c.consumer.vk_id
+            post_id = c.postId
+            cnt = getViewCnt(id, post_id, c.consumer.vk_token)
+            c.viewCnt = cnt
+            c.save()
+        except:
+            print("Запись удалена")
 
-    reposts_cms = getRepostedCompanies(u.vk_id, u.vk_token)
+    reposted_cms = getRepostedCompanies(u.vk_id, u.vk_token)
 
-    print(reposts_cms)
-    for m in MarketCamp.objects.all():
-        for r in reposts_cms:
-            if m == r["m"]:
-                print("reposted")
-                try:
-                    cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=u)
-                    print("Есть репост, есть компания")
-                except:
-                    cm = ConsumerMarketCamp.objects.create(marketCamp=m, consumer=u, joinType=1, postId=r["id"],
-                                                           link="https://vk.com/wall" + str(u.vk_id) + "_" + str(
-                                                               r["id"]))
-                    print("Есть репост, нет компании")
-                    cm.save()
-            else:
-                print("not reposted")
-                try:
-                    cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=u, joinType=1)
-                    leaveCampany(cm)
-                except:
-                    pass
+    for r in reposted_cms:
+        m = r["m"]
+        if m.isActive:
+            try:
+                cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=u)
+                print("Есть репост, есть компания")
+            except:
+                cm = ConsumerMarketCamp.objects.create(marketCamp=m, consumer=u, joinType=1, postId=r["id"],
+                                                       link="https://vk.com/wall" + str(u.vk_id) + "_" + str(
+                                                           r["id"]))
+
+                id = cm.consumer.vk_id
+                post_id = cm.postId
+                cnt = getViewCnt(id, post_id, cm.consumer.vk_token)
+                cm.viewCnt = cnt
+                cm.save()
+
+                print("Есть репост, нет компании")
+        else:
+            try:
+                cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=u, joinType=1)
+                leaveCampany(cm)
+                print("Есть репост, есть неактивная компания ")
+            except:
+                pass
+
+    not_reposted_cms = getNotRepostedCompanies(reposted_cms)
+
+    for r in not_reposted_cms:
+        m = r["m"]
+        try:
+            cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=u, joinType=1, postId=r["id"])
+            leaveCampany(cm)
+        except:
+            pass
 
     return HttpResponseRedirect('/consumer/campanies/')

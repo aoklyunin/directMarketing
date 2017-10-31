@@ -34,6 +34,15 @@ def getRepostedCompanies(u, token):
     return lst
 
 
+def getNotRepostedCompanies(reposted_companies):
+    lst = []
+    for r in reposted_companies:
+        lst.append(r["m"].pk)
+    res = []
+    for m in MarketCamp.objects.exclude(pk__in=lst):
+        res.append({"m": m, "id": r["id"]})
+    return res
+
 def leaveCampany(mc):
     print("Leave company called")
     mc.joinType = 2

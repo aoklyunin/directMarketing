@@ -32,7 +32,7 @@ class ReplenishTransaction(models.Model):
 class MarketCamp(models.Model):
     # id группы ВК
     group_id = -155745173
-    #platforms = ["-", "ВК", "Инстаграм", "FB"]
+    # platforms = ["-", "ВК", "Инстаграм", "FB"]
     platforms = ["-", "ВК"]
     # картинка для кампании
     image = models.ImageField(upload_to='', default="template.jpg")
@@ -43,7 +43,7 @@ class MarketCamp(models.Model):
     # бюджет
     budget = models.FloatField(default=0)
     # набор фраз, мб потом вообще регулярка
-    phrases = models.TextField(max_length=100000)
+    phrases = models.TextField(max_length=100000, blank=True)
     # кол-во просмотров, сколько хотят
     targetViewCnt = models.IntegerField(default=0)
     # кол-во просмотров, сколько сейчас
@@ -53,7 +53,7 @@ class MarketCamp(models.Model):
     # возростной таргетинг: первый байт нижняя граница, второй - верхняя
     ageTarget = models.IntegerField(default=0)
     # таргетинг по городу или региону
-    placeTarget = models.TextField(max_length=1000)
+    placeTarget = models.TextField(max_length=1000, blank=True)
     # заказчик
     customer = models.ForeignKey(Customer)
     # цена клика
@@ -67,7 +67,7 @@ class MarketCamp(models.Model):
     # админ одобрил
     adminApproved = models.IntegerField(default=0)
     # комментарии
-    comments = models.ManyToManyField(Comment)
+    comments = models.ManyToManyField(Comment, blank=True, null=True)
     # id записи VK
     vkPostID = models.IntegerField(default=0)
 
@@ -75,3 +75,11 @@ class MarketCamp(models.Model):
     PLATFORM_CHOICES = []
     for i in range(len(platforms)):
         PLATFORM_CHOICES.append((str(i), platforms[i]))
+
+    def __str__(self):
+        return str(self.vkPostID) + ":" + str(self.viewPrice) + " " + str(self.curViewCnt) + "/" + str(
+            self.targetViewCnt)
+
+    def __unicode__(self):
+        return str(self.vkPostID) + ":" + str(self.viewPrice) + " " + str(self.curViewCnt) + "/" + str(
+            self.targetViewCnt)

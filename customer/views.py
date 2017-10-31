@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
+from consumer.models import ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
@@ -72,6 +73,17 @@ def campanies(request):
     cms = MarketCamp.objects.filter(customer=us).order_by('startTime')
     campanies = []
     for t in cms:
+        if t.isActive:
+            t.curViewCnt = 0
+
+            for c in ConsumerMarketCamp.objects.filter(marketCamp=t, joinType=1):
+                t.curViewCnt += c.viewCnt
+                t.save()
+
+            if t.curViewCnt >= t.targetViewCnt:
+                t.isActive = False
+                t.save()
+
         campanies.append(
             {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
              "platform": MarketCamp.platforms[t.platform],

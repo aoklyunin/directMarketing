@@ -20,8 +20,6 @@ urlpatterns = [
     url(r'^withdraw/accept/(?P<tid>[0-9]+)/$', withdrawAccept),
     url(r'^withdraw/accepted/$', withdrawAccepted),
     url(r'^withdraw/rejected/$', withdrawRejected),
-
     url(r'^withdraw/not-accepted/$', withdrawNotAccepted),
-    url(r'^consumer/views/$', consumerViews),
     url(r'^', index, name='index')
 ]

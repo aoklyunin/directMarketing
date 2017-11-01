@@ -2,9 +2,9 @@
 # обработчик адресов сайта
 from django.conf.urls import include, url
 from django.contrib import admin
+import mainApp.views
 import mainApp.staticViews
 import mainApp.auth
-import mainApp.views
 
 
 admin.autodiscover()

@@ -1,4 +1,4 @@
-{% extends "progressus/base.html" %}
+    {% extends "progressus/base.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
@@ -15,46 +15,17 @@
 
 {% block title %} Заявка № {{id}} от {{date}} {%endblock %}
 
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock %}
+
 
 {% block content %}
+<!--
+
+                       {% if comments %}
 
 
-<header id="head" class="secondary"></header>
-
-<!-- container -->
-<div class="container">
-
-
-    <div class="row">
-
-        <!-- Article main content -->
-        <article class="col-xs-12 maincontent">
-            <header class="page-header">
-                <h1 class="page-title">Заявка № {{id}} от {{date}}</h1>
-            </header>
-
-            {% if need_pay %} <i>Если вы уже сделали перевод, нажмите на кнопку "Перевод выполнен"</i><br> {%endif%}
-            Состояние : {{state}}
-            <br>
-            {% if need_pay %}
-            <a href="/customer/replenish/set_payed/{{id}}/" class="btn btn-success">
-                Перевод выполнен
-            </a>
-            {%endif%}
-            <br>
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <h3 class="thin text-center">Диалог</h3>
-                            <br><br>
-
-
-                            {% if comments %}
-
-                            {% for c in comments %}
-                            {{c.author.first_name}}: {{c.text}}<br>
-                            {% endfor %}
 
                             {%else%}
                             Пока что сообщений нет
@@ -73,17 +44,56 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                    </div>
+-->
 
-                </div>
+<!-- container -->
+<div class="container">
+    <div class="row">
 
+            <header class="page-header">
+                <h1 class="page-title">Заявка № {{id}} от {{date}}</h1>
+            </header>
+{{id}}<br>{{request.user.first_name}}
+            <div class="row">
+
+            {% if need_pay %}
+                <i>Если вы уже сделали перевод, нажмите на кнопку "Перевод выполнен"</i><br>
+                <a href="/customer/replenish/set_payed/{{id}}/" class="btn btn-success">
+                    Перевод выполнен
+                </a>
+            {%endif%}
+                Состояние : {{state}}
             </div>
-        </article>
-        <!-- /Article -->
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-sm-offset-4 col-md-offset-4 frame">
+                <ul class="messageList"></ul>
+                    <div>
+                                    <div class="msj-rta macro" style="margin:auto">
+                                        <div class="text text-r" style="background:whitesmoke !important">
+                                            <input class="mytext" placeholder="Type a message"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+        </div>
     </div>
 </div>    <!-- /container -->
 
+    <form action="" method="post">{% csrf_token %}</form>
 
+{% endblock %}
+
+{% block footer_script %}
+    <script src="{% static 'js/chat3.js'%}"></script>
+   <script>
+
+    window.onload = function() {
+        setStats("{{id}}","{{request.user.first_name}}");
+        {% for c in comments %}
+            insertChat("{{c.name}}", "{{c.text}}", {{c.isUsers}});
+        {% endfor %}
+    };
+
+    </script>
 {% endblock %}

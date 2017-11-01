@@ -204,16 +204,24 @@ def replenish(request):
 
 
 def replenish_detail(request, tid):
+    print("detail called")
     ct = ReplenishTransaction.objects.get(id=tid)
+    if request.method == 'POST':
+        try:
+            text = request.POST["value"]
+            print(text)
+            c = Comment.objects.create(author=request.user, text=text)
+            ct.comments.add(c)
+            return "ye"
+        except:
+            return "no"
+
     if not (is_member(request.user, "admins") or request.user == ct.customer.user):
         return HttpResponseRedirect('/')
 
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = TextForm(request.POST)
-        if form.is_valid():
-            c = Comment.objects.create(author=request.user, text=form.cleaned_data["value"])
-            ct.comments.add(c)
+    comments = []
+    for c in ct.comments.order_by('dt'):
+        comments.append({"text": c.text, "isUsers": "true" if c.author == request.user else "false", "name": c.author.first_name})
 
     template = 'customer/replenish_detail.html'
     context = {
@@ -221,7 +229,7 @@ def replenish_detail(request, tid):
         "need_pay": ct.state == 0,
         "date": ct.dt.strftime("%d.%m.%y"),
         "state": ReplenishTransaction.states[ct.state],
-        "comments": ct.comments.order_by('dt'),
+        "comments": comments,
         "form": TextForm(),
     }
     return render(request, template, context)

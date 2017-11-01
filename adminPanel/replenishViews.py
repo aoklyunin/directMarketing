@@ -3,15 +3,23 @@ from django.shortcuts import render
 from customer.models import ReplenishTransaction
 from mainApp.code import is_member
 
+from mainApp.views import getErrorPage
 
+
+# получить страницу ошибки
+def adminError(request):
+    return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только администраторам')
+
+
+# внесение средств
 def replenish(request):
+    # если пользователь не админ,
     if not is_member(request.user, "admins"):
-        return HttpResponseRedirect('/')
+        # переадресация на главную страницу
+        return adminError(request)
 
     template = 'adminPanel/replenish.html'
-    context = {
-    }
-    return render(request, template, context)
+    return render(request, template, {"caption": "Админ: пополнение баланса"})
 
 
 def replenishNotAccepted(request):

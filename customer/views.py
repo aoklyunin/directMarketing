@@ -207,11 +207,12 @@ def replenish_detail(request, tid):
     print("detail called")
     ct = ReplenishTransaction.objects.get(id=tid)
     if request.method == 'POST':
+        print("post")
         try:
-            text = request.POST["value"]
-            print(text)
-            c = Comment.objects.create(author=request.user, text=text)
-            ct.comments.add(c)
+            tf = TextForm(request.POST)
+            if tf.is_valid():
+                c = Comment.objects.create(author=request.user, text=tf.cleaned_data["value"])
+                ct.comments.add(c)
             return "ye"
         except:
             return "no"
@@ -221,14 +222,16 @@ def replenish_detail(request, tid):
 
     comments = []
     for c in ct.comments.order_by('dt'):
-        comments.append({"text": c.text, "isUsers": "true" if c.author == request.user else "false", "name": c.author.first_name})
+        comments.append({"text": c.text, "isUsers": "false" if c.author == request.user else "true",
+                         "name": c.author.first_name, "date": c.dt.strftime("%I:%M")})
 
     template = 'customer/replenish_detail.html'
     context = {
         "id": tid,
         "need_pay": ct.state == 0,
-        "date": ct.dt.strftime("%d.%m.%y"),
-        "state": ReplenishTransaction.states[ct.state],
+        "caption": "Заявка на вывод средств №" + str(tid),
+        "state_val": ReplenishTransaction.states[ct.state],
+        "state": ct.state,
         "comments": comments,
         "form": TextForm(),
     }

@@ -38,6 +38,7 @@
     height:450px;
     overflow:hidden;
     padding:0;
+    overflow-y: auto;
 }
 .frame > div:last-of-type{
     position:absolute;bottom:5px;width:100%;display:flex;

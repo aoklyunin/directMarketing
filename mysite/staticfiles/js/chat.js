@@ -48,7 +48,7 @@ function insertChat(who, text, isUsers, time = 0){
     $
 
 }
-var tid = 0;
+var tid = "0";
 var name = "";
 
 function setStats(mtid,mname){
@@ -67,8 +67,8 @@ $(".mytext").on("keyup", function(e){
         var text = $(this).val();
         if (text !== ""){
             insertChat(name, text);
-            $.post("/customer/replenish/detail/{{tid}}/", {
-                }, function (result) { alert(result); });
+            $.ajax({ url: "/customer/replenish/detail/"+tid+"/",data: {"value":text},
+                 type: "POST" });
             $(this).val('');
         }
     }

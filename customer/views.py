@@ -225,6 +225,13 @@ def replenish_detail(request, tid):
         comments.append({"text": c.text, "isUsers": "false" if c.author == request.user else "true",
                          "name": c.author.first_name, "date": c.dt.strftime("%I:%M")})
 
+    if request.user == ct.customer.user:
+        from_av = "images/customer_avatar.jpg"
+        to_av = "images/admin_avatar.jpg"
+    else:
+        from_av = "images/admin_avatar.jpg"
+        to_av = "images/customer_avatar.jpg"
+
     template = 'customer/replenish_detail.html'
     context = {
         "id": tid,
@@ -233,7 +240,8 @@ def replenish_detail(request, tid):
         "state_val": ReplenishTransaction.states[ct.state],
         "state": ct.state,
         "comments": comments,
-        "form": TextForm(),
+        "from_av":  from_av,
+        "to_av":  to_av,
     }
     return render(request, template, context)
 
@@ -270,7 +278,6 @@ def campamy_discuss(request, tid):
     template = 'customer/campany_discuss.html'
     context = {
         "comments": ct.comments.order_by('dt'),
-        "form": TextForm(),
         "id": tid,
     }
     return render(request, template, context)

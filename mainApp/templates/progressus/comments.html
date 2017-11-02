@@ -64,7 +64,7 @@
    <script>
 
     window.onload = function() {
-        setStats("{{id}}","{{request.user.first_name}}");
+        setStats("{{id}}","{{request.user.first_name}}","{% static from_av %}","{% static to_av %}");
         {% for c in comments %}
             insertChat("{{c.name}}", "{{c.text}}", {{c.isUsers}},"{{c.date}}");
         {% endfor %}

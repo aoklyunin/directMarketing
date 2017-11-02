@@ -7,19 +7,14 @@ you.avatar = "https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48
 function formatAMPM(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? '0'+minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
+    var strTime = hours + ':' + minutes;
     return strTime;
 }
 
 //-- No use time. It is a javaScript effect.
-function insertChat(who, text, isUsers, time = 0){
+function insertChat(who, text, isUsers, date, time = 0){
     var control = "";
-    var date = formatAMPM(new Date());
-
     if (isUsers){
         control = '<li style="width:100%">' +
                         '<div class="msj macro">' +
@@ -31,7 +26,7 @@ function insertChat(who, text, isUsers, time = 0){
                         '</div>' +
                     '</li>';
     }else{
-        control = '<li style="width:100%;">' +
+        control = '<li style="width:100%;"class="li_chat">' +
                         '<div class="msj-rta macro">' +
                             '<div class="text text-r">' +
                                 '<p>'+text+'</p>' +
@@ -66,7 +61,7 @@ $(".mytext").on("keyup", function(e){
     if (e.which == 13){
         var text = $(this).val();
         if (text !== ""){
-            insertChat(name, text);
+            insertChat(name, text,false,formatAMPM(new Date()));
             $.ajax({ url: "/customer/replenish/detail/"+tid+"/",data: {"value":text},
                  type: "POST" });
             $(this).val('');

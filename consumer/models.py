@@ -1,5 +1,6 @@
 import datetime
 
+import django
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -45,7 +46,7 @@ class WithdrawTransaction(models.Model):
     consumer = models.ForeignKey(Consumer)
     state = models.IntegerField(default=0)
     value = models.FloatField(default=0)
-    dt = models.DateTimeField(default=datetime.datetime.now())
+    dt = models.DateTimeField(default=django.utils.timezone.now())
 
 
 class ConsumerMarketCamp(models.Model):

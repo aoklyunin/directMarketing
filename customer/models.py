@@ -1,5 +1,6 @@
 import datetime
 
+import django
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -26,7 +27,7 @@ class ReplenishTransaction(models.Model):
     customer = models.ForeignKey(Customer)
     state = models.IntegerField(default=0)
     value = models.FloatField(default=0)
-    dt = models.DateTimeField(default=datetime.datetime.now())
+    dt = models.DateTimeField(default=django.utils.timezone.now())
 
 
 class MarketCamp(models.Model):
@@ -61,9 +62,9 @@ class MarketCamp(models.Model):
     # работает ли
     isActive = models.BooleanField(default=False)
     # старт
-    startTime = models.DateTimeField(default=datetime.datetime.now())
+    startTime = models.DateTimeField(default=django.utils.timezone.now())
     # конец
-    endTime = models.DateTimeField(default=datetime.datetime.now())
+    endTime = models.DateTimeField(default=django.utils.timezone.now())
     # админ одобрил
     adminApproved = models.IntegerField(default=0)
     # комментарии

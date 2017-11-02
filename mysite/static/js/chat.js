@@ -1,8 +1,5 @@
-var me = {};
-me.avatar = "https://lh6.googleusercontent.com/-lr2nyjhhjXw/AAAAAAAAAAI/AAAAAAAARmE/MdtfUmC0M4s/photo.jpg?sz=48";
-
-var you = {};
-you.avatar = "https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48_5C5.jpg";
+var fromAvatar = "";
+var toAvatar = "";
 
 function formatAMPM(date) {
     var hours = date.getHours();
@@ -18,7 +15,7 @@ function insertChat(who, text, isUsers, date, time = 0){
     if (isUsers){
         control = '<li style="width:100%">' +
                         '<div class="msj macro">' +
-                        '<div class="avatarChat"><img class="img-circle" style="width:100%;" src="'+ me.avatar +'" /></div>' +
+                        '<div class="avatarChat"><img class="img-circle" style="width:100%;" src="'+ toAvatar +'" /></div>' +
                             '<div class="text text-l">' +
                                 '<p>'+ text +'</p>' +
                                 '<p><small>'+date+'</small></p>' +
@@ -32,7 +29,7 @@ function insertChat(who, text, isUsers, date, time = 0){
                                 '<p>'+text+'</p>' +
                                 '<p><small>'+date+'</small></p>' +
                             '</div>' +
-                        '<div class="avatarChat" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="'+you.avatar+'" /></div>' +
+                        '<div class="avatarChat" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="'+fromAvatar+'" /></div>' +
                   '</li>';
     }
     setTimeout(
@@ -46,9 +43,11 @@ function insertChat(who, text, isUsers, date, time = 0){
 var tid = "0";
 var name = "";
 
-function setStats(mtid,mname){
+function setStats(mtid,mname,mfromAvatar,mtoAvatar){
     tid = mtid;
     name = mname;
+    fromAvatar = mfromAvatar
+    toAvatar = mtoAvatar
 }
 
 
@@ -61,7 +60,7 @@ $(".mytext").on("keyup", function(e){
     if (e.which == 13){
         var text = $(this).val();
         if (text !== ""){
-            insertChat(name, text,true,formatAMPM(new Date()));
+            insertChat(name, text,false,formatAMPM(new Date()));
             $.ajax({ url: "/customer/replenish/detail/"+tid+"/",data: {"value":text},
                  type: "POST" });
             $(this).val('');
@@ -113,15 +112,3 @@ $.ajaxSetup({
      }
 });
 
-
-//-- Print Messages
-//insertChat("me", "Hello Tom...", 0);
-//insertChat("you", "Hi, Pablo", 1500);
-//insertChat("me", "What would you like to talk about today?", 3500);
-//insertChat("you", "Tell me a joke",7000);
-//insertChat("me", "Spaceman: Computer! Computer! Do we bring battery?!", 9500);
-//insertChat("you", "LOL", 12000);
-
-
-
-//-- NOTE: No use time on insertChat.

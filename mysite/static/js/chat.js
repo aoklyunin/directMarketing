@@ -3,6 +3,7 @@ var toAvatar = "";
 
 function formatAMPM(date) {
     var hours = date.getHours();
+    alert(hours);
     var minutes = date.getMinutes();
     minutes = minutes < 10 ? '0'+minutes : minutes;
     var strTime = hours + ':' + minutes;
@@ -60,8 +61,10 @@ $(".mytext").on("keyup", function(e){
     if (e.which == 13){
         var text = $(this).val();
         if (text !== ""){
-            insertChat(name, text,false,formatAMPM(new Date()));
-            $.ajax({ url: "/customer/replenish/detail/"+tid+"/",data: {"value":text},
+            date = new Date();
+            insertChat(name, text,false,moment(date).format('HH:mm'));
+            df = moment(date).format('YYYY-MM-DD HH:mm');
+            $.ajax({ url: "/customer/replenish/detail/"+tid+"/",data: {"value":text,"dt":df},
                  type: "POST" });
             $(this).val('');
         }

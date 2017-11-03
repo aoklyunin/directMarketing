@@ -79,6 +79,14 @@ class PostIdForm(forms.Form):
                             label="id записи")
 
 
+# форма отправки комментария
+class CommentForm(forms.Form):
+    # имя пользователя
+    value = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 20, 'placeholder': 'введите вопрос'}),
+                            label="")
+    # дата
+    dt = forms.DateTimeField(required=False)
+
 
 a = '''
 # форма добавления попытки

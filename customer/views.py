@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -6,7 +6,7 @@ from consumer.models import ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
-from mainApp.forms import CustomerForm, PaymentForm, TextForm
+from mainApp.forms import CustomerForm, PaymentForm, TextForm, CommentForm
 from mainApp.models import Comment
 
 
@@ -209,21 +209,27 @@ def replenish_detail(request, tid):
     if request.method == 'POST':
         print("post")
         try:
-            tf = TextForm(request.POST)
-            if tf.is_valid():
-                c = Comment.objects.create(author=request.user, text=tf.cleaned_data["value"])
+            print(request.POST)
+            cf = CommentForm(request.POST)
+            print(cf)
+            if cf.is_valid():
+                print(cf.cleaned_data["dt"])
+                c = Comment.objects.create(dt=cf.cleaned_data["dt"], author=request.user,
+                                           text=cf.cleaned_data["value"])
                 ct.comments.add(c)
-            return "ye"
+            return HttpResponse("ye")
         except:
-            return "no"
+            return HttpResponse("no")
 
     if not (is_member(request.user, "admins") or request.user == ct.customer.user):
         return HttpResponseRedirect('/')
 
+    #("-date")
     comments = []
-    for c in ct.comments.order_by('dt'):
+    for c in ct.comments.order_by('-dt')[:6]:
+        print(c.dt.strftime("%H:%M")+": "+c.text)
         comments.append({"text": c.text, "isUsers": "false" if c.author == request.user else "true",
-                         "name": c.author.first_name, "date": c.dt.strftime("%I:%M")})
+                         "name": c.author.first_name, "date": c.dt.strftime("%H:%M")})
 
     if request.user == ct.customer.user:
         from_av = "images/customer_avatar.jpg"
@@ -239,9 +245,9 @@ def replenish_detail(request, tid):
         "caption": "Заявка на вывод средств №" + str(tid),
         "state_val": ReplenishTransaction.states[ct.state],
         "state": ct.state,
-        "comments": comments,
-        "from_av":  from_av,
-        "to_av":  to_av,
+        "comments": list(reversed(comments)),
+        "from_av": from_av,
+        "to_av": to_av,
     }
     return render(request, template, context)
 

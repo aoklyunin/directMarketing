@@ -18,7 +18,7 @@ class Comment(models.Model):
     target = models.ForeignKey(User, related_name="target", default=None, blank=True, null=True)
     theme = models.CharField(default="", max_length=200)
     readed = models.BooleanField(default=False)
-    
+
 
 
 class InfoText(models.Model):

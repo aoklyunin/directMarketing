@@ -13,79 +13,77 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Вход {%endblock %}
+{% block title %} Кампании  {%endblock %}
 
 
 {% block menu %}
-                <li ><a href="/">Главная</a></li>
-                <li><a href="/about/">О нас</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Как это работает<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/customer/">Заказчику</a></li>
-                        <li><a href="/consumer/">Исполнителю</a></li>
-                    </ul>
-                </li>
-                <li><a href="/contact/">Контакты</a></li>
+<li><a href="/">Главная</a></li>
+<li><a href="/about/">О нас</a></li>
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Как это работает<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        <li><a href="/customer/">Заказчику</a></li>
+        <li><a href="/consumer/">Исполнителю</a></li>
+    </ul>
+</li>
+<li><a href="/contact/">Контакты</a></li>
+
+{% endblock %}
 
 
-               {% endblock %}
+{% block content %}
 
 
-  {% block content %}
+<header id="head" class="secondary"></header>
+
+<!-- container -->
+<div class="container">
+
+    <div class="row">
+        <!-- Article main content -->
+        <article class="col-xs-12 maincontent">
+            <header class="page-header">
+                <h1 class="page-title">Кампании</h1>
+            </header>
 
 
-	<header id="head" class="secondary"></header>
+            <div class="col-md-4">
+                <h3 class="thin text-center">Активные кампании</h3>
+                <p class="text-center text-muted">
+                    Здесь Вы можете посмотреть за ходом кампаний, в которых Вы участвуете</p>
+                <center>
+                    <a align="center" class="btn btn-action" href="/consumer/campanies/1/">Перейти</a>
+                </center>
 
-	<!-- container -->
-	<div class="container">
+            </div>
+            <div class="col-md-4">
+                <h3 class="thin text-center">Неактивные кампании</h3>
+                <p class="text-center text-muted">
+                    Здесь Вы можете выбрать кампании, в которых Вы ещё не участвовали</p>
+                <center>
+                    <a align="center" class="btn btn-action" href="/consumer/campanies/0/">Перейти</a>
+
+                </center>
+            </div>
+
+            <div class="col-md-4">
+
+                <h3 class="thin text-center">История</h3>
+                <p class="text-center text-muted">
+                    Здесь Вы можете посмотреть за ходом кампаний, в которых Вы уже участвовали</p>
+                <center>
+                    <a align="center" class="btn btn-action" href="/consumer/campanies/2/">Перейти</a>
+                </center>
 
 
+            </div>
+        </article>
+    </div>
+    <br><br>
 
-		<div class="row">
-			
-			<!-- Article main content -->
-			<article class="col-xs-12 maincontent">
-				<header class="page-header">
-					<h1 class="page-title">Войти</h1>
-				</header>
-				
-				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-					<div class="panel panel-default">
-						<div class="panel-body">
-							<h3 class="thin text-center">Войдите в систему</h3>
-							<p class="text-center text-muted">Если вы ещё не зарегистрированы в ситеме, <a href="/signup/">Зарегистрируйтесь</a></p>
+    <a href="/consumer/process/" class="btn btn-action"> Пересчитать </a>
 
-							<form method="post">
-								{% csrf_token %}
-								<div class="top-margin">
-									{% bootstrap_field form.login %}
-								</div>
-								<div class="top-margin">
-									{% bootstrap_field form.password %}
-								</div>
 
-								<hr>
+</div>    <!-- /container -->
 
-								<div class="row">
-									<div class="col-lg-8">
-										<b><a href="">Забыли пароль?</a></b>
-									</div>
-									<div class="col-lg-4 text-right">
-										<button class="btn btn-action" type="submit">Войти</button>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-
-				</div>
-				
-			</article>
-			<!-- /Article -->
-
-		</div>
-	</div>	<!-- /container -->
-	
-
-	{% endblock %}
+{% endblock %}

@@ -29,7 +29,9 @@
 
     <link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet" media="screen">
 
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<script src="{% static 'js/bootstrap-datetimepicker.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-filestyle.min.js'%}"> </script>
 
 
     {% block head_script %} {% endblock %}
@@ -74,7 +76,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/adminPanel/withdraw/">Вывод</a></li>
                         <li><a href="/adminPanel/replenish/ ">Внесение</a></li>
-                        <li><a href="/adminPanel/campanies/ ">Кампании</a></li>
+                        <li><a href="/customer/campanies/">Кампании</a></li>
                     </ul>
                     </li>
                     {% endif %}
@@ -220,7 +222,6 @@
 <script src="{% static 'js/headroom.min.js'%}"></script>
 <script src="{% static 'js/jQuery.headroom.min.js'%}"></script>
 <script src="{% static 'js/template.js'%}"></script>
-<script src="{% static 'js/bootstrap-datetimepicker.js'%}"></script>
 <script src="{% static 'js/locales/bootstrap-datetimepicker.ru.js'%}"></script>
 <script src="{% static 'js/moment.js'%}"></script>
 {% block footer_script %} {% endblock %}

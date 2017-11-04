@@ -1,6 +1,7 @@
 import requests
 import time
 
+from consumer.models import ConsumerMarketCamp
 from customer.models import MarketCamp
 
 
@@ -57,3 +58,13 @@ def getViewCnt(id, post_id, token):
         post_id) + "&access_token=" + token+"&v=5.69").json()
     return int(r['response'][0]['views']['count'])
 
+
+
+
+def generateData():
+    arr = []
+    for mc in ConsumerMarketCamp.objects.filter(joinType=1):
+        arr.append({'link': str(mc.link),
+                    'cnt': str(mc.viewCnt),
+                    'id': str(mc.pk)})
+    return arr

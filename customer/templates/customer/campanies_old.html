@@ -46,11 +46,12 @@ padding: 5px;
             <h1 class="page-title">{{caption}}</h1>
         </header>
 
+        <a href="/customer/campany/create/" class="btn btn-primary"> Создать кампанию</a>
         <br><br>
         {% if campanies %}
         <table width="100%" style="border-spacing: 7px 11px;">
             <th>
-            <td>Номер</td>
+            <td></td>
             <td align="center">Цена за просмотр</td>
             <td align="center">Кол-во просмотров</td>
             <td align="center">Платформа</td>
@@ -59,7 +60,9 @@ padding: 5px;
             </th>
             {% for t in campanies %}
             <tr>
-                <td></td><td>№ {{t.cid }}</td>
+                <td></td>
+                <td><img src="{% static t.image.url %}"></td>
+
                 <td align="center"> {{t.viewPrice}}</td>
                 <td align="center"> {{t.curViewCnt}}/{{t.targetViewCnt}}</td>
                 <td align="center"> {{t.platform}}</td>
@@ -70,8 +73,24 @@ padding: 5px;
                     {%endif%}
                 </td>
                 <td align="center"> ( {{t.startTime}}-{{t.endTime}})</td>
-                <td><a href="/adminPanel/campany/detail/{{t.cid}}/" class="btn btn-default ">Подробнее</a></td>
-              <td><a href="/customer/campany/discuss/{{t.cid}}/" class="btn btn-info ">Обсуждение</a></td>
+                {% if t.isActive%}
+
+                    <td><a href="/customer/campany/stop/{{t.cid}}/" class="btn btn-danger">Остановить</a></td>
+                {%else%}
+                    <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-success ">Настройки</a></td>
+ {% ifequal t.adminApproved 1 %}
+                    <td><a href="/customer/campany/start/{{t.cid}}/"
+                       class="btn     {% if t.canNotActivate %} btn-default not-active{%else%} btn-primary{%endif%}   "
+                    >Запустить</a></td>
+                {%endifequal%}
+                {% ifequal t.adminApproved 0 %}
+                <td>Ждём проверки модератором</td>
+                {%endifequal%}
+            {% ifequal t.adminApproved 2 %}
+                <td>Нужно доработать</td>
+                    {%endifequal%}
+ {%endif%}
+                 <td><a href="/customer/campany/discuss/{{t.cid}}/" class="btn btn-info ">Обсуждение</a></td>
             </tr>
             {% endfor %}
         </table>

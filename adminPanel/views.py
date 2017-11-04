@@ -1,18 +1,8 @@
-from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
-from adminPanel.forms import ConsumerViewsForm
-from consumer.models import ConsumerMarketCamp
-from customer.forms import MarketCampForm
-from customer.models import MarketCamp
+from consumer.models import ConsumerMarketCamp, WithdrawTransaction
+from customer.models import MarketCamp, ReplenishTransaction
 from mainApp.code import is_member
-from mainApp.forms import PostIdForm
-
-
-
-
-
 
 # получить страницу ошибки доступа к админской странице
 from mainApp.views import getErrorPage
@@ -22,118 +12,158 @@ def adminError(request):
     return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только администраторам')
 
 
-
-
-def index(request):
-    return HttpResponseRedirect('/')
-
-
-def campanies(request):
-    if not (is_member(request.user, "admins")):
-        HttpResponseRedirect('/')
-    cms = MarketCamp.objects.all().order_by('startTime')
-
-    campanies = []
-    for t in cms:
-        campanies.append(
-            {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
-             "platform": MarketCamp.platforms[t.platform],
-             "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
-             "startTime": t.startTime.strftime("%d.%m.%y"),
-             "endTime": t.endTime.strftime("%d.%m.%y"),
-             })
-
-    template = 'adminPanel/campanies.html'
-    context = {
-        'campanies': campanies,
-        'caption': "Рекламные кампании"
-    }
-    return render(request, template, context)
-
-
-def detailCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-
-    if not (is_member(request.user, "admins")):
-        return HttpResponseRedirect('/')
-
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = PostIdForm(request.POST)
-        if form.is_valid():
-            mc.vkPostID = form.cleaned_data["id"]
-            mc.save()
-
-    form = PostIdForm(initial={"id": mc.vkPostID})
-    template = 'adminPanel/detail_campany.html'
-    context = {
-        "mc": mc,
-        "id": tid,
-        "form": form,
-    }
-    return render(request, template, context)
-
-
-def approveCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-    if not (is_member(request.user, "admins")):
-        return HttpResponseRedirect('/')
-
-    mc.adminApproved = 1
-    mc.save()
-
-    return HttpResponseRedirect('/adminPanel/campanies/')
-
-
 def dismissCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
 
     if not (is_member(request.user, "admins")):
-        return HttpResponseRedirect('/')
+        return adminError(request)
 
-    mc.adminApproved = 2
+    mc.adminApproved = MarketCamp.STATE_NOT_APPROVED
     mc.save()
 
-    return HttpResponseRedirect('/adminPanel/campanies/')
+    return HttpResponseRedirect('/customer/campanies/')
 
 
-def generateData():
-    arr = []
-    for mc in ConsumerMarketCamp.objects.filter(joinType=1):
-        arr.append({'link': str(mc.link),
-                    'cnt': str(mc.viewCnt),
-                    'id': str(mc.pk)})
-    return arr
+# внесение средств
+def replenish(request):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    return render(request,
+                  'adminPanel/replenish.html',
+                  {"caption": "Админ: пополнение баланса"})
 
 
-def consumerViews(request):
-    if not (is_member(request.user, "admins")):
-        return HttpResponseRedirect('/')
+# отобразить заявки по их состоянию
+def replenishList(request, state):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
 
-    Formset = formset_factory(ConsumerViewsForm)
-    if request.method == 'POST':
-        formset = Formset(request.POST, request.FILES)
-        if formset.is_valid():
-            for form in formset.forms:
-                if form.is_valid:
-                    d = form.cleaned_data
-                    # print(form.id)
-                    try:
-                        cnt = d["cnt"]
-                        id = d["id"]
-                        cm = ConsumerMarketCamp.objects.get(pk=id)
-                        m = cm.marketCamp
-                        m.curViewCnt += cnt-cm.viewCnt
-                        m.save()
-                        cm.viewCnt = cnt
-                        cm.save()
+    # получаем состояние заявки
+    st = int(state)
+    # получаем queryset заявок с таким состоянием
+    rt = ReplenishTransaction.objects.filter(state=st).order_by('dt')
 
-                    except:
-                        print("ошибка работы формы из формсета")
-                else:
-                    print("form is not valid")
+    # формируем удобный список для вывода на страницу
+    transactions = []
+    for t in rt:
+        transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.customer.qiwi,
+                             "tid": t.id})
 
-    c = {'formset': Formset(initial=generateData()),
+    return render(request,
+                  'adminPanel/replenish_list.html',
+                  {"transactions": transactions, "caption": ReplenishTransaction.list_states[st], "state": st})
 
-         }
-    return render(request, "adminPanel/consumerViews.html", c)
+
+# Отклонить завку
+def replenishReject(request, tid):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    ts = ReplenishTransaction.objects.get(id=tid)
+    ts.state = ReplenishTransaction.STATE_REJECTED
+    ts.save()
+
+    return HttpResponseRedirect('/adminPanel/replenish/list/1/')
+
+
+# принять заявку
+def replenishAccept(request, tid):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    # получаем заявку на вывод
+    ts = ReplenishTransaction.objects.get(id=tid)
+    if ts.state != ReplenishTransaction.STATE_ACCEPTED:
+        c = ts.customer
+        c.balance += ts.value
+        c.save()
+        ts.state = ReplenishTransaction.STATE_ACCEPTED
+        ts.save()
+
+    return HttpResponseRedirect('/adminPanel/replenish/list/1/')
+
+
+# внесение средств
+def withdraw(request):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    return render(request,
+                  'adminPanel/withdraw.html',
+                  {"caption": "Админ: вывод средств"})
+
+
+# отобразить список заявок по состоянию
+def withdrawList(request, state):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    # получаем состояние заявки
+    st = int(state)
+    # получаем queryset заявок с таким состоянием
+    wt = WithdrawTransaction.objects.filter(state=st).order_by('dt')
+
+    # формируем удобный список для вывода на страницу
+    transactions = []
+    for t in wt:
+        transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
+                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance})
+
+    # делаем массив с заголовками для каждого из состояний
+    return render(request,
+                  'adminPanel/withdraw_list.html',
+                  {"transactions": transactions,
+                   "caption": WithdrawTransaction.list_states[st], "state": st})
+
+
+# Отклонить завку
+def withdrawReject(request, tid):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    ts = WithdrawTransaction.objects.get(id=tid)
+    ts.state = WithdrawTransaction.STATE_REJECTED
+    ts.save()
+
+    return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
+
+
+# Принять завку
+def withdrawAccept(request, tid):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    ct = WithdrawTransaction.objects.get(id=tid)
+    # если баланс пользователя больше или равен сумме вывода и заяка ещё не принята
+    if (ct.consumer.balance >= ct.value) and (ct.state != WithdrawTransaction.STATE_ACCEPTED):
+        # вычетаем из баланса пользователя сумму
+        ct.consumer.balance -= ct.value
+        # сохраняем пользователя
+        ct.consumer.save()
+        # меняем состояние заявки
+        ct.state = WithdrawTransaction.STATE_ACCEPTED
+        # сохраняем
+        ct.save()
+
+    return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
+
+
+def index(request):
+    return HttpResponseRedirect('/')

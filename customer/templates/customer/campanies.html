@@ -1,68 +1,45 @@
-{% extends "progressus/base.html" %}
+{% extends "progressus/simplePage.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
-
-{# Load CSS and JavaScript #}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
 
-{# Load the tag library #}
-{% load bootstrap3 %}
+{% block style_block %}
+    .table td {
+        text-align: center;
+    }
+    .table th {
+        text-align: center;
+    }
+    th.rightOrient{
+        text-align: right;
+    }
 
-{% block title %} {{caption}} {%endblock %}
-{%block style_block %}
-.table{
-border-spacing: 20px 20px;
-}
-.not-active {
-pointer-events: none;
-cursor: default;
-}
-.td{
-padding: 5px;
-}
 
 {% endblock %}
 
+{% block page %}
 
-{% block content %}
-
-
-<header id="head" class="secondary"></header>
-
-<!-- container -->
-<div class="container">
-
-
-    <div class="row">
-
-        <br><br>
-
-        <header class="page-header">
-            <h1 class="page-title">{{caption}}</h1>
-        </header>
-
-        <a href="/customer/campany/create/" class="btn btn-primary"> Создать кампанию</a>
-        <br><br>
         {% if campanies %}
-        <table width="100%" style="border-spacing: 7px 11px;">
-            <th>
-            <td></td>
-            <td align="center">Цена за просмотр</td>
-            <td align="center">Кол-во просмотров</td>
-            <td align="center">Платформа</td>
-            <td align="center">Состояние</td>
-            <td align="center">Время проведения</td>
-            </th>
+<br><br>
+
+        <table class="table table-condensed">
+            <tr>
+            <th>Номер</th>
+            <th align="center">Цена за просмотр</th>
+            <th align="center">Кол-во просмотров</th>
+            <th align="center">Платформа</th>
+            <th align="center">Состояние</th>
+
+            <th align="center">Проверена</th>
+                <th align="center">Время проведения</th>
+                <th></th>
+            </tr>
             {% for t in campanies %}
             <tr>
-                <td></td>
-                <td><img src="{% static t.image.url %}"></td>
-
+               <td>№ {{t.cid }}</td>
                 <td align="center"> {{t.viewPrice}}</td>
                 <td align="center"> {{t.curViewCnt}}/{{t.targetViewCnt}}</td>
                 <td align="center"> {{t.platform}}</td>
@@ -72,42 +49,28 @@ padding: 5px;
                     Готовится
                     {%endif%}
                 </td>
+                <td align="center">
+                    {% ifequal t.adminApproved 0 %}
+                        Обрабатывается
+                    {% endifequal %}
+                    {% ifequal t.adminApproved 1 %}
+                        Принята
+                    {% endifequal %}
+                    {% ifequal t.adminApproved 2 %}
+                        Не принята
+                    {% endifequal %}
+                </td>
                 <td align="center"> ( {{t.startTime}}-{{t.endTime}})</td>
-                {% if t.isActive%}
-
-                    <td><a href="/customer/campany/stop/{{t.cid}}/" class="btn btn-danger">Остановить</a></td>
-                {%else%}
-                    <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-success ">Настройки</a></td>
- {% ifequal t.adminApproved 1 %}
-                    <td><a href="/customer/campany/start/{{t.cid}}/"
-                       class="btn     {% if t.canNotActivate %} btn-default not-active{%else%} btn-primary{%endif%}   "
-                    >Запустить</a></td>
-                {%endifequal%}
-                {% ifequal t.adminApproved 0 %}
-                <td>Ждём проверки модератором</td>
-                {%endifequal%}
-            {% ifequal t.adminApproved 2 %}
-                <td>Нужно доработать</td>
-                    {%endifequal%}
- {%endif%}
-                 <td><a href="/customer/campany/discuss/{{t.cid}}/" class="btn btn-info ">Обсуждение</a></td>
+                <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-default ">Подробнее</a></td>
             </tr>
             {% endfor %}
         </table>
     </div>
 
     {%else%}
-    <p class="text-center text-muted">Пока что у Вас нет кампаний</p>
-
+        <br><br><br><br>
+        <p class="text-center text-muted">Пока что нет кампаний</p>
+        <br><br><br><br>
     {% endif %}
-</div>
-
-
-</article>
-<!-- /Article -->
-
-</div>
-</div>    <!-- /container -->
-
 
 {% endblock %}

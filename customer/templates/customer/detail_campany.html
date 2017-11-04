@@ -1,4 +1,4 @@
-{% extends "progressus/base.html" %}
+{% extends "progressus/comments.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
@@ -13,25 +13,14 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Кампания № {{id}} {%endblock %}
+
+{% block chat_info %}
 
 
-{% block content %}
+<form action="" method="post">{% csrf_token %}</form>
 
 
-<header id="head" class="secondary"></header>
-
-<!-- container -->
-<div class="container">
-
-    <div class="row">
-        <!-- Article main content -->
-        <article class="col-xs-12 maincontent">
-            <header class="page-header">
-                <h1 class="page-title">Кампания № {{id}}</h1>
-            </header>
-            <div class="col-md-4" align="center">
-                <form action="" method="post" class="form" enctype="multipart/form-data">
+<form action="/customer/campany/modify/{{id}}/" method="post" class="form" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table>
                         <tr>
@@ -55,10 +44,51 @@
                                 {% bootstrap_field form.endTime %}
                             </td>
                         </tr>
+
+                        {% if isAdmin %}
+                        <tr><td><a href="{{link}}" class="btn">Посмотреть запись</a></td>
+                        <td>
+                               {% bootstrap_field form.vkPostID %}
+                        </td>
+                        </tr>
+                            <tr>
+                                 <td>
+                                {% bootstrap_field form.platform %}
+                                </td>
+                                <td align="right">
+                                    <a href="{% static form.image.value.url %}" class="btn btn-success">Картинка</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button type="submit" class="btn btn-primary"
+                                        {% if disableModify %}
+                                        disabled
+                                        {%endif%}>
+                                            Принять
+                                </button>
+                                </td>
+                                <td align="right">
+                                    <a href="/adminPanel/campany/dismiss/{{id}}/" class="btn btn-danger"  {% if disableModify %}
+                                        disabled
+                                        {%endif%}>Отклонить</a>
+                                </td>
+                            </tr>
+                        {%else%}
                         <tr>
+                            <td><a href="{{link}}" class="btn">Посмотреть запись</a></td>
+                          <td align="right">
+                                    <a href="{% static form.image.value.url %}" class="btn btn-success">Картинка</a>
+                                </td>
+                        </tr>
+                        <tr>
+                            <td> Если вы хотите изменить картинку</td>
+                        </tr>
+                            <tr>
 
                             <td colspan="2" valign="center">
-                                {% bootstrap_field form.image %}
+                                    {{ form.image }}
+
                             </td>
                         </tr>
                         <tr>
@@ -76,31 +106,10 @@
                                 {% endbuttons %}
                             </td>
                         </tr>
+                        {% endif %}
+
+
                     </table>
                 </form>
-        </article>
-    </div>
-</div>    <!-- /container -->
 
 {% endblock %}
-
-
-{% block footer_script %}
-
-<script type="text/javascript">
-      $('.form_datetime').datetimepicker({
-        //language:  'fr',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		forceParse: 0,
-        showMeridian: 1
-    });
-
-
-
-</script>
-
-{%endblock %}

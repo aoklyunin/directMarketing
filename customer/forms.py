@@ -1,5 +1,5 @@
 # форма оборудования
-from django.forms import ModelForm, ChoiceField, TextInput, forms, Textarea
+from django.forms import ModelForm, ChoiceField, TextInput, forms, Textarea, FileInput
 
 from customer.models import MarketCamp
 
@@ -9,12 +9,12 @@ class MarketCampForm(ModelForm):
 
     class Meta:
         model = MarketCamp
-        fields = {'description', 'viewPrice', 'budget', 'image', 'startTime', 'endTime'}
+        fields = {'description', 'viewPrice', 'budget', 'image', 'startTime', 'endTime','vkPostID'}
         widgets = {
             'description': Textarea(),
             'viewPrice': TextInput(attrs={}),
             'budget': TextInput(attrs={}),
-
+            'image': FileInput(),
         }
 
         labels = {
@@ -24,6 +24,7 @@ class MarketCampForm(ModelForm):
             'startTime': 'Старт кампании',
             'endTime': 'Конец кампании',
             'image': 'Картинка кампании',
+            'vkPostID': 'ID поста',
         }
 
         error_messages = {
@@ -42,3 +43,4 @@ class MarketCampForm(ModelForm):
         self.fields['startTime'].widget.attrs['id'] = 'startTime'
         self.fields['endTime'].widget.attrs['id'] = 'endTime'
         self.fields['endTime'].widget.attrs['class'] = 'form_datetime'
+        self.fields['vkPostID'].required = False

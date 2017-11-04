@@ -79,6 +79,11 @@ class MarketCamp(models.Model):
     vkPostID = models.IntegerField(default=0)
 
     APPROVE_STATES = ["Обрабатывается", "Принята", "Отклонена"]
+
+    STATE_PROCESS = 0
+    STATE_APPROVED = 1
+    STATE_NOT_APPROVED = 2
+
     PLATFORM_CHOICES = []
     for i in range(len(platforms)):
         PLATFORM_CHOICES.append((str(i), platforms[i]))

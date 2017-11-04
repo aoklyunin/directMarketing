@@ -6,7 +6,7 @@ from mainApp.models import InfoText
 
 
 def index(request):
-    template = 'progressus/index.html'
+    template = 'mainApp/index.html'
     it = InfoText.objects.get(pageName="index")
     context = {
         "user": request.user,
@@ -16,7 +16,7 @@ def index(request):
 
 
 def about(request):
-    template = 'progressus/about.html'
+    template = 'mainApp/about.html'
     it = InfoText.objects.get(pageName="about")
     context = {
         "user": request.user,
@@ -36,7 +36,7 @@ def customer(request):
 
 
 def consumer(request):
-    template = 'progressus/consumer.html'
+    template = 'mainApp/consumer.html'
     it = InfoText.objects.get(pageName="consumer")
     context = {
         "user": request.user,
@@ -46,7 +46,7 @@ def consumer(request):
 
 
 def contact(request):
-    template = 'progressus/contact.html'
+    template = 'mainApp/contact.html'
     it = InfoText.objects.get(pageName="contact")
     context = {
         "user": request.user,
@@ -55,16 +55,15 @@ def contact(request):
     return render(request, template, context)
 
 
-
 def customerTerms(request):
-    template = 'progressus/consumer_terms.html'
+    template = 'mainApp/consumer_terms.html'
     context = {
         "user": request.user,
     }
     return render(request, template, context)
 
 def consumerTerms(request):
-    template = 'progressus/consumer_terms.html'
+    template = 'mainApp/consumer_terms.html'
     context = {
         "user": request.user,
     }

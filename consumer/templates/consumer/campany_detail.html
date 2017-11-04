@@ -1,0 +1,48 @@
+{% extends "progressus/simplePanelPage.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+
+{% block page %}
+
+
+<table>
+                        <tr>
+                            <td colspan="3">
+                                Описание: {{m.description }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                 Цена просмотра: {{m.viewPrice }}
+                            </td>
+                             <td>
+                                Платформа: {{ platform }}
+                            </td>
+                            <td>Просмотров: {{viewCnt}}</td>
+                        </tr>
+                         <tr>
+                            <td>
+                                 <a class="btn" href="{{link}}">Запись ВК: </a>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td colspan="3" valign="center">
+                               <img src="{% static m.image.url %}">
+                            </td>
+                        </tr>
+
+                    </table>
+{% endblock %}

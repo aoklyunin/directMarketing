@@ -1,0 +1,32 @@
+{% extends "progressus/index.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+
+{%block index_header %}
+    <h1 class="lead">Алиска - самая самая </h1>
+            <p class="tagline">Можете не верить, но это - факт</p>
+            <p>
+                <a class="btn btn-default btn-lg" id="btnTest" role="button">Да</a>
+                <a class="btn btn-action btn-lg" role="button" id="btnTest2">Стопудово
+                ДА!</a></p>
+{% endblock %}
+
+
+{% block footer_script %}
+<script>
+	$(document).ready(function(){
+    $('#btnTest').click(function(){
+        alert( "Респект, бро" );
+    });
+    $('#btnTest2').click(function(){
+        alert( "Давай пятюню" );
+    });
+});
+</script>
+{% endblock %}
+

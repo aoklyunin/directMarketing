@@ -8,6 +8,7 @@ from customer.models import MarketCamp
 def postVK(u):
     r = requests.get('https://api.vk.com/method/wall.post?owner_id=' + str(
         u.vk_id) + "&message=test&access_token=" + u.vk_token + "&count=10").json()
+    time.sleep(0.3)
     return r
     # uid = r['response']['uid']
 
@@ -15,6 +16,7 @@ def postVK(u):
 def getReposts(u, token):
     arr = []
     r = requests.get('https://api.vk.com/method/wall.get?owner_id=' + str(u) + "&access_token=" + token).json()
+    time.sleep(0.3)
     for c in r['response'][1:]:
         # print(c)
         try:
@@ -56,9 +58,8 @@ def leaveCampany(mc):
 def getViewCnt(id, post_id, token):
     r = requests.get('https://api.vk.com/method/wall.getById?posts=' + str(id) + '_' + str(
         post_id) + "&access_token=" + token+"&v=5.69").json()
+    time.sleep(0.3)
     return int(r['response'][0]['views']['count'])
-
-
 
 
 def generateData():

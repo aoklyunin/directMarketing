@@ -36,7 +36,7 @@ def signin(request):
                 messages.error(request, "пара логин-пароль не найдена")
     form = LoginForm()
 
-    template = 'progressus/signin.html'
+    template = 'mainApp/signin.html'
     context = {
         "user": request.user,
         "form": form,
@@ -45,7 +45,7 @@ def signin(request):
 
 
 def signup(request):
-    template = 'progressus/signup.html'
+    template = 'mainApp/signup.html'
     it = InfoText.objects.get(pageName="signup")
     context = {
         "user": request.user,
@@ -103,7 +103,7 @@ def signup_customer(request):
     else:
         form = RegisterCustomerForm()
 
-    template = 'progressus/signup_customer.html'
+    template = 'mainApp/signup_customer.html'
     # print(form)
     context = {
         "user": request.user,
@@ -151,7 +151,7 @@ def signup_consumer(request):
     else:
         form = RegisterConsumerForm()
 
-    template = 'progressus/signup_consumer.html'
+    template = 'mainApp/signup_consumer.html'
     context = {
         "user": request.user,
         "form": form,

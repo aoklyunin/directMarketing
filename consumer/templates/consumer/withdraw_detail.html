@@ -15,6 +15,9 @@
 
 
 {% block chat_info %}
+<b> Номер QIWI кошелька: {{ qiwi }} </b><br>
+Сумма: {{value}}
+
 <H3> Состояние :
     <div class="
                 {% ifequal state 0%}text-muted{% endifequal %}

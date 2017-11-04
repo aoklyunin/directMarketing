@@ -1,27 +1,26 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-
-# Create your views here.
-from consumer.models import ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
-from mainApp.forms import CustomerForm, PaymentForm, TextForm, CommentForm
+from mainApp.forms import CustomerForm, PaymentForm, CommentForm
 from mainApp.models import Comment
-from mainApp.views import getErrorPage
+from mainApp.views import getErrorPage, autorizedOnlyError, processComment
 
 
-def customerError(request):
+# ошибка доступа Админ или Заказчик
+def customerAdminError(request):
     return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только администраторам и заказчикам')
 
-def customerOnlyError(request):
+
+# ошибка доступа Заказчик
+def customerError(request):
     return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только заказчикам')
 
-def autorizedOnlyError(request):
-    return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только авторизованным пользоавтелям')
 
-
+# главная страница заказчика
 def index(request):
+    # проверяем, что текущий пользователь - заказчик
     if not request.user.is_authenticated:
         return autorizedOnlyError(request)
     try:
@@ -29,54 +28,50 @@ def index(request):
     except:
         return getErrorPage(request, 'Ошибка заказчика', 'Пользователь не является заказчиком')
 
+    # обрабатываем форму
     if request.method == 'POST':
         # строим форму на основе запроса
         form = CustomerForm(request.POST)
-
         if form.is_valid():
-            print(form.cleaned_data)
             us.qiwi = form.cleaned_data['qiwi']
             us.companyName = form.cleaned_data['name']
             us.save()
 
+    # получаем заявки на внесение у текущего пользователя
+    rts = ReplenishTransaction.objects.filter(customer=us).order_by('-dt')
+    transactions = []
+    for t in rts:
+        transactions.append(
+            {"date": t.dt.strftime("%d.%m %H:%M"), "value": t.value, "state": ReplenishTransaction.states[t.state],
+             "tid": t.id})
+    # передаём форму для изменения данных
     form = CustomerForm(initial={'name': us.companyName, 'qiwi': us.qiwi})
     template = 'customer/index.html'
 
     context = {
         "u": us,
         "form": form,
-    }
-    return render(request, template, context)
-
-
-def balance(request):
-    if not request.user.is_authenticated:
-        return autorizedOnlyError(request)
-
-    try:
-        u = Customer.objects.get(user=request.user)
-    except:
-        return getErrorPage(request, 'Ошибка заказчика', 'Пользователь не является заказчиком')
-
-    ts = ReplenishTransaction.objects.filter(customer=u).order_by('dt')
-    transactions = []
-    for t in ts:
-        transactions.append({"date": t.dt, "value": t.value, "state": ReplenishTransaction.states[t.state],
-                             "tid": t.id})
-    template = 'customer/balance.html'
-    context = {
-        "u": u,
         "transactions": transactions,
+        "caption": "Профиль пользователя",
     }
     return render(request, template, context)
 
 
+# список кампаний
 def campanies(request):
-    cms = MarketCamp.objects.all().order_by('startTime')
+    # проверяем, что пользователь - админ или заказчик этой маркетинговой кампании
+    if is_member(request.user, "admins"):
+        cms = MarketCamp.objects.all().order_by('startTime')
+    elif is_member(request.user, "customers"):
+        try:
+            us = Customer.objects.get(user=request.user)
+            cms = MarketCamp.objects.filter(customer=us).order_by('startTime')
+        except:
+            return customerError(request)
+    else:
+        return customerAdminError(request)
 
-    if not (is_member(request.user, "admins") or is_member(request.user, "customers")):
-        return customerError(request)
-
+    # получаем список кампаний
     campanies = []
     for t in cms:
         campanies.append(
@@ -96,14 +91,15 @@ def campanies(request):
     return render(request, template, context)
 
 
+# запуск кампании
 def startCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
-
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return customerError(request)
-
-
-    if (not ((mc.curViewCnt >= mc.targetViewCnt) or (mc.customer.balance < mc.budget))) and mc.adminApproved:
+        return customerAdminError(request)
+    # Если набранное число просмотров меньше желаемого, баланс позволяет и админ одобрил
+    if (mc.curViewCnt < mc.targetViewCnt) and \
+            (mc.customer.balance >= mc.budget) and (mc.adminApproved):
+        # вычетаем бюджет кампании из баланса
         mc.customer.balance -= mc.budget
         mc.isActive = True
         mc.save()
@@ -112,34 +108,43 @@ def startCampany(request, tid):
     return HttpResponseRedirect('/customer/campanies/')
 
 
+# остановить кампанию
 def stopCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
 
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return customerError(request)
+        return customerAdminError(request)
 
-    mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
-    mc.targetViewCnt -= mc.curViewCnt
-    mc.customer.balance += mc.budget
-    mc.customer.save()
-    mc.curViewCnt = 0
-    mc.isActive = False
-    mc.save()
+    # если кампания активна
+    if not mc.isActive:
+        # вычетаем из бюджета оплаченные просмотры
+        mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
+        # вычетаем из желаемого кол-ва просмотров выполненое
+        mc.targetViewCnt -= mc.curViewCnt
+        # возвращаем на баланс пользователя неизрасходованный бюджет
+        mc.customer.balance += mc.budget
+        mc.customer.save()
+        # обнуляем текущее число просмотров
+        mc.curViewCnt = 0
+        # делаем кампанию неактивной
+        mc.isActive = False
+        mc.save()
 
     return HttpResponseRedirect('/customer/campanies/')
 
 
+# создаём кампанию
 def createCampany(request):
     try:
         u = Customer.objects.get(user=request.user)
     except:
-        return getErrorPage(request, 'Ошибка заказчика', 'Пользователь не является заказчиком')
+        return customerError(request)
 
     cm = MarketCamp.objects.create(customer=u)
-
     return HttpResponseRedirect('/customer/campany/detail/' + str(cm.pk) + "/")
 
 
+# внесение средств
 def replenish(request):
     try:
         u = Customer.objects.get(user=request.user)
@@ -158,34 +163,29 @@ def replenish(request):
     context = {
         "form": PaymentForm(),
         "qiwi": qiwi,
+        "caption": "Пополнение баланса"
     }
     return render(request, template, context)
 
 
+# детали заявки на внесение
 def replenish_detail(request, tid):
     ct = ReplenishTransaction.objects.get(id=int(tid))
+    # обработка нового комментария
     if request.method == 'POST':
-        try:
-            cf = CommentForm(request.POST)
-            if cf.is_valid():
-                c = Comment.objects.create(dt=cf.cleaned_data["dt"], author=request.user,
-                                           text=cf.cleaned_data["value"])
-                ct.comments.add(c)
-            return HttpResponse("ye")
-        except:
-            return HttpResponse("no")
+        return processComment(request, ct)
 
     if not (is_member(request.user, "admins") or request.user == ct.customer.user):
-        return customerError(request)
+        return customerAdminError(request)
 
-    # ("-date")
+    # получаем последние 6 комментариев
     comments = []
     for c in ct.comments.order_by('-dt')[:6]:
         comments.append({"text": c.text.replace("\n", " "), "isUsers": "false" if c.author == request.user else "true",
                          "name": c.author.first_name, "date": c.dt.strftime("%H:%M")})
-
     comments = list(reversed(comments))
 
+    # получаем картинки для чата
     if request.user == ct.customer.user:
         from_av = "images/customer_avatar.jpg"
         to_av = "images/admin_avatar.jpg"
@@ -200,21 +200,18 @@ def replenish_detail(request, tid):
         "caption": "Заявка на внесение средств №" + str(tid),
         "state_val": ReplenishTransaction.states[ct.state],
         "state": ct.state,
+        "value": ct.value,
+        "qiwi": "+7 921 583 28 98",
         "comments": comments,
         "from_av": from_av,
         "to_av": to_av,
-        "target": "/customer/replenish/detail/"+tid+"/",
+        "isUser": request.user == ct.customer.user,
+        "target": "/customer/replenish/detail/" + tid + "/",
     }
     return render(request, template, context)
 
 
-def terms(request):
-    template = 'customer/terms.html'
-    context = {
-    }
-    return render(request, template, context)
-
-
+# заказчик говорит, что заявка оплачена
 def replenish_set_payed(request, tid):
     ct = ReplenishTransaction.objects.get(id=tid)
     if ct.customer.user == request.user:
@@ -225,35 +222,15 @@ def replenish_set_payed(request, tid):
         return getErrorPage(request, 'Ошибка заказчика', 'Пользователь не является заказчиком')
 
 
-def campamy_discuss(request, tid):
-    ct = MarketCamp.objects.get(id=tid)
-    if not (is_member(request.user, "admins") or request.user == ct.customer.user):
-        return customerError(request)
-
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = TextForm(request.POST)
-        if form.is_valid():
-            c = Comment.objects.create(author=request.user, text=form.cleaned_data["value"])
-            ct.comments.add(c)
-
-    template = 'customer/campany_discuss.html'
-    context = {
-        "comments": ct.comments.order_by('dt'),
-        "id": tid,
-    }
-    return render(request, template, context)
-
-
+# изменить маркетинговую кампанию
 def modifyCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
-    print("modify")
-
+    # если пользователь не админ и не заказчик этой кампании
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return customerError(request)
+        return customerAdminError(request)
 
+    # является ли пользователь админом
     isAdmin = is_member(request.user, "admins")
-    print(isAdmin)
     if request.method == 'POST':
         # строим форму на основе запроса
         form = MarketCampForm(request.POST, request.FILES)
@@ -265,85 +242,69 @@ def modifyCampany(request, tid):
             mc.budget = form.cleaned_data['budget']
             mc.targetViewCnt = mc.budget / mc.viewPrice
             mc.platform = int(form.cleaned_data['platform'])
+            # если пользователь - админ
             if isAdmin:
+                # говорим, что кампания проверена
                 mc.adminApproved = MarketCamp.STATE_APPROVED
+                # сохраняем id записи в группе
                 mc.vkPostID = form.cleaned_data['vkPostID']
             else:
+                # говорим, что кампания не проверена
                 mc.adminApproved = MarketCamp.STATE_PROCESS
+                # если картинка - новая
                 if form.cleaned_data['image'] != "template.jpg":
                     mc.image = form.cleaned_data['image']
             mc.save()
 
             return HttpResponseRedirect('/customer/campanies/')
 
+    # если было просто обращение к этой странице
+    return getErrorPage(request, 'Ошибка запроса', 'Эта страница предназначена только для post-запросов')
 
+
+# детали кампании
 def detailCampany(request, tid):
     mc = MarketCamp.objects.get(id=tid)
-
+    # если пользователь не админ и не заказчик этой кампании
     if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return customerError(request)
+        return customerAdminError(request)
 
+    # обработка комментария
+    if request.method == 'POST':
+        return processComment(request, mc)
+
+    # форма изменения кампании
     form = MarketCampForm(instance=mc)
     form.fields["platform"].initial = mc.platform
     form.fields["image"].initial = None
 
-    template = 'customer/detail_campany.html'
-    context = {
-        "form": form,
-        "isAdmin": is_member(request.user, "admins"),
-        "caption": "Маркетинговая кампания №" + str(tid),
-        "id": tid,
-        "link": "https://vk.com/wall"+str(MarketCamp.group_id)+"_"+str(mc.vkPostID),
-        "disableModify": mc.isActive,
-    }
-    return render(request, template, context)
-
-
-a = '''def detailCampany(request, tid):
-    mc = MarketCamp.objects.get(id=tid)
-    if not (is_member(request.user, "admins") or request.user == mc.customer.user):
-        return HttpResponseRedirect('/')
-
-    if request.method == 'POST':
-        try:
-            cf = CommentForm(request.POST)
-            if cf.is_valid():
-                c = Comment.objects.create(dt=cf.cleaned_data["dt"], author=request.user,
-                                           text=cf.cleaned_data["value"])
-                ct.comments.add(c)
-            return HttpResponse("ye")
-        except:
-            return HttpResponse("no")
-
-    if not (is_member(request.user, "admins") or request.user == ct.customer.user):
-        return HttpResponseRedirect('/')
-
-    # ("-date")
+    # получаем комментарии
     comments = []
-    for c in ct.comments.order_by('-dt')[:6]:
+    for c in mc.comments.order_by('-dt')[:6]:
         comments.append({"text": c.text.replace("\n", " "), "isUsers": "false" if c.author == request.user else "true",
                          "name": c.author.first_name, "date": c.dt.strftime("%H:%M")})
-
     comments = list(reversed(comments))
 
-    if request.user == ct.customer.user:
+    # получаем картинку для чата
+    if request.user == mc.customer.user:
         from_av = "images/customer_avatar.jpg"
         to_av = "images/admin_avatar.jpg"
     else:
         from_av = "images/admin_avatar.jpg"
         to_av = "images/customer_avatar.jpg"
 
-    template = 'customer/replenish_detail.html'
+    template = 'customer/campany_detail.html'
     context = {
+        "form": form,
+        "isAdmin": is_member(request.user, "admins"),
+        "caption": "Маркетинговая кампания №" + str(tid),
         "id": tid,
-        "need_pay": ct.state == 0,
-        "caption": "Заявка на внесение средств №" + str(tid),
-        "state_val": ReplenishTransaction.states[ct.state],
-        "state": ct.state,
+        "link": "https://vk.com/wall" + str(MarketCamp.group_id) + "_" + str(mc.vkPostID),
+        "disableModify": mc.isActive,
         "comments": comments,
         "from_av": from_av,
         "to_av": to_av,
-        "target": "/customer/replenish/detail/"+tid+"/",
+        "target": "/customer/campany/detail/" + tid + "/",
+
     }
     return render(request, template, context)
-'''

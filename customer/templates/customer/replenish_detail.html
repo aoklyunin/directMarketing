@@ -2,31 +2,30 @@
 
 {% load staticfiles %}
 {% load bootstrap3 %}
-
-{# Load CSS and JavaScript #}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-
-{# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
-
-{# Load the tag library #}
-{% load bootstrap3 %}
 
 
 {% block chat_info %}
+{% if isUser %}
+<b> Номер QIWI кошелька: {{ qiwi }} </b><br>
+Сумма: {{value}}
+<br>
+{%endif%}
+
 <H3> Состояние :
     <div class="
                 {% ifequal state 0%}text-primary{% endifequal %}
                 {% ifequal state 1%}text-muted{% endifequal %}
                 {% ifequal state 2%}text-danger{% endifequal %}
                 {% ifequal state 3%}text-success{% endifequal %}
-                "> {{state_val}}  {{id}}
+                "> {{state_val}}
     </div>
 </H3>
 
 {% if need_pay %}
-    <div class="text-primary">
+    <div class="text-help">
         Если вы уже сделали перевод, нажмите на кнопку "Перевод выполнен"
     </div><br>
     <a href="/customer/replenish/set_payed/{{id}}/" class="btn btn-success">

@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from consumer.models import ConsumerMarketCamp, WithdrawTransaction
+from consumer.models import WithdrawTransaction
 from customer.models import MarketCamp, ReplenishTransaction
 from mainApp.code import is_member
 
@@ -33,7 +33,7 @@ def replenish(request):
 
     return render(request,
                   'adminPanel/replenish.html',
-                  {"caption": "Админ: пополнение баланса"})
+                  {"caption": "Панель администратора: внесение"})
 
 
 # отобразить заявки по их состоянию
@@ -101,7 +101,7 @@ def withdraw(request):
 
     return render(request,
                   'adminPanel/withdraw.html',
-                  {"caption": "Админ: вывод средств"})
+                  {"caption": "Панель администратора: вывод"})
 
 
 # отобразить список заявок по состоянию
@@ -163,7 +163,3 @@ def withdrawAccept(request, tid):
         ct.save()
 
     return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
-
-
-def index(request):
-    return HttpResponseRedirect('/')

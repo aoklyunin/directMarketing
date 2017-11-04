@@ -1,43 +1,27 @@
-import json
-
 import requests
-from django.contrib.auth.models import AnonymousUser
-from django.shortcuts import render, render_to_response
-
-# Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-
-# Create your views here.
-
 from consumer.form import ConsumerForm
-from consumer.localCode import postVK, getReposts, leaveCampany, getRepostedCompanies, getViewCnt, \
+from consumer.localCode import postVK, leaveCampany, getRepostedCompanies, getViewCnt, \
     getNotRepostedCompanies
 from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
-from customer.models import Customer, ReplenishTransaction, MarketCamp
+from customer.models import MarketCamp
 from mainApp.code import is_member
-from mainApp.forms import PaymentForm, TextForm, CommentForm
+from mainApp.forms import PaymentForm, CommentForm
 from mainApp.models import Comment
 from mysite import settings
 
 
-def withdraw_detail(request, tid):
+def withdrawDetail(request, tid):
     ct = WithdrawTransaction.objects.get(id=int(tid))
 
     if not (is_member(request.user, "admins") or request.user == ct.consumer.user):
         return HttpResponseRedirect('/')
 
-    print("detail called")
-    print(tid)
-
     if request.method == 'POST':
-        print("post")
         try:
-            print(request.POST)
             cf = CommentForm(request.POST)
-            print(cf)
             if cf.is_valid():
-                print(cf.cleaned_data["dt"])
                 c = Comment.objects.create(dt=cf.cleaned_data["dt"], author=request.user,
                                            text=cf.cleaned_data["value"])
                 ct.comments.add(c)
@@ -46,8 +30,6 @@ def withdraw_detail(request, tid):
             return HttpResponse("no")
 
 
-
-    # ("-date")
     comments = []
     for c in ct.comments.order_by('-dt')[:6]:
         print(c.dt.strftime("%H:%M") + ": " + c.text)

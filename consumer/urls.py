@@ -1,12 +1,12 @@
 from django.conf.urls import url
 
-from consumer.views import balance, campanies, index, terms, detailCampany, withdraw_detail, \
+from consumer.views import balance, campanies, index, terms, detailCampany, withdrawDetail, \
     withdraw, autoWithdraw, getCode, processCode, postVKview, campaniesMain, process
 
 urlpatterns = [
 
     url(r'^balance/$', balance),
-    url(r'^withdraw/detail/(?P<tid>[0-9]+)/$', withdraw_detail),
+    url(r'^withdraw/detail/(?P<tid>[0-9]+)/$', withdrawDetail),
     url(r'^withdraw/$', withdraw),
     url(r'^withdraw/auto/(?P<tp>[0-9])/$', autoWithdraw),
     url(r'^terms/$', terms),

@@ -18,3 +18,4 @@ def getUsType(user):
                 return 3
             except:
                 return 0
+

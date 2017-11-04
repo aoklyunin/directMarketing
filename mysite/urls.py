@@ -6,7 +6,6 @@ import mainApp.views
 import mainApp.staticViews
 import mainApp.auth
 
-
 admin.autodiscover()
 
 urlpatterns = [
@@ -25,6 +24,8 @@ urlpatterns = [
     url(r'^adminPanel/', include('adminPanel.urls')),
     url(r'^customer/', include('customer.urls')),
     url(r'^consumer/', include('consumer.urls')),
+    url(r'^terms/customer/$', mainApp.staticViews.customerTerms),
+    url(r'^terms/consumer/$', mainApp.staticViews.consumerTerms),
     url(r'^', mainApp.staticViews.index, name='index')
 
 ]

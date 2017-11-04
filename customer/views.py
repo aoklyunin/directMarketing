@@ -205,7 +205,8 @@ def replenish(request):
 
 def replenish_detail(request, tid):
     print("detail called")
-    ct = ReplenishTransaction.objects.get(id=tid)
+    print(tid)
+    ct = ReplenishTransaction.objects.get(id=int(tid))
     if request.method == 'POST':
         print("post")
         try:
@@ -224,12 +225,14 @@ def replenish_detail(request, tid):
     if not (is_member(request.user, "admins") or request.user == ct.customer.user):
         return HttpResponseRedirect('/')
 
-    #("-date")
+    # ("-date")
     comments = []
     for c in ct.comments.order_by('-dt')[:6]:
-        print(c.dt.strftime("%H:%M")+": "+c.text)
-        comments.append({"text": c.text, "isUsers": "false" if c.author == request.user else "true",
+        print(c.dt.strftime("%H:%M") + ": " + c.text)
+        comments.append({"text": c.text.replace("\n", " "), "isUsers": "false" if c.author == request.user else "true",
                          "name": c.author.first_name, "date": c.dt.strftime("%H:%M")})
+
+    comments = list(reversed(comments))
 
     if request.user == ct.customer.user:
         from_av = "images/customer_avatar.jpg"
@@ -242,12 +245,13 @@ def replenish_detail(request, tid):
     context = {
         "id": tid,
         "need_pay": ct.state == 0,
-        "caption": "Заявка на вывод средств №" + str(tid),
+        "caption": "Заявка на внесение средств №" + str(tid),
         "state_val": ReplenishTransaction.states[ct.state],
         "state": ct.state,
-        "comments": list(reversed(comments)),
+        "comments": comments,
         "from_av": from_av,
         "to_av": to_av,
+        "target": "/customer/replenish/detail/"+tid+"/",
     }
     return render(request, template, context)
 

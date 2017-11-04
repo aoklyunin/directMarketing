@@ -1,4 +1,4 @@
-{% extends "progressus/base.html" %}
+{% extends "progressus/comments.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
@@ -13,71 +13,18 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Заявка № {{id}} от {{date}} {%endblock %}
 
-
-{% block content %}
-
-
-<header id="head" class="secondary"></header>
-
-<!-- container -->
-<div class="container">
-
-
-    <div class="row">
-
-        <!-- Article main content -->
-        <article class="col-xs-12 maincontent">
-            <header class="page-header">
-                <h1 class="page-title">Заявка № {{id}} от {{date}}</h1>
-            </header>
-
-            Состояние : {{state}}
-
-            <br>
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <h3 class="thin text-center">Диалог</h3>
-                            <br><br>
-
-
-                            {% if comments %}
-
-                            {% for c in comments %}
-                            {{c.author.first_name}}: {{c.text}}<br>
-                            {% endfor %}
-
-                            {%else%}
-                            Пока что сообщений нет
-
-                            {% endif %}
-
-                            <br><br>
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        {% bootstrap_field form.value %}
-                                    </div>
-                                    <div class="col-lg-4 ">
-                                        <button class="btn btn-action" type="submit">Отправить</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </article>
-        <!-- /Article -->
-
+{% block chat_info %}
+<H3> Состояние :
+    <div class="
+                {% ifequal state 0%}text-muted{% endifequal %}
+                {% ifequal state 1%}text-danger{% endifequal %}
+                {% ifequal state 2%}text-success{% endifequal %}
+                "> {{state_val}}
     </div>
-</div>    <!-- /container -->
+</H3>
 
-
+<form action="" method="post">{% csrf_token %}</form>
 {% endblock %}
+
+

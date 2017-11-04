@@ -41,11 +41,11 @@ function insertChat(who, text, isUsers, date, time = 0){
     $
 
 }
-var tid = "0";
 var name = "";
+var target = "";
 
-function setStats(mtid,mname,mfromAvatar,mtoAvatar){
-    tid = mtid;
+function setStats(mname,mfromAvatar,mtoAvatar,mtarget){
+    target = mtarget;
     name = mname;
     fromAvatar = mfromAvatar
     toAvatar = mtoAvatar
@@ -64,7 +64,7 @@ $(".mytext").on("keyup", function(e){
             date = new Date();
             insertChat(name, text,false,moment(date).format('HH:mm'));
             df = moment(date).format('YYYY-MM-DD HH:mm');
-            $.ajax({ url: "/customer/replenish/detail/"+tid+"/",data: {"value":text,"dt":df},
+            $.ajax({ url: target,data: {"value":text,"dt":df},
                  type: "POST" });
             $(this).val('');
         }

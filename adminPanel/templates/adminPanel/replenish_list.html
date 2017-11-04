@@ -19,14 +19,13 @@
         text-align: right;
     }
 
-    td.leftBorder {
-        border-left: solid 1px #ccc;
-    }
+
 {% endblock %}
 
 {% block page %}
 
     {% if transactions %}
+<br><br>
         <table class="table table-condensed">
             <tr>
                 <th >Дата</th>
@@ -39,26 +38,38 @@
                 <td> {{t.date}}</td>
                 <td class="text-success"> {{t.value}}</td>
                 <td> {{t.qiwi}}</td>
+                {% ifequal state 1 %}
                 <td class="leftBorder">
                     <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">
                         Принять
                     </a>
                 </td>
-                <td >
-                    <a href="/customer/replenish/detail/{{t.tid}}/" class="btn btn-default">
-                        обсуждение
-                    </a>
-                </td>
-                <td>
+                 <td>
                     <a href="/adminPanel/replenish/reject/{{t.tid}}/" class="btn btn-danger">
                         Отклонить
                     </a>
                 </td>
+                {% endifequal %}
+                {% ifequal state 2 %}
+                <td class="leftBorder">
+                    <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">
+                        Принять
+                    </a>
+                </td>
+                {% endifequal %}
+                <td class="rightOrient">
+                    <a href="/customer/replenish/detail/{{t.tid}}/" class="btn btn-default">
+                        обсуждение
+                    </a>
+                </td>
+
               </tr>
             {% endfor %}
         </table>
     {%else%}
-        <p class="text-center text-muted">Пока что нет транзакций</p>
+        <br><br><br><br>
+        <p class="text-center text-muted">Пока что нет заявок</p>
+        <br><br><br><br>
     {% endif %}
 
 {% endblock %}

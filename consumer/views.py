@@ -14,14 +14,69 @@ from consumer.form import ConsumerForm
 from consumer.localCode import postVK, getReposts, leaveCampany, getRepostedCompanies, getViewCnt, \
     getNotRepostedCompanies
 from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
-from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
-from mainApp.forms import PaymentForm, TextForm
+from mainApp.forms import PaymentForm, TextForm, CommentForm
 from mainApp.models import Comment
 from mysite import settings
 
-from django.shortcuts import redirect
+
+def withdraw_detail(request, tid):
+    ct = WithdrawTransaction.objects.get(id=int(tid))
+
+    if not (is_member(request.user, "admins") or request.user == ct.consumer.user):
+        return HttpResponseRedirect('/')
+
+    print("detail called")
+    print(tid)
+
+    if request.method == 'POST':
+        print("post")
+        try:
+            print(request.POST)
+            cf = CommentForm(request.POST)
+            print(cf)
+            if cf.is_valid():
+                print(cf.cleaned_data["dt"])
+                c = Comment.objects.create(dt=cf.cleaned_data["dt"], author=request.user,
+                                           text=cf.cleaned_data["value"])
+                ct.comments.add(c)
+            return HttpResponse("ye")
+        except:
+            return HttpResponse("no")
+
+
+
+    # ("-date")
+    comments = []
+    for c in ct.comments.order_by('-dt')[:6]:
+        print(c.dt.strftime("%H:%M") + ": " + c.text)
+        comments.append({"text": c.text.replace("\n", " "), "isUsers": "false" if c.author == request.user else "true",
+                         "name": c.author.first_name, "date": c.dt.strftime("%H:%M")})
+
+    comments = list(reversed(comments))
+
+    if request.user == ct.consumer.user:
+        from_av = "images/consumer_avatar.jpg"
+        to_av = "images/admin_avatar.jpg"
+    else:
+        from_av = "images/admin_avatar.jpg"
+        to_av = "images/consumer_avatar.jpg"
+
+    template = 'consumer/withdraw_detail.html'
+    context = {
+        "id": tid,
+        "need_pay": ct.state == 0,
+        "caption": "Заявка на вывод средств №" + str(tid),
+        "state_val": WithdrawTransaction.states[ct.state],
+        "state": ct.state,
+        "comments": comments,
+        "from_av": from_av,
+        "to_av": to_av,
+        "target": "/consumer/withdraw/detail/"+tid+"/",
+    }
+    return render(request, template, context)
+
 
 
 def index(request):
@@ -116,30 +171,6 @@ def autoWithdraw(request, tp):
     u.save()
 
     return HttpResponseRedirect('/consumer/balance/')
-
-
-def withdraw_detail(request, tid):
-    ct = WithdrawTransaction.objects.get(id=tid)
-    if not (is_member(request.user, "admins") or request.user == ct.consumer.user):
-        return HttpResponseRedirect('/')
-
-    if request.method == 'POST':
-        # строим форму на основе запроса
-        form = TextForm(request.POST)
-        if form.is_valid():
-            c = Comment.objects.create(author=request.user, text=form.cleaned_data["value"])
-            ct.comments.add(c)
-
-    template = 'consumer/withdraw_detail.html'
-    context = {
-        "id": tid,
-        "need_pay": ct.state == 0,
-        "date": ct.dt.strftime("%d.%m.%y"),
-        "state": WithdrawTransaction.states[ct.state],
-        "comments": ct.comments.order_by('dt'),
-        "form": TextForm(),
-    }
-    return render(request, template, context)
 
 
 def terms(request):

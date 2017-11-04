@@ -1,4 +1,4 @@
-{% extends "progressus/base.html" %}
+{% extends "progressus/simplePage.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
@@ -7,79 +7,76 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
 
-{# Load the tag library #}
-{% load bootstrap3 %}
-
-{% block title %}Админ: {{caption}} {%endblock %}
-
-{%block style_block %}
-.table{
-border-spacing: 20px 20px;
-}
+{% block style_block %}
+    .table td {
+        text-align: center;
+    }
+    .table th {
+        text-align: center;
+    }
+    th.rightOrient{
+        text-align: right;
+    }
 .not-active {
 pointer-events: none;
 cursor: default;
 }
-.td{
-padding: 5px;
-}
-{%endblock %}
-
-{% block content %}
-
-
-<header id="head" class="secondary"></header>
-
-<!-- container -->
-<div class="container">
-
-
-    <div class="row">
-
-        <br><br>
-
-              <header class="page-header">
-                <h1 class="page-title">{{caption}}</h1>
-            </header>
-
-        {% if transactions %}
-
-            <table width="100%">
-                <th>
-                    <td>Дата</td>
-                    <td>Сумма</td>
-                    <td >Киви</td>
-                </th>
-            {% for t in transactions %}
-                <tr>
-                    <td></td>
-            <td> {{t.date}}</td>
-            <td> {{t.value}}/{{t.balance}}</td>
-            <td> {{t.qiwi}}</td>
-            <td > <a href="/adminPanel/withdraw/accept/{{t.tid}}/" class="{% if t.canNotPay %} not-active btn-default {%else%} btn-success{% endif %} btn ">Принять</a></td>
-                    <td > <a href="/consumer/withdraw/detail/{{t.tid}}/" class="btn btn-default">обсуждение</a></td>
-
-                    <td > <a href="/adminPanel/withdraw/reject/{{t.tid}}/" class="btn btn-danger">Отклонить</a></td>
-              </tr>
-            {% endfor %}
-                 </table>
-        </div>
-
-								{%else%}
-							<p class="text-center text-muted">Пока что нет транзакций</p>
-
-            {% endif %}
-</div>
-
-
-        </article>
-        <!-- /Article -->
-
-    </div>
-</div>    <!-- /container -->
-
 
 {% endblock %}
+
+{% block page %}
+
+    {% if transactions %}
+<br><br>
+        <table class="table table-condensed">
+            <tr>
+                <th >Дата</th>
+                <th >Сумма</th>
+                <th >Киви</th>
+                <th colspan="3" class="rightOrient">Действия</th>
+            </tr>
+            {% for t in transactions %}
+            <tr>
+                <td> {{t.date}}</td>
+                <td class="text-success"> {{t.value}}</td>
+                <td> {{t.qiwi}}</td>
+                {% ifequal state 0 %}
+                <td class="leftBorder">
+                    <a href="/adminPanel/withdraw/accept/{{t.tid}}/" class="{% if t.canNotPay %} not-active btn-default {%else%} btn-success{% endif %} btn ">
+                        Принять
+                    </a>
+                </td>
+                 <td>
+                    <a href="/adminPanel/withdraw/reject/{{t.tid}}/" class="btn btn-danger">
+                        Отклонить
+                    </a>
+                </td>
+                {% endifequal %}
+                {% ifequal state 1 %}
+                <td class="leftBorder">
+                    <a href="/adminPanel/withdraw/accept/{{t.tid}}/" class="btn btn-success">
+                        Принять
+                    </a>
+                </td>
+                {% endifequal %}
+                <td class="rightOrient">
+                    <a href="/consumer/withdraw/detail/{{t.tid}}/" class="btn btn-default">
+                        обсуждение
+                    </a>
+                </td>
+
+              </tr>
+            {% endfor %}
+        </table>
+    {%else%}
+        <br><br><br><br>
+        <p class="text-center text-muted">Пока что нет заявок</p>
+        <br><br><br><br>
+    {% endif %}
+
+{% endblock %}
+
+
+
+

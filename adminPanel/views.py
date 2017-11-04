@@ -10,6 +10,20 @@ from mainApp.code import is_member
 from mainApp.forms import PostIdForm
 
 
+
+
+
+
+# получить страницу ошибки доступа к админской странице
+from mainApp.views import getErrorPage
+
+
+def adminError(request):
+    return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только администраторам')
+
+
+
+
 def index(request):
     return HttpResponseRedirect('/')
 

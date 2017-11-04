@@ -20,7 +20,13 @@ class Customer(models.Model):
 
 
 class ReplenishTransaction(models.Model):
+    # делаем массив с заголовками для каждого из состояний
+    list_states = ["Ожидающие оплаты заяки", "Не обработанные заявки", "Отклонённые заявки", "Принятые заявки"]
     states = ['Ожидает оплаты', 'В обработке', 'Отклонена', 'Выполнена']
+    STATE_WAIT_FOR_PAY = 0
+    STATE_PROCESS = 1
+    STATE_REJECTED = 2
+    STATE_ACCEPTED = 3
     # комментарий транзакции
     tc = models.TextField(max_length=100, default="")
     comments = models.ManyToManyField(Comment)

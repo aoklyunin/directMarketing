@@ -40,6 +40,10 @@ class Consumer(models.Model):
 
 class WithdrawTransaction(models.Model):
     states = ['В обработке', 'Отклонена', 'Выполнена']
+    list_states = ["Не обработанные заявки", "Отклонённые заявки", "Принятые заявки"]
+    STATE_PROCESS = 0
+    STATE_REJECTED = 1
+    STATE_ACCEPTED = 2
     # комментарий транзакции
     tc = models.TextField(max_length=100, default="")
     comments = models.ManyToManyField(Comment)

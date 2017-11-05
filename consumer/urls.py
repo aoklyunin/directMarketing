@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from consumer.views import campanies, index, detailCampany, withdrawDetail, \
-    withdraw, process, campaniesList
+    withdraw,campaniesList
 from consumer.vkViews import getCode, processCode, postVKview
 
 urlpatterns = [
@@ -13,6 +13,5 @@ urlpatterns = [
     url(r'^campanies/$', campanies),
     url(r'^campanies/(?P<tp>[0-9])/$', campaniesList),
     url(r'^campany/detail/(?P<tid>[0-9]+)/$', detailCampany),
-    url(r'^process/$', process),
     url(r'^', index)
 ]

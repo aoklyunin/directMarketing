@@ -15,14 +15,12 @@ def getCode(request):
     return HttpResponseRedirect(
         'http://oauth.vk.com/authorize?client_id=' + settings.VK_APP_ID +
         '&redirect_uri=' + href +
-        '/consumer/vk/processCode/&response_type=code&scope=wall+offline')
+        '/consumer/vk/processCode/&response_type=code&scope=wall,offline,friends,photos,audio,video')
 
 
 def processCode(request):
-    try:
-        us = Consumer.objects.get(user=request.user)
-    except:
-        return consumerError(request)
+    print("process")
+    us = Consumer.objects.get(user=request.user)
 
     try:
         code = request.GET["code"]

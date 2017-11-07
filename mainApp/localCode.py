@@ -27,13 +27,13 @@ def vkRequest(method, params):
     time.sleep(0.34)
     return res
 
-
+# анализ данных
 def analyse(data):
     res = {}
-    res["max"] = np.max(data)  # минимальное
-    res["min"] = np.min(data)  # максимальное
-    res["mean"] = round(np.mean(data), 2)  # среднее
-    res["std"] = round(np.std(data), 2)  # CТО
+   # res["max"] = np.max(data)  # минимальное
+   # res["min"] = np.min(data)  # максимальное
+   # res["mean"] = round(np.mean(data), 2)  # среднее
+   # res["std"] = round(np.std(data), 2)  # CТО
     res["skew"] = round(st.skew(data), 2)  # ассиметрия
     res["kurtosis"] = round(st.kurtosis(data), 2)  # эксцесс
     res["variation"] = round(st.variation(data), 2)  # вариация
@@ -115,31 +115,6 @@ def getPosts(id, token):
     #  res["from_ids"] = len(from_ids)
     #  res["textCnt"] = cnt
     return res
-
-
-def getGroupUsers(gid, token):
-    with open("stats", "w", newline="\n") as file:
-        writer = csv.writer(file)
-        writer.writerow(["img_date_skew", "img_date_variation", "img_date_kutrosis",
-                         "post_date_skew", "post_date_variation", "post_date_kutrosis"])
-
-        res = vkRequest("groups.getMembers", {"count": "1", "group_id": str(gid), "access_token": token})
-        lst = []
-        print(res['response']['count'])
-        for i in range(int(res['response']['count'] / 1000) + 1):
-            print(i)
-            res = vkRequest("groups.getMembers",
-                            {"count": "1000", "offset": str(i * 1000), "group_id": str(gid), "access_token": token})
-            try:
-                for r in res['response']['items']:
-                    try:
-                        print(r)
-                        writer.writerow(checkBotUser(int(r), token))
-                    except:
-                        pass
-            except:
-                print("error")
-                print(res)
 
 
 def getFriendsUsers(id, token):

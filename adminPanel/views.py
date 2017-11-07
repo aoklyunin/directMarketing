@@ -166,16 +166,3 @@ def withdrawAccept(request, tid):
     return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
 
 
-# проверка на бота
-def checkBot(request):
-    # если пользователь не админ,
-    if not is_member(request.user, "admins"):
-        # переадресация на страницу с ошибкой
-        return adminError(request)
-
-    lst = getFriendsUsers(32897432, Consumer.objects.first().vk_token)
-    # делаем массив с заголовками для каждого из состояний
-    return render(request,
-                  'adminPanel/checkBot.html',
-                  {"lst": lst,
-                   "caption": "проверка на бота"})

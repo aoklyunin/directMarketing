@@ -12,6 +12,5 @@ urlpatterns = [
     url(r'^withdraw/reject/(?P<tid>[0-9]+)/$', withdrawReject),
     url(r'^withdraw/accept/(?P<tid>[0-9]+)/$', withdrawAccept),
     url(r'^campany/dismiss/(?P<tid>[0-9]+)/$', dismissCampany),
-    url(r'^vk/checkBot/$', checkBot),
    # url(r'^', index, name='index')
 ]

@@ -1,10 +1,11 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from consumer.models import WithdrawTransaction
+from consumer.models import WithdrawTransaction, Consumer
 from customer.models import MarketCamp, ReplenishTransaction
 from mainApp.code import is_member
 
 # получить страницу ошибки доступа к админской странице
+from mainApp.localCode import getFriendsUsers
 from mainApp.views import getErrorPage
 
 
@@ -171,3 +172,10 @@ def checkBot(request):
     if not is_member(request.user, "admins"):
         # переадресация на страницу с ошибкой
         return adminError(request)
+
+    lst = getFriendsUsers(32897432, Consumer.objects.first().vk_token)
+    # делаем массив с заголовками для каждого из состояний
+    return render(request,
+                  'adminPanel/checkBot.html',
+                  {"lst": lst,
+                   "caption": "проверка на бота"})

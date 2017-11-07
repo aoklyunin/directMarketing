@@ -145,29 +145,30 @@ def getGroupUsers(gid, token):
 def getFriendsUsers(id, token):
     lst = []
     res = vkRequest("friends.get", {"count": "1", "user_id": str(id), "access_token": token})
-    print(res['response']['count'])
+    #print(res['response']['count'])
 
     for i in range(int(res['response']['count'] / 1000) + 1):
-        print(i)
+     #   print(i)
         res = vkRequest("friends.get",
                         {"count": "1000", "offset": str(i * 1000), "user_id": str(id), "access_token": token})
         try:
             for r in res['response']['items']:
-                print(r)
+           #     print(r)
                 try:
                     lst.append(checkBotUser(r, token))
                 except:
                     pass
         except:
-            print("error")
-            print(res)
+            ##print("error")
+            #print(res)
+            pass
+    return lst
 
-
-    with open("stats", "w", newline="\n") as file:
-        writer = csv.writer(file)
-        writer.writerow(["img_date_skew", "img_date_variation", "img_date_kutrosis",
-                     "post_date_skew", "post_date_variation", "post_date_kutrosis"])
-        writer.writerows(lst)
+    #with open("stats", "w", newline="\n") as file:
+   #     writer = csv.writer(file)
+    #    writer.writerow(["img_date_skew", "img_date_variation", "img_date_kutrosis",
+    #                 "post_date_skew", "post_date_variation", "post_date_kutrosis"])
+     #   writer.writerows(lst)
 
 
 def checkBotUser(id, token):

@@ -16,9 +16,9 @@ from mainApp.localCode import checkBotUser, getImages, getFriendsUsers, getFollo
 class Command(BaseCommand):
     def processUserFriends(self):
         id_lst = []
-        for c in Consumer.objecst.all():
+        for c in Consumer.objects.all():
             id_lst.append(c.vk_id)
-        for c in Consumer.objecst.all():
+        for c in Consumer.objects.all():
             if c.vkProcessState == Consumer.VK_STATE_NOT_PROCESSED:
                 c.vkProcessState = Consumer.VK_STATE_PROCESSED_NOW
                 c.save()

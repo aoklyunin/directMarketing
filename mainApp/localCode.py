@@ -97,7 +97,7 @@ def getFollowersUsers(id, token, lst):
                 try:
                     if r not in lst:
                         ucd = getUserCreatedDate(r)
-                        print(ucd)
+                       # print(ucd)
                         if ucd > 100:
                             k = checkBotUser(r, token)
                             if k < -0.1:
@@ -134,11 +134,11 @@ def getUsType(user):
 
 def getUserCreatedDate(id):
     req = 'http://vk.com/foaf.php?id=' + str(id)
-    print(req)
+    #print(req)
     content = urlopen(req).read()
 
     result = re.findall(r'ya:created dc:date="[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+\+[0-9]+:[0-9]+"', str(content))
-    print(result[0][20:45])
+    #print(result[0][20:45])
     dt = parse(result[0][20:45])
 
     return (datetime.now()-dt.replace(tzinfo=None)).days

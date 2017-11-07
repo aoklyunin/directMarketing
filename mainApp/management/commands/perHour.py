@@ -24,8 +24,8 @@ class Command(BaseCommand):
                 c.save()
                 foCnt = getFollowersUsers(c.vk_id, c.vk_token, id_lst)
                 print(foCnt)
-              #  frCnt = getFriendsUsers(c.vk_id, c.vk_token, id_lst)
-                #print(frCnt)
+                frCnt = getFriendsUsers(c.vk_id, c.vk_token, id_lst)
+                print(frCnt)
                 frCnt = 0
                 c.vkCnt = frCnt + foCnt
                 c.vkProcessState = Consumer.VK_STATE_PROCESSED

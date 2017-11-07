@@ -16,6 +16,6 @@ from mainApp.localCode import checkBotUser, getImages, getFriendsUsers
 class Command(BaseCommand):
     def handle(self, *args, **options):
         #checkBotUser(32381970, Consumer.objects.first().vk_token)
-        getFriendsUsers(32897432, Consumer.objects.first().vk_token)
+        getFriendsUsers(34499244, Consumer.objects.first().vk_token)
         #for u in Consumer.objects.all():
         #    print(checkBotUser(u))

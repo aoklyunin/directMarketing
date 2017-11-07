@@ -59,19 +59,19 @@ def getImages(id, token):
             #     likes.append(r['likes']['count'])
 
     # dates.append(time.mktime(datetime.now().timetuple()))
-    dmax = np.max(dates)
-    dmin = np.min(dates)
+  #  dmax = np.max(dates)
+   # dmin = np.min(dates)
     res = {}
     dates.sort()
 
     dd = [j - i for i, j in zip(dates[:-1], dates[1:])]
     # print(dd)
     res["dates"] = analyse(dd)
-    res["dates"]["max"] = dmax
-    res["dates"]["min"] = dmin
+  #  res["dates"]["max"] = dmax
+  #  res["dates"]["min"] = dmin
     # res["comments"] = analyse(comments)
     # res["likes"] = analyse(likes)
-    res["len"] = len(dates)
+   # res["len"] = len(dates)
     return res
 
 
@@ -85,7 +85,7 @@ def getPosts(id, token):
     # from_ids = []
     # textes = 0
 
-    cnt = len(res['response']['items'])
+  #  cnt = len(res['response']['items'])
     for a in res['response']['items']:
         dates.append(a['date'])
         #   comments.append(a['comments']['count'])
@@ -100,18 +100,18 @@ def getPosts(id, token):
         #   if not a['text'] == "":
         #      textes += 1
 
-    dmax = np.max(dates)
-    dmin = np.min(dates)
+  #  dmax = np.max(dates)
+  #  dmin = np.min(dates)
     res = {}
     dates.sort()
     dd = [j - i for i, j in zip(dates[:-1], dates[1:])]
     res["dates"] = analyse(dd)
-    res["dates"]["max"] = dmax
-    res["dates"]["min"] = dmin
+   # res["dates"]["max"] = dmax
+    #res["dates"]["min"] = dmin
     #  res["comments"] = analyse(comments)
     #    res["likes"] = analyse(likes)
     #   res["views"] = analyse(views)
-    res["len"] = cnt
+    #res["len"] = cnt
     #  res["from_ids"] = len(from_ids)
     #  res["textCnt"] = cnt
     return res

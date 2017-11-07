@@ -12,6 +12,7 @@ from mainApp.localCode import checkBotUser, getImages, getFriendsUsers
 # Игорь 32381970
 # Михан 34499244
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         #checkBotUser(32381970, Consumer.objects.first().vk_token)

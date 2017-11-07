@@ -85,6 +85,7 @@ def getFollowersUsers(id, token, lst):
             for r in res['response']['items']:
                 try:
                     if r not in lst:
+                        print(r)
                         k = checkBotUser(r, token)
                         if k < 0.2:
                             print("https://vk.com/id" + str(r) + " " + str(k))

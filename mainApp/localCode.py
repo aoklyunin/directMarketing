@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 import csv
 from datetime import datetime
+from dateutil.parser import parse
+
+import re
 import requests
 import time
 import numpy as np
 import scipy.stats as st
+from urllib.request import urlopen
+
+from dateutil.relativedelta import relativedelta
 
 from adminPanel.models import AdminUser
 from consumer.models import Consumer
@@ -61,11 +67,15 @@ def getFriendsUsers(id, token, lst):
             for r in res['response']['items']:
                 try:
                     if r not in lst:
-                        k = checkBotUser(r, token)
-                        if k < -0.1:
-                            print("https://vk.com/id" + str(r) + " " + str(k))
+                        ucd = getUserCreatedDate(r)
+                        if ucd > 100:
+                            k = checkBotUser(r, token)
+                            if k < -0.1:
+                                print("https://vk.com/id" + str(r) + " " + str(k))
+                            else:
+                                cnt += 1
                         else:
-                            cnt += 1
+                            print("https://vk.com/id" + str(r) + " " + str(k))
                 except:
                     pass
         except:
@@ -86,11 +96,16 @@ def getFollowersUsers(id, token, lst):
             for r in res['response']['items']:
                 try:
                     if r not in lst:
-                        k = checkBotUser(r, token)
-                        if k < -0.1:
-                            print("https://vk.com/id" + str(r) + " " + str(k))
+                        ucd = getUserCreatedDate(r)
+                        print(ucd)
+                        if ucd > 100:
+                            k = checkBotUser(r, token)
+                            if k < -0.1:
+                                print("https://vk.com/id" + str(r) + " " + str(k))
+                            else:
+                                cnt += 1
                         else:
-                            cnt += 1
+                            print("https://vk.com/id" + str(r) + " " + str(k))
                 except:
                     pass
         except:
@@ -116,3 +131,14 @@ def getUsType(user):
                 return 3
             except:
                 return 0
+
+def getUserCreatedDate(id):
+    req = 'http://vk.com/foaf.php?id=' + str(id)
+    print(req)
+    content = urlopen(req).read()
+
+    result = re.findall(r'ya:created dc:date="[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+\+[0-9]+:[0-9]+"', str(content))
+    print(result[0][20:45])
+    dt = parse(result[0][20:45])
+
+    return (datetime.now()-dt.replace(tzinfo=None)).days

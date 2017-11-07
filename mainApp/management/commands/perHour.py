@@ -2,7 +2,7 @@ from consumer.localCode import getViewCnt, leaveCampany, getRepostedCompanies, g
 from consumer.models import ConsumerMarketCamp, Consumer
 from django.core.management import BaseCommand
 
-from mainApp.localCode import checkBotUser, getImages, getFriendsUsers, getFollowersUsers
+from mainApp.localCode import checkBotUser, getImages, getFriendsUsers, getFollowersUsers, getUserCreatedDate
 
 
 # Алиса 32897432

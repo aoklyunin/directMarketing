@@ -163,3 +163,28 @@ def withdrawAccept(request, tid):
         ct.save()
 
     return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
+
+
+# проверка на бота
+def checkBot(request):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    # получаем состояние заявки
+    st = int(state)
+    # получаем queryset заявок с таким состоянием
+    wt = WithdrawTransaction.objects.filter(state=st).order_by('dt')
+
+    # формируем удобный список для вывода на страницу
+    transactions = []
+    for t in wt:
+        transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
+                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance})
+
+    # делаем массив с заголовками для каждого из состояний
+    return render(request,
+                  'adminPanel/withdraw_list.html',
+                  {"transactions": transactions,
+                   "caption": WithdrawTransaction.list_states[st], "state": st})

@@ -77,6 +77,10 @@ class ConsumerMarketCamp(models.Model):
     # типы участия
     joinTypes = ["Не участвую", "Участвую", "Участвовал"]
 
+    TYPE_NOT_JOINED = 0
+    TYPE_JOINED = 1
+    TYPE_JOINED_NOW = 2
+
     def __str__(self):
         return str(self.marketCamp)+":"+str(self.viewCnt)+" "+str(self.postId)
 

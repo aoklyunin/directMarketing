@@ -29,22 +29,25 @@ def getReposts(u, token):
 
 def getRepostedCompanies(u, token):
     reposts = getReposts(u, token)
-    lst = []
+    lstM = []
+    lstID = []
     for m in MarketCamp.objects.all():
         for r in reposts:
             if (m.vkPostID == r["cpid"]) and (r["copy_owner_id"] == MarketCamp.group_id):
-                lst.append({"m": m, "id": r["id"]})
-    return lst
+                lstM.append(m)
+                lstID.append(r["id"])
+    return [lstM, lstID]
 
 
-def getNotRepostedCompanies(reposted_companies):
+def getNotRepostedCompanies(lstRM):
     lst = []
-    for r in reposted_companies:
-        lst.append(r["m"].pk)
-    res = []
+    lstM = []
+    for r in lstRM:
+        lst.append(r.pk)
     for m in MarketCamp.objects.exclude(pk__in=lst):
-        res.append({"m": m, "id": r["id"]})
-    return res
+        lstM.append(m)
+    return [lstM]
+
 
 def leaveCampany(mc):
     print("Leave company called")
@@ -57,7 +60,7 @@ def leaveCampany(mc):
 
 def getViewCnt(id, post_id, token):
     r = requests.get('https://api.vk.com/method/wall.getById?posts=' + str(id) + '_' + str(
-        post_id) + "&access_token=" + token+"&v=5.69").json()
+        post_id) + "&access_token=" + token + "&v=5.69").json()
     time.sleep(0.3)
     return int(r['response'][0]['views']['count'])
 

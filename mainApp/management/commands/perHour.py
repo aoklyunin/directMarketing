@@ -1,4 +1,4 @@
-from consumer.localCode import getViewCnt, leaveCampany, getRepostedCompanies
+from consumer.localCode import getViewCnt, leaveCampany, getRepostedCompanies, getNotRepostedCompanies
 from consumer.models import ConsumerMarketCamp, Consumer
 from django.core.management import BaseCommand
 
@@ -28,8 +28,28 @@ class Command(BaseCommand):
                 c.vkProcessState = Consumer.VK_STATE_PROCESSED
                 c.save()
 
+    def processConsumerMarketCamps(self):
+        d = {}
+        for c in Consumer.objects.all():
+            [rm,rids] = getRepostedCompanies(c.vk_id, c.vk_token)
+            nrm = getNotRepostedCompanies(rm)
+            d[c] = [rm,nrm,rids]
+
+        for cm in ConsumerMarketCamp.objects.all():
+            # среди репостнутых
+            if cm.marketCamp in d[c][0]:
+                if cm.joinType == ConsumerMarketCamp.TYPE_NOT_JOINED:
+                    cm.joinType = ConsumerMarketCamp.TYPE_JOINED_NOW
+                    cm.postId = d[c][2][d[c][0].index(cm.marketCamp)]
+                    cm.save()
+
+            # среди не репостнутых
+            if cm.marketCamp in d[c][1]:
+                if cm.joinType == ConsumerMarketCamp.TYPE_JOINED_NOW:
+                    leaveCampany(cm)
+
     def handle(self, *args, **options):
-        # checkBotUser(2600557, Consumer.objects.first().vk_token)
+        self.processConsumerMarketCamps()
         self.processUserFriends()
         # for u in Consumer.objects.all():
         #    print(checkBotUser(u))

@@ -61,7 +61,7 @@ def getFriendsUsers(id, token, lst):
                 try:
                     if r not in lst:
                         k = checkBotUser(r, token)
-                        if k < 0.2:
+                        if k < -0.1:
                             print("https://vk.com/id" + str(r) + " " + str(k))
                         else:
                             cnt += 1
@@ -85,9 +85,8 @@ def getFollowersUsers(id, token, lst):
             for r in res['response']['items']:
                 try:
                     if r not in lst:
-                        print(r)
                         k = checkBotUser(r, token)
-                        if k < 0.2:
+                        if k < -0.1:
                             print("https://vk.com/id" + str(r) + " " + str(k))
                         else:
                             cnt += 1

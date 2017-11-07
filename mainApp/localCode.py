@@ -44,7 +44,6 @@ def getImages(id, token):
     if len(dates) == 0:
         return -1000
     dates.sort()
-
     dd = [j - i for i, j in zip(dates[:-1], dates[1:])]
     return round(st.kurtosis(dd), 2)
 

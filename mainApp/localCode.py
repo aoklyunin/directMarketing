@@ -47,7 +47,7 @@ def getImages(id, token):
     return round(st.kurtosis(dd), 2)
 
 
-def getFriendsUsers(id, token):
+def getFriendsUsers(id, token, lst):
     res = vkRequest("friends.get", {"count": "1", "user_id": str(id), "access_token": token})
 
     cnt = 0
@@ -59,11 +59,12 @@ def getFriendsUsers(id, token):
         try:
             for r in res['response']['items']:
                 try:
-                    k = checkBotUser(r, token)
-                    if k < 0:
-                        print("https://vk.com/id" + str(r) + " " + str(k))
-                    else:
-                        cnt += 1
+                    if r not in lst:
+                        k = checkBotUser(r, token)
+                        if k < 0.2:
+                            print("https://vk.com/id" + str(r) + " " + str(k))
+                        else:
+                            cnt += 1
                 except:
                     pass
         except:
@@ -71,26 +72,29 @@ def getFriendsUsers(id, token):
     return cnt
 
 
-def getSubscribersUsers(id, token):
-    lst = []
-    res = vkRequest("friends.get", {"count": "1", "user_id": str(id), "access_token": token})
-    # print(res['response']['count'])
+def getFollowersUsers(id, token, lst):
+    res = vkRequest("users.getFollowers", {"count": "1", "user_id": str(id), "access_token": token})
+
+    cnt = 0
 
     for i in range(int(res['response']['count'] / 1000) + 1):
         #   print(i)
-        res = vkRequest("friends.get",
+        res = vkRequest("users.getFollowers",
                         {"count": "1000", "offset": str(i * 1000), "user_id": str(id), "access_token": token})
         try:
             for r in res['response']['items']:
                 try:
-                    k = checkBotUser(r, token)
-                    if k < 0:
-                        print("https://vk.com/id" + str(r) + " " + str(k))
+                    if r not in lst:
+                        k = checkBotUser(r, token)
+                        if k < 0.2:
+                            print("https://vk.com/id" + str(r) + " " + str(k))
+                        else:
+                            cnt += 1
                 except:
                     pass
         except:
             pass
-    return lst
+    return cnt
 
 
 def checkBotUser(id, token):

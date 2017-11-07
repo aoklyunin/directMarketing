@@ -29,6 +29,14 @@ class Consumer(models.Model):
     autoWithDraw = models.BooleanField(default=True)
     # автоматическое участие во всех кампаниях
     autoParticipate = models.BooleanField(default=False)
+    # аудитория вк(кол-во друзей и подписчиков)
+    vkCnt = models.IntegerField(default=0)
+    # обработка аудитории
+    vkProcessState = models.IntegerField(default=0)
+    VK_PROCESS_STATES = ["Не обработан", "Запустилась обработка", "Обработка закончена"]
+    VK_STATE_NOT_PROCESSED = 0
+    VK_STATE_PROCESSED_NOW = 1
+    VK_STATE_PROCESSED = 2
 
 
     def __str__(self):

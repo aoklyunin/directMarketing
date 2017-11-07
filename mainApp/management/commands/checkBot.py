@@ -2,7 +2,7 @@ from consumer.localCode import getViewCnt, leaveCampany, getRepostedCompanies
 from consumer.models import ConsumerMarketCamp, Consumer
 from django.core.management import BaseCommand
 
-from mainApp.localCode import checkBotUser, getImages, getFriendsUsers
+from mainApp.localCode import checkBotUser, getImages, getFriendsUsers, getFollowersUsers
 
 
 # Алиса 32897432
@@ -15,7 +15,7 @@ from mainApp.localCode import checkBotUser, getImages, getFriendsUsers
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        #checkBotUser(32381970, Consumer.objects.first().vk_token)
-        getFriendsUsers(34499244, Consumer.objects.first().vk_token)
+        #checkBotUser(2600557, Consumer.objects.first().vk_token)
+        getFollowersUsers(34499244, Consumer.objects.first().vk_token)
         #for u in Consumer.objects.all():
         #    print(checkBotUser(u))

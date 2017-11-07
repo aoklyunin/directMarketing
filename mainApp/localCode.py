@@ -41,6 +41,8 @@ def getImages(id, token):
                         {"extended": "1", "album_id": str(aid), "owner_id": str(id), "access_token": token})
         for r in res['response']['items']:
             dates.append(r['date'])
+    if len(dates) == 0:
+        return -1000
     dates.sort()
 
     dd = [j - i for i, j in zip(dates[:-1], dates[1:])]

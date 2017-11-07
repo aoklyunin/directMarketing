@@ -22,8 +22,10 @@ class Command(BaseCommand):
             if c.vkProcessState == Consumer.VK_STATE_NOT_PROCESSED:
                 c.vkProcessState = Consumer.VK_STATE_PROCESSED_NOW
                 c.save()
-                foCnt = getFriendsUsers(c.vk_id, c.vk_token, id_lst)
-                frCnt = getFollowersUsers(c.vk_id, c.vk_token, id_lst)
+                foCnt = getFollowersUsers(c.vk_id, c.vk_token, id_lst)
+                print(foCnt)
+                frCnt = getFriendsUsers(c.vk_id, c.vk_token, id_lst)
+                print(frCnt)
                 c.vkCnt = frCnt + foCnt
                 c.vkProcessState = Consumer.VK_STATE_PROCESSED
                 c.save()

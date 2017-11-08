@@ -268,7 +268,7 @@ def freeCheater(request, c_id):
 
 
 # список читеров
-def listBlocked(request, cheated):
+def listBlocked(request):
     # если пользователь не админ,
     if not is_member(request.user, "admins"):
         # переадресация на страницу с ошибкой

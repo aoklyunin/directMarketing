@@ -274,11 +274,13 @@ def listBlocked(request):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
+    print(Consumer.objects.filter(blocked=True))
     # делаем массив с заголовками для каждого из состояний
     return render(request,
-                  'adminPanel/cheaters_list.html',
-                  { "cs": Consumer.objects.filter(blocked=True),
-                   })
+                  'adminPanel/blocked_list.html',
+                  {"cs": Consumer.objects.filter(blocked=True),
+                   "caption": "Заблокированные"})
+
 
 def freeBlocked(request, c_id):
     # если пользователь не админ,
@@ -292,6 +294,4 @@ def freeBlocked(request, c_id):
     except:
         HttpResponseRedirect('/')
 
-
     return HttpResponseRedirect('/adminPanel/cheaters/list/1/')
-

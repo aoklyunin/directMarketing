@@ -27,12 +27,14 @@
         <table class="table table-condensed">
             <tr>
                 <th >Имя Фамилия</th>
+                <th>ID</th>
                 <th> </th>
             </tr>
             {% for t in cs %}
             <tr>
                 <td> {{t.user.first_name}} {{t.user.last_name}} </td>
-                <td> <a href="/adminPanel/blocked/free/{{t.tid}}/">Помиловать</a></td>
+                <td> {{t.pk}} </td>
+                <td> <a href="/adminPanel/blocked/free/{{t.pk}}/">Помиловать</a></td>
               </tr>
             {% endfor %}
         </table>

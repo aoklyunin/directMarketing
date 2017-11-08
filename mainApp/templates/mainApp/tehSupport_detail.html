@@ -1,0 +1,22 @@
+{% extends "progressus/bigComments.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+
+{% block chat_info %}
+{% if isAdmin %}
+    <a href="/tehsupport/close/{{tid}}/" class="btn btn-primary">Закрыть заявку</a>
+{% endif %}
+
+{% endblock %}

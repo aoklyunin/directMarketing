@@ -1,0 +1,62 @@
+{% extends "progressus/simpleMinPanelPage.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+
+{% block style_block %}
+    .table td {
+        text-align: center;
+    }
+    .table th {
+        text-align: center;
+    }
+    th.rightOrient{
+        text-align: right;
+    }
+.not-active {
+pointer-events: none;
+cursor: default;
+}
+
+{% endblock %}
+
+{% block page %}
+
+    {% if transactions %}
+<br><br>
+        <table class="table table-condensed" >
+            <tr>
+                <th >№</th>
+                <th >Дата</th>
+                <th></th>
+            </tr>
+            {% for t in transactions %}
+            <tr>
+                <td> {{t.pk}}</td>
+                <td> {{t.date}}</td>
+                <td class="rightOrient">
+                    <a href="/tehsupport/detail/{{t.pk}}/" class="btn btn-default">
+                        обсуждение {% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
+                        {% endifnotequal %}
+                    </a>
+                </td>
+
+              </tr>
+            {% endfor %}
+        </table>
+    {%else%}
+        <br><br><br><br>
+        <p class="text-center text-muted">Пока что нет заявок</p>
+        <br><br><br><br>
+    {% endif %}
+
+{% endblock %}
+
+
+
+

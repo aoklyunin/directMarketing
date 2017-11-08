@@ -26,6 +26,11 @@ urlpatterns = [
     url(r'^consumer/', include('consumer.urls')),
     url(r'^terms/customer/$', mainApp.staticViews.customerTerms),
     url(r'^terms/consumer/$', mainApp.staticViews.consumerTerms),
+    url(r'^tehsupport/$', mainApp.views.tehSupport),
+    url(r'^tehsupport/create/$', mainApp.views.createTehSupport),
+    url(r'^tehsupport/list/(?P<state>[0-9]+)/$', mainApp.views.tehSupportList),
+    url(r'^tehsupport/detail/(?P<tid>[0-9]+)/$', mainApp.views.detailTehSupport),
+    url(r'^tehsupport/close/(?P<tid>[0-9]+)/$', mainApp.views.closeTehSupport),
     url(r'^', mainApp.staticViews.index, name='index')
 
 ]

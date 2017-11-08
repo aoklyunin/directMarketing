@@ -1,0 +1,36 @@
+{# Шаблон для страницы обработки заявок на вывод денег #}
+
+{% extends "progressus/simplePanelPage.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% load bootstrap3 %}
+
+
+{% block page %}
+<div class="row">
+    <br><br>
+    <div class="col-sm-4 col-md-4">
+        <a href="/tehsupport/list/0/" class="btn btn-default">
+            Открытые{% ifnotequal 0 OpenedCnt%}<b>({{OpenedCnt}})</b>
+            {% endifnotequal %}
+        </a>
+    </div>
+    <div class="col-sm-4 col-md-4">
+       <a href="/tehsupport/list/1/" class="btn btn-success">
+            Закрытые{% ifnotequal 0 ClosedCnt%}<b>({{ClosedCnt}})</b>
+            {% endifnotequal %}
+        </a>
+    </div>
+
+    <div class="col-sm-4 col-md-4">
+       <a href="/tehsupport/create/" class="btn btn-primary">
+            Создать заявку
+        </a>
+    </div>
+      <br><br>
+</div>
+<div class="row">
+<br><br>
+</div>
+{% endblock %}

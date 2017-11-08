@@ -13,8 +13,6 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} {{caption}}{%endblock %}
-
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/chat.css' %}">
 {% endblock %}
@@ -31,25 +29,25 @@
         </header>
 
         <div class="row">
-            <div class="col-sm-5 col-md-5 col-md-offset-1 col-sm-offset-1">
+            <div class="col-sm-3 col-md-3 col-md-offset-1 col-sm-offset-1">
 
                 {% block chat_info %}
 
                 {% endblock %}
             </div>
-            <div class="col-sm-4 col-md-4 col-md-offset-1 col-sm-offset-1 frame_chat">
+            <div class="col-sm-6 col-md-6 col-md-offset-1 col-sm-offset-1">
+                <div class="row">
+                    <textarea class="mytext"  rows="3" cols="67" id="inputSend" placeholder="Введите сообщение..."> </textarea>
+                </div>
+                <br>
+                <div class="row">
+                    <button id="btnSend" class="btn btn-primary" align="right"> Отправить</button>
+                </div>
+                <br>
+                <div class="row big_frame_chat">
+                         <ul class="bigMessageList"></ul>
 
-             <div class="">
-                <ul class="messageList"></ul>
-                    <div>
-                                    <div class="msj-rta macro" style="margin:auto">
-                                        <div class="text text-r" style="background:whitesmoke !important">
-                                            <textarea class="mytext" placeholder="Введите сообщение..."></textarea>
-                                        </div>
-                                    </div>
-                    </div>
-             </div>
-
+                </div>
             </div>
         </div>
     </div>
@@ -60,10 +58,11 @@
 {% endblock %}
 
 {% block footer_script %}
-    <script src="{% static 'js/chat.js'%}"></script>
+    <script src="{% static 'js/bigChat.js'%}"></script>
    <script>
 
     window.onload = function() {
+         $('#inputSend').val('');
         setStats("{{request.user.first_name}}","{% static from_av %}","{% static to_av %}","{{target}}");
         {% for c in comments %}
             insertChat("{{c.name}}", "{{c.text}}", {{c.isUsers}},"{{c.date}}");
@@ -74,3 +73,5 @@
 
     </script>
 {% endblock %}
+
+

@@ -20,7 +20,6 @@ class Comment(models.Model):
     readed = models.BooleanField(default=False)
 
 
-
 class InfoText(models.Model):
     text = models.TextField(max_length=100000, null=True, blank=True)
     subText = models.TextField(max_length=100000, null=True, blank=True)
@@ -30,3 +29,14 @@ class InfoText(models.Model):
 
     def __str__(self):
         return self.pageName
+
+
+# заявка в тех. поддержку
+class TehSupport(models.Model):
+    STATE_OPENED = 0
+    STATE_CLOSED = 1
+    states = ["Открытые", "Закрытые"]
+    author = models.ForeignKey(User)
+    comments = models.ManyToManyField(Comment)
+    state = models.IntegerField(default=0)
+    dt = models.DateTimeField(default=django.utils.timezone.now())

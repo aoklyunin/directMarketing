@@ -27,6 +27,11 @@
 .macro{
     margin-top:3px;width:85%;border-radius:5px;padding:5px;display:flex;
 }
+
+.bigMacro{
+    margin-top:3px;width:85%;border-radius:5px;padding:5px;display:flex;height:80px;
+}
+
 .msj-rta{
     float:right;background:whitesmoke;
 }
@@ -39,6 +44,14 @@
     overflow:hidden;
     padding:0;
 }
+
+.big_frame_chat{
+    background:#e0e0de;
+    height:100px;
+    overflow:hidden;
+    padding:0;
+}
+
 .frame_chat > div:last-of-type{
     position:absolute;bottom:5px;width:100%;display:flex;
 }
@@ -50,8 +63,16 @@ ul.messageList {
     bottom:32px;
     display:flex;
     flex-direction: column;
-
 }
+
+ul.bigMessageList {
+    list-style-type: none;
+    padding:18px;
+    width:100%;
+}
+
+
+
 .msj:before{
     width: 0;
     height: 0;

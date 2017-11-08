@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from consumer.models import WithdrawTransaction, Consumer
+from consumer.models import WithdrawTransaction, Consumer, ConsumerMarketCamp
 from customer.models import MarketCamp, ReplenishTransaction
 from mainApp.code import is_member
 
@@ -196,3 +196,52 @@ def withdrawAccept(request, tid):
         ct.save()
 
     return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
+
+
+# список читеров
+def listCheater(request,cheated):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+
+    # получаем queryset заявок с таким состоянием
+    cs = ConsumerMarketCamp.objects.filter(cheated=ConsumerMarketCamp.STATE_PRETEND_CHEATED).order_by('dt')
+
+    # формируем удобный список для вывода на страницу
+    transactions = []
+    for t in cs:
+        transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
+                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance,
+                             "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()})
+
+    # делаем массив с заголовками для каждого из состояний
+    return render(request,
+                  'adminPanel/che.html',
+                  {"transactions": transactions,
+                   #"caption": WithdrawTransaction.list_states[st], "state": st
+    })
+
+
+
+def cheaters(request):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    return render(request,
+                  'adminPanel/cheaters.html',
+                  {"caption": "Панель администратора: читеры"})
+
+
+def punishCheater(request,c_id):
+    return 0
+
+
+def detailCheater(request,c_id):
+    return 0
+
+def freeCheater(request):
+    return 0

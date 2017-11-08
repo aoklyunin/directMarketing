@@ -1,3 +1,4 @@
+from adminPanel.models import BlackList
 from consumer.localCode import getViewCnt, leaveCampany, getRepostedCompanies, getNotRepostedCompanies
 from consumer.models import ConsumerMarketCamp, Consumer
 from django.core.management import BaseCommand
@@ -38,16 +39,17 @@ class Command(BaseCommand):
                 post_id = c.postId
                 cnt = getViewCnt(id, post_id, c.consumer.vk_token)
                 c.viewCnt = cnt
+                if c.viewCnt > c.consumer.vkCnt and c.stateCheated == ConsumerMarketCamp.STATE_NOT_CHEATED:
+                    c.stateCheated = ConsumerMarketCamp.STATE_PRETEND_CHEATED
                 c.save()
             except:
                 print("Запись удалена")
 
-
         d = {}
         for c in Consumer.objects.all():
-            [rm,rids] = getRepostedCompanies(c.vk_id, c.vk_token)
+            [rm, rids] = getRepostedCompanies(c.vk_id, c.vk_token)
             nrm = getNotRepostedCompanies(rm)
-            d[c] = [rm,nrm,rids]
+            d[c] = [rm, nrm, rids]
 
         for cm in ConsumerMarketCamp.objects.all():
             # среди репостнутых
@@ -63,7 +65,7 @@ class Command(BaseCommand):
                     leaveCampany(cm)
 
     def handle(self, *args, **options):
-        self.processConsumerMarketCamps()
         self.processUserFriends()
+        self.processConsumerMarketCamps()
         # for u in Consumer.objects.all():
         #    print(checkBotUser(u))

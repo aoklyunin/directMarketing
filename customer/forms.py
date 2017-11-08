@@ -40,7 +40,7 @@ class MarketCampForm(ModelForm):
 
         self.fields['platform'].choices = MarketCamp.PLATFORM_CHOICES
         self.fields['image'].required = False
-        self.fields['startTime'].widget.attrs['id'] = 'startTime'
-        self.fields['endTime'].widget.attrs['id'] = 'endTime'
+        self.fields['startTime'].widget.attrs['id'] = 'datetimepicker2'
+        self.fields['endTime'].widget.attrs['id'] = 'datetimepicker1'
         self.fields['endTime'].widget.attrs['class'] = 'form_datetime'
         self.fields['vkPostID'].required = False

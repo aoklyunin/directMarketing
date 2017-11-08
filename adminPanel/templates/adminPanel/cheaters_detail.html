@@ -1,0 +1,79 @@
+{% extends "progressus/simplePage.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+
+{% block style_block %}
+    .table td {
+        text-align: center;
+    }
+    .table th {
+        text-align: center;
+    }
+    th.rightOrient{
+        text-align: right;
+    }
+
+
+{% endblock %}
+
+{% block page %}
+
+    {% if transactions %}
+<br><br>
+        <table class="table table-condensed">
+            <tr>
+                <th >Дата</th>
+                <th >Сумма</th>
+                <th >Киви</th>
+                <th> </th>
+                <th></th>
+                <th></th>
+            </tr>
+            {% for t in transactions %}
+            <tr>
+                <td> {{t.date}}</td>
+                <td class="text-success"> {{t.value}}</td>
+                <td> {{t.qiwi}}</td>
+                {% ifequal state 1 %}
+                <td class="leftBorder">
+                    <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">
+                        Принять
+                    </a>
+                </td>
+                 <td>
+                    <a href="/adminPanel/replenish/reject/{{t.tid}}/" class="btn btn-danger">
+                        Отклонить
+                    </a>
+                </td>
+                {% endifequal %}
+                {% ifequal state 2 %}
+                <td class="leftBorder">
+                    <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">
+                        Принять
+                    </a>
+                </td>
+                {% endifequal %}
+                <td class="rightOrient">
+                    <a href="/customer/replenish/detail/{{t.tid}}/" class="btn btn-default">
+                        обсуждение
+                        {% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
+                        {% endifnotequal %}
+                    </a>
+                </td>
+
+              </tr>
+            {% endfor %}
+        </table>
+    {%else%}
+        <br><br><br><br>
+        <p class="text-center text-muted">Пока что нет заявок</p>
+        <br><br><br><br>
+    {% endif %}
+
+{% endblock %}
+
+

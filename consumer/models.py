@@ -76,10 +76,16 @@ class ConsumerMarketCamp(models.Model):
     joinType = models.IntegerField(default=0)
     # типы участия
     joinTypes = ["Не участвую", "Участвую", "Участвовал"]
+    # считерил
+    stateCheated = models.IntegerField(default=0)
 
     TYPE_NOT_JOINED = 0
     TYPE_JOINED = 1
     TYPE_JOINED_NOW = 2
+
+    STATE_NOT_CHEATED = 0
+    STATE_PRETEND_CHEATED = 1
+    STATE_CHEATED = 2
 
     def __str__(self):
         return str(self.marketCamp)+":"+str(self.viewCnt)+" "+str(self.postId)

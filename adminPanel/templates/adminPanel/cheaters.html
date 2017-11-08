@@ -1,0 +1,32 @@
+{# Шаблон для страницы обработки заявок на внесение денег #}
+
+{% extends "progressus/simplePanelPage.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% load bootstrap3 %}
+
+
+{% block page %}
+<div class="row">
+    <br><br>
+    <div class="col-sm-4 col-md-4">
+        <a href="/adminPanel/cheaters/list/1/" class="btn btn-default">
+            Претенденты
+            {% ifnotequal 0 NotProcessedCnt%}<b>({{NotProcessedCnt}})</b>
+            {% endifnotequal %}
+        </a>
+    </div>
+    <div class="col-sm-4 col-md-4">
+        <a href="/adminPanel/cheaters/list/2/" class="btn btn-success">
+            Читеры
+            {% ifnotequal 0 ProcessedCnt%}<b>({{ProcessedCnt}})</b>
+            {% endifnotequal %}
+        </a>
+    </div>
+      <br><br>
+</div>
+<div class="row">
+<br><br>
+</div>
+{% endblock %}

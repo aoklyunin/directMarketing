@@ -32,6 +32,17 @@ class Command(BaseCommand):
                 c.save()
 
     def processConsumerMarketCamps(self):
+        for c in ConsumerMarketCamp.objects.all():
+            try:
+                id = c.consumer.vk_id
+                post_id = c.postId
+                cnt = getViewCnt(id, post_id, c.consumer.vk_token)
+                c.viewCnt = cnt
+                c.save()
+            except:
+                print("Запись удалена")
+
+
         d = {}
         for c in Consumer.objects.all():
             [rm,rids] = getRepostedCompanies(c.vk_id, c.vk_token)

@@ -61,7 +61,8 @@
                     {% endifequal %}
                 </td>
                 <td align="center"> ( {{t.startTime}}-{{t.endTime}})</td>
-                <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-default ">Подробнее</a></td>
+                <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-default ">Подробнее{% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
+                        {% endifnotequal %}</a></td>
             </tr>
             {% endfor %}
         </table>

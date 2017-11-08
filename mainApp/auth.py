@@ -40,6 +40,7 @@ def signin(request):
     context = {
         "user": request.user,
         "form": form,
+        "caption": "Вход"
     }
     return render(request, template, context)
 
@@ -49,7 +50,8 @@ def signup(request):
     it = InfoText.objects.get(pageName="signup")
     context = {
         "user": request.user,
-        "it": it
+        "it": it,
+        "caption": "Регистрация"
     }
     return render(request, template, context)
 
@@ -108,6 +110,7 @@ def signup_customer(request):
     context = {
         "user": request.user,
         "form": form,
+        "caption": "Регистрация заказчика"
     }
     return render(request, template, context)
 
@@ -155,6 +158,8 @@ def signup_consumer(request):
     context = {
         "user": request.user,
         "form": form,
+        "caption": "Регистрация исполнителя"
+
     }
     return render(request, template, context)
 

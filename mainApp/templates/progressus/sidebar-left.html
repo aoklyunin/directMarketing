@@ -1,0 +1,44 @@
+{% extends "progressus/base.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% load bootstrap3 %}
+
+{% block content %}
+
+	<!-- container -->
+	<div class="container">
+		
+		<ol class="breadcrumb">
+			{% block page_menu %}
+
+			{% endblock %}
+		</ol>
+
+		<div class="row">
+			
+			<!-- Sidebar -->
+			<aside class="col-md-4 sidebar sidebar-left">
+				{% block sub_page %}
+				{% endblock %}
+			</aside>
+			<!-- /Sidebar -->
+
+			<!-- Article main content -->
+			<article class="col-md-8 maincontent">
+				<header class="page-header">
+					<h1 class="page-title">{{caption}}</h1>
+				</header>
+				{% block page %}
+				{% endblock %}
+			</article>
+			<!-- /Article -->
+
+		</div>
+	</div>	<!-- /container -->
+
+{% endblock %}
+

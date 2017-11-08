@@ -43,7 +43,7 @@ def index(request):
     for t in rts:
         transactions.append(
             {"date": t.dt.strftime("%d.%m %H:%M"), "value": t.value, "state": ReplenishTransaction.states[t.state],
-             "tid": t.id})
+             "tid": t.id, "notReadedCnt": t.comments.exclude(author=t.customer.user).filter(readed=False).count()})
     # передаём форму для изменения данных
     form = CustomerForm(initial={'name': us.companyName, 'qiwi': us.qiwi})
     template = 'customer/index.html'
@@ -74,6 +74,11 @@ def campanies(request):
     # получаем список кампаний
     campanies = []
     for t in cms:
+        if request.user == t.customer.user:
+            commentCnt = t.comments.exclude(author=t.customer.user).filter(readed=False).count()
+        else:
+            commentCnt = t.comments.filter(author=t.customer.user, readed=False).count()
+
         campanies.append(
             {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
              "platform": MarketCamp.platforms[t.platform],
@@ -81,6 +86,7 @@ def campanies(request):
              "startTime": t.startTime.strftime("%d.%m.%y"),
              "endTime": t.endTime.strftime("%d.%m.%y"),
              "adminApproved": t.adminApproved,
+             "notReadedCnt": commentCnt,
              })
 
     template = 'customer/campanies.html'
@@ -170,23 +176,28 @@ def replenish(request):
 
 # детали заявки на внесение
 def replenish_detail(request, tid):
-    ct = ReplenishTransaction.objects.get(id=int(tid))
+    rt = ReplenishTransaction.objects.get(id=int(tid))
     # обработка нового комментария
     if request.method == 'POST':
-        return processComment(request, ct)
+        return processComment(request, rt)
 
-    if not (is_member(request.user, "admins") or request.user == ct.customer.user):
+    if not (is_member(request.user, "admins") or request.user == rt.customer.user):
         return customerAdminError(request)
+
+    if request.user == rt.customer.user:
+        rt.comments.exclude(author=rt.customer.user).filter(readed=False).update(readed=True)
+    else:
+        rt.comments.filter(author=rt.customer.user, readed=False).update(readed=True)
 
     # получаем последние 6 комментариев
     comments = []
-    for c in ct.comments.order_by('-dt')[:6]:
+    for c in rt.comments.order_by('-dt')[:6]:
         comments.append({"text": c.text.replace("\n", " "), "isUsers": "false" if c.author == request.user else "true",
                          "name": c.author.first_name, "date": c.dt.strftime("%H:%M")})
     comments = list(reversed(comments))
 
     # получаем картинки для чата
-    if request.user == ct.customer.user:
+    if request.user == rt.customer.user:
         from_av = "images/customer_avatar.jpg"
         to_av = "images/admin_avatar.jpg"
     else:
@@ -196,16 +207,16 @@ def replenish_detail(request, tid):
     template = 'customer/replenish_detail.html'
     context = {
         "id": tid,
-        "need_pay": ct.state == 0,
+        "need_pay": rt.state == 0,
         "caption": "Заявка на внесение средств №" + str(tid),
-        "state_val": ReplenishTransaction.states[ct.state],
-        "state": ct.state,
-        "value": ct.value,
+        "state_val": ReplenishTransaction.states[rt.state],
+        "state": rt.state,
+        "value": rt.value,
         "qiwi": "+7 921 583 28 98",
         "comments": comments,
         "from_av": from_av,
         "to_av": to_av,
-        "isUser": request.user == ct.customer.user,
+        "isUser": request.user == rt.customer.user,
         "target": "/customer/replenish/detail/" + tid + "/",
     }
     return render(request, template, context)
@@ -277,6 +288,11 @@ def detailCampany(request, tid):
     form = MarketCampForm(instance=mc)
     form.fields["platform"].initial = mc.platform
     form.fields["image"].initial = None
+
+    if request.user == mc.customer.user:
+        mc.comments.exclude(author=mc.customer.user).filter(readed=False).update(readed=True)
+    else:
+        mc.comments.filter(author=mc.customer.user, readed=False).update(readed=True)
 
     # получаем комментарии
     comments = []

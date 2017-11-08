@@ -18,7 +18,7 @@ class RegisterConsumerForm(forms.Form):
     mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'example@gmail.com'}),
                            label="Адрес эл. почты")
 
-    acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/consumer_terms/'>Условиями</a>")
+    acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/terms/consumer/'>Условиями</a>")
 
 
 # форма регистрации
@@ -32,7 +32,7 @@ class RegisterCustomerForm(RegisterConsumerForm):
     mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'henry@ford.com'}),
                            label="Адрес эл. почты")
 
-    acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/customer_terms/'>Условиями</a>")
+    acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/terms/customer/'>Условиями</a>")
 
 
 # форма регистрации

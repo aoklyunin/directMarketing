@@ -32,9 +32,24 @@ def replenish(request):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
+    rejectedCnt = 0
+    processedCnt = 0
+    notProcessedCnt = ReplenishTransaction.objects.filter(state=ReplenishTransaction.STATE_PROCESS).count()
+
+    # Получаем кол-во непрочитанных сообщений
+    for rt in ReplenishTransaction.objects.all():
+        cnt = rt.comments.filter(author=rt.customer.user, readed=False).count()
+        if rt.state == ReplenishTransaction.STATE_PROCESS:
+            notProcessedCnt += cnt
+        if rt.state == ReplenishTransaction.STATE_ACCEPTED:
+            processedCnt += cnt
+        if rt.state == ReplenishTransaction.STATE_REJECTED:
+            rejectedCnt += cnt
+
     return render(request,
                   'adminPanel/replenish.html',
-                  {"caption": "Панель администратора: внесение"})
+                  {"caption": "Панель администратора: внесение",
+                   "RejectedCnt": rejectedCnt, "ProcessedCnt": processedCnt, "NotProcessedCnt": notProcessedCnt, })
 
 
 # отобразить заявки по их состоянию
@@ -53,7 +68,8 @@ def replenishList(request, state):
     transactions = []
     for t in rt:
         transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.customer.qiwi,
-                             "tid": t.id})
+                             "tid": t.id,
+                             "notReadedCnt": t.comments.filter(author=t.customer.user, readed=False).count()})
 
     return render(request,
                   'adminPanel/replenish_list.html',
@@ -164,5 +180,3 @@ def withdrawAccept(request, tid):
         ct.save()
 
     return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
-
-

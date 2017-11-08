@@ -20,7 +20,8 @@ def about(request):
     it = InfoText.objects.get(pageName="about")
     context = {
         "user": request.user,
-        "it": it
+        "it": it,
+        "caption": "О нас",
     }
     return render(request, template, context)
 
@@ -50,24 +51,25 @@ def contact(request):
     it = InfoText.objects.get(pageName="contact")
     context = {
         "user": request.user,
-        "it": it
+        "it": it,
+        "caption": "Обратная связь",
     }
     return render(request, template, context)
 
 
 def customerTerms(request):
-    template = 'mainApp/consumer_terms.html'
+    template = 'mainApp/customer_terms.html'
     context = {
         "user": request.user,
+        "caption" : "Заказчику",
     }
     return render(request, template, context)
+
 
 def consumerTerms(request):
     template = 'mainApp/consumer_terms.html'
     context = {
         "user": request.user,
+        "caption": "Исполнителю",
     }
     return render(request, template, context)
-
-
-

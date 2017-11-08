@@ -30,6 +30,8 @@
                 <th >Сумма</th>
                 <th >Киви</th>
                 <th> </th>
+                <th></th>
+                <th></th>
             </tr>
             {% for t in transactions %}
             <tr>
@@ -58,6 +60,8 @@
                 <td class="rightOrient">
                     <a href="/customer/replenish/detail/{{t.tid}}/" class="btn btn-default">
                         обсуждение
+                        {% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
+                        {% endifnotequal %}
                     </a>
                 </td>
 

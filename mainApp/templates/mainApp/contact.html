@@ -1,52 +1,35 @@
-{% extends "progressus/base.html" %}
+{% extends "progressus/sidebar-left.html" %}
+
 
 {% load staticfiles %}
 {% load bootstrap3 %}
-
-{# Load CSS and JavaScript #}
 {% bootstrap_css %}
-{% bootstrap_javascript %}
-
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-
-{# Load the tag library #}
 {% load bootstrap3 %}
-
-{% block title %} О нас {%endblock %}
 
 
 {% block menu %}
-                <li ><a href="/">Главная</a></li>
-                <li><a href="/about/">О нас</a></li>
+              <li><a href="/">Главная</a></li>
+                <li ><a href="/about/">О нас</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Как это работает<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/customer/">Заказчику</a></li>
-                        <li ><a href="/consumer/">Исполнителю</a></li>
+                        <li><a href="/terms/customer/">Заказчику</a></li>
+                        <li ><a href="/terms/consumer/">Исполнителю</a></li>
                     </ul>
                 </li>
                 <li  class="active"><a href="/contact/">Контакты</a></li>
+
                {% endblock %}
 
 
+{% block page_menu %}
+			<li><a href="/">Главная</a></li>
+			<li class="active">Контакты</li>
+{% endblock %}
 
-  {% block content %}
 
+  {% block page %}
 
-	<header id="head" class="secondary"></header>
-
-	<!-- container -->
-	<div class="container">
-
-		<div class="row">
-			
-			<!-- Article main content -->
-			<article class="col-sm-9 maincontent">
-				<header class="page-header">
-					<h1 class="page-title">Contact us</h1>
-				</header>
-				
 				<p>
 					We’d love to hear from you. Interested in working together? Fill out the form below with some info about your project and I will get back to you as soon as I can. Please allow a couple days for me to respond.
 				</p>
@@ -80,11 +63,9 @@
 						</div>
 					</form>
 
-			</article>
-			<!-- /Article -->
-			
-			<!-- Sidebar -->
-			<aside class="col-sm-3 sidebar sidebar-right">
+{% endblock %}			<!-- /Article -->
+		 {% block sub_page %}
+
 
 				<div class="widget">
 					<h4>Address</h4>
@@ -96,15 +77,5 @@
 						(713) 791-1414
 					</address>
 				</div>
-
-			</aside>
-			<!-- /Sidebar -->
-
-		</div>
-	</div>	<!-- /container -->
-	
-	<section class="container-full top-space">
-		<div id="map"></div>
-	</section>
 
     {% endblock %}

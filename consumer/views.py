@@ -32,6 +32,12 @@ def withdrawDetail(request, tid):
     if request.method == 'POST':
         processComment(request, wt)
 
+    if request.user == wt.consumer.user:
+        wt.comments.exclude(author=wt.consumer.user).filter(readed=False).update(readed=True)
+    else:
+        wt.comments.filter(author=wt.consumer.user, readed=False).update(readed=True)
+
+
     # получаем последние шесть коммментариев
     comments = []
     for c in wt.comments.order_by('-dt')[:6]:
@@ -82,6 +88,7 @@ def index(request):
             us.user.first_name = form.cleaned_data['name']
             us.user.last_name = form.cleaned_data['second_name']
             us.save()
+
 
     # получаем заявки на внесение у текущего пользователя
     rts = WithdrawTransaction.objects.filter(consumer=us).order_by('-dt')

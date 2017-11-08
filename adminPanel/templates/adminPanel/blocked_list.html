@@ -1,0 +1,47 @@
+{% extends "progressus/simplePage.html" %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+
+{% block style_block %}
+    .table td {
+        text-align: center;
+    }
+    .table th {
+        text-align: center;
+    }
+    th.rightOrient{
+        text-align: right;
+    }
+
+
+{% endblock %}
+
+{% block page %}
+
+    {% if cs %}
+<br><br>
+        <table class="table table-condensed">
+            <tr>
+                <th >Имя Фамилия</th>
+                <th> </th>
+            </tr>
+            {% for t in cs %}
+            <tr>
+                <td> {{t.user.first_name}} {{t.user.last_name}} </td>
+                <td> <a href="/adminPanel/blocked/free/{{t.tid}}/">Помиловать</a></td>
+              </tr>
+            {% endfor %}
+        </table>
+    {%else%}
+        <br><br><br><br>
+        <p class="text-center text-muted">Пока что нет обманщиков</p>
+        <br><br><br><br>
+    {% endif %}
+
+{% endblock %}
+
+

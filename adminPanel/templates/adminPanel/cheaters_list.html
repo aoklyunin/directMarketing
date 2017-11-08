@@ -22,46 +22,32 @@
 
 {% block page %}
 
-    {% if transactions %}
+    {% if cheaters %}
 <br><br>
         <table class="table table-condensed">
             <tr>
-                <th >Дата</th>
-                <th >Сумма</th>
-                <th >Киви</th>
+                <th >Номер кампании</th>
+                <th >Ссылка</th>
+                <th >Просмотры/друзья+подписчики</th>
                 <th> </th>
-                <th></th>
-                <th></th>
+                <th> </th>
             </tr>
-            {% for t in transactions %}
+            {% for t in cheaters %}
             <tr>
-                <td> {{t.date}}</td>
-                <td class="text-success"> {{t.value}}</td>
-                <td> {{t.qiwi}}</td>
+                <td> {{t.tid}}</td>
+                <td> <a href="{{t.link}}">Посмотреть</a></td>
+                <td> {{t.viewCnt}}/{{t.friendCnt}}</td>
                 {% ifequal state 1 %}
                 <td class="leftBorder">
-                    <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">
-                        Принять
+                    <a href="/adminPanel/cheaters/punish/{{t.tid}}/" class="btn btn-danger">
+                        Читер
                     </a>
                 </td>
+                     {% endifequal %}
+
                  <td>
-                    <a href="/adminPanel/replenish/reject/{{t.tid}}/" class="btn btn-danger">
-                        Отклонить
-                    </a>
-                </td>
-                {% endifequal %}
-                {% ifequal state 2 %}
-                <td class="leftBorder">
-                    <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">
-                        Принять
-                    </a>
-                </td>
-                {% endifequal %}
-                <td class="rightOrient">
-                    <a href="/customer/replenish/detail/{{t.tid}}/" class="btn btn-default">
-                        обсуждение
-                        {% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
-                        {% endifnotequal %}
+                    <a href="/adminPanel/cheaters/free/{{t.tid}}/" class="btn btn-success">
+                        Не читер
                     </a>
                 </td>
 
@@ -70,7 +56,7 @@
         </table>
     {%else%}
         <br><br><br><br>
-        <p class="text-center text-muted">Пока что нет заявок</p>
+        <p class="text-center text-muted">Пока что нет обманщиков</p>
         <br><br><br><br>
     {% endif %}
 

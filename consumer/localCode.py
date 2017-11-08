@@ -52,7 +52,8 @@ def getNotRepostedCompanies(lstRM):
 def leaveCampany(mc):
     print("Leave company called")
     mc.joinType = 2
-    mc.consumer.balance += mc.viewCnt * mc.marketCamp.viewPrice
+    if mc.cheated == ConsumerMarketCamp.STATE_NOT_CHEATED:
+        mc.consumer.balance += mc.viewCnt * mc.marketCamp.viewPrice
     mc.consumer.save()
     mc.save()
     print("saved")
@@ -63,5 +64,3 @@ def getViewCnt(id, post_id, token):
         post_id) + "&access_token=" + token + "&v=5.69").json()
     time.sleep(0.3)
     return int(r['response'][0]['views']['count'])
-
-

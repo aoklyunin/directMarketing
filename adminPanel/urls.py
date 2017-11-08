@@ -13,9 +13,11 @@ urlpatterns = [
     url(r'^withdraw/accept/(?P<tid>[0-9]+)/$', withdrawAccept),
     url(r'^campany/dismiss/(?P<tid>[0-9]+)/$', dismissCampany),
     url(r'^cheaters/$', cheaters),
-    url(r'^cheaters/detail/(?P<tid>[0-9]+)/$', detailCheater),
     url(r'^cheaters/list/(?P<cheated>[0-9]+)/$', listCheater),
-    url(r'^cheaters/punish/(?P<tid>[0-9]+)/$', punishCheater),
-    url(r'^cheaters/free/(?P<tid>[0-9]+)/$', freeCheater),
+    url(r'^cheaters/punish/(?P<c_id>[0-9]+)/$', punishCheater),
+    url(r'^cheaters/free/(?P<c_id>[0-9]+)/$', freeCheater),
+    url(r'^blocked/list/$', listBlocked),
+    url(r'^blocked/free/(?P<c_id>[0-9]+)/$', freeBlocked),
+
    # url(r'^', index, name='index')
 ]

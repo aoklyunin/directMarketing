@@ -61,7 +61,7 @@ class Command(BaseCommand):
 
             # среди не репостнутых
             if cm.marketCamp in d[c][1]:
-                if cm.joinType == ConsumerMarketCamp.TYPE_JOINED_NOW:
+                if (cm.joinType == ConsumerMarketCamp.TYPE_JOINED_NOW):
                     leaveCampany(cm)
 
     def handle(self, *args, **options):

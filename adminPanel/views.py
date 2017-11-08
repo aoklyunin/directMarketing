@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+
 from consumer.models import WithdrawTransaction, Consumer, ConsumerMarketCamp
 from customer.models import MarketCamp, ReplenishTransaction
 from mainApp.code import is_member
@@ -153,7 +154,7 @@ def withdrawList(request, state):
     for t in wt:
         transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
                              "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance,
-                             "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()                             })
+                             "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()})
 
     # делаем массив с заголовками для каждого из состояний
     return render(request,
@@ -199,30 +200,28 @@ def withdrawAccept(request, tid):
 
 
 # список читеров
-def listCheater(request,cheated):
+def listCheater(request, cheated):
     # если пользователь не админ,
     if not is_member(request.user, "admins"):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
-
     # получаем queryset заявок с таким состоянием
-    cs = ConsumerMarketCamp.objects.filter(cheated=ConsumerMarketCamp.STATE_PRETEND_CHEATED).order_by('dt')
+    cs = ConsumerMarketCamp.objects.filter(stateCheated=int(cheated))
 
     # формируем удобный список для вывода на страницу
-    transactions = []
+    cheaters = []
     for t in cs:
-        transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
-                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance,
-                             "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()})
+        cheaters.append({"tid": t.id, "link": t.link, "viewCnt": t.viewCnt,
+                         "friendCnt": t.consumer.vkCnt})
 
     # делаем массив с заголовками для каждого из состояний
     return render(request,
-                  'adminPanel/che.html',
-                  {"transactions": transactions,
-                   #"caption": WithdrawTransaction.list_states[st], "state": st
-    })
-
+                  'adminPanel/cheaters_list.html',
+                  {"cheaters": cheaters,
+                   "caption": ConsumerMarketCamp.cheatedStates[int(cheated)],
+                   "state": int(cheated),
+                   })
 
 
 def cheaters(request):
@@ -231,17 +230,68 @@ def cheaters(request):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
+    pretendCnt = ConsumerMarketCamp.objects.filter(stateCheated=ConsumerMarketCamp.STATE_PRETEND_CHEATED).count()
+
     return render(request,
                   'adminPanel/cheaters.html',
-                  {"caption": "Панель администратора: читеры"})
+                  {"caption": "Панель администратора: читеры",
+                   "pretendCnt": pretendCnt})
 
 
-def punishCheater(request,c_id):
-    return 0
+def punishCheater(request, c_id):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+    cm = ConsumerMarketCamp.objects.get(pk=c_id)
+    cm.stateCheated = ConsumerMarketCamp.STATE_CHEATED
+    cm.save()
+    if not cm.consumer.blocked:
+        cm.consumer.blocked = True
+        cm.consumer.save()
+
+    return HttpResponseRedirect('/adminPanel/cheaters/list/1/')
 
 
-def detailCheater(request,c_id):
-    return 0
+def freeCheater(request, c_id):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+    cm = ConsumerMarketCamp.objects.get(pk=c_id)
+    cm.stateCheated = ConsumerMarketCamp.STATE_NOT_CHEATED
+    cm.save()
+    cm.consumer.blocked = False
+    cm.consumer.save()
 
-def freeCheater(request):
-    return 0
+    return HttpResponseRedirect('/adminPanel/cheaters/list/1/')
+
+
+# список читеров
+def listBlocked(request, cheated):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+
+    # делаем массив с заголовками для каждого из состояний
+    return render(request,
+                  'adminPanel/cheaters_list.html',
+                  { "cs": Consumer.objects.filter(blocked=True),
+                   })
+
+def freeBlocked(request, c_id):
+    # если пользователь не админ,
+    if not is_member(request.user, "admins"):
+        # переадресация на страницу с ошибкой
+        return adminError(request)
+    try:
+        c = Consumer.objects.get(pk=c_id)
+        c.blocked = False
+        c.save()
+    except:
+        HttpResponseRedirect('/')
+
+
+    return HttpResponseRedirect('/adminPanel/cheaters/list/1/')
+

@@ -4,7 +4,6 @@ import django
 from django.contrib.auth.models import User
 from django.db import models
 
-
 # класс исполнителя
 from customer.models import MarketCamp
 from mainApp.models import Comment
@@ -31,13 +30,14 @@ class Consumer(models.Model):
     autoParticipate = models.BooleanField(default=False)
     # аудитория вк(кол-во друзей и подписчиков)
     vkCnt = models.IntegerField(default=0)
+    # заблокирован
+    blocked = models.BooleanField(default=False)
     # обработка аудитории
     vkProcessState = models.IntegerField(default=0)
     VK_PROCESS_STATES = ["Не обработан", "Запустилась обработка", "Обработка закончена"]
     VK_STATE_NOT_PROCESSED = 0
     VK_STATE_PROCESSED_NOW = 1
     VK_STATE_PROCESSED = 2
-
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -87,8 +87,10 @@ class ConsumerMarketCamp(models.Model):
     STATE_PRETEND_CHEATED = 1
     STATE_CHEATED = 2
 
+    cheatedStates = ["Не читерили", "Под подозрением", "Читерили"]
+
     def __str__(self):
-        return str(self.marketCamp)+":"+str(self.viewCnt)+" "+str(self.postId)
+        return str(self.marketCamp) + ":" + str(self.viewCnt) + " " + str(self.postId)
 
     def __unicode__(self):
         return str(self.marketCamp) + ":" + str(self.viewCnt) + " " + str(self.postId)

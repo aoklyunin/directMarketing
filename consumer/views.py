@@ -1,6 +1,7 @@
 import requests
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+
 from consumer.form import ConsumerForm
 from consumer.localCode import postVK, leaveCampany, getRepostedCompanies, getViewCnt, \
     getNotRepostedCompanies
@@ -87,6 +88,7 @@ def index(request):
             us.user.first_name = form.cleaned_data['name']
             us.user.last_name = form.cleaned_data['second_name']
             us.save()
+
 
     # получаем заявки на внесение у текущего пользователя
     rts = WithdrawTransaction.objects.filter(consumer=us).order_by('-dt')

@@ -12,7 +12,3 @@ class AdminUser(models.Model):
     # пользователь
     user = models.OneToOneField(User)
 
-
-class BlackList(models.Model):
-    consumer = models.ForeignKey(Consumer)
-    dt = models.DateTimeField(default=django.utils.timezone.now())

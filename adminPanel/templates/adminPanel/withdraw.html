@@ -12,18 +12,21 @@
     <br><br>
     <div class="col-sm-4 col-md-4">
         <a href="/adminPanel/withdraw/list/0/" class="btn btn-default">
-            Не обработанные
+            Не обработанные{% ifnotequal 0 NotProcessedCnt%}<b>({{NotProcessedCnt}})</b>
+            {% endifnotequal %}
         </a>
     </div>
     <div class="col-sm-4 col-md-4">
        <a href="/adminPanel/withdraw/list/2/" class="btn btn-success">
-            Выполненные
+            Выполненные{% ifnotequal 0 ProcessedCnt%}<b>({{ProcessedCnt}})</b>
+            {% endifnotequal %}
         </a>
     </div>
     <div class="col-sm-4 col-md-4">
         <div class=col-md-4">
             <a href="/adminPanel/withdraw/list/1/" class="btn btn-danger">
-                Отклонённые
+                Отклонённые {% ifnotequal 0 RejectedCnt%}<b>({{RejectedCnt}})</b>
+                {% endifnotequal %}
             </a>
         </div>
     </div>

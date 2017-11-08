@@ -116,9 +116,24 @@ def withdraw(request):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
+    rejectedCnt = 0
+    processedCnt = 0
+    notProcessedCnt = WithdrawTransaction.objects.filter(state=WithdrawTransaction.STATE_PROCESS).count()
+
+    # Получаем кол-во непрочитанных сообщений
+    for rt in WithdrawTransaction.objects.all():
+        cnt = rt.comments.filter(author=rt.consumer.user, readed=False).count()
+        if rt.state == WithdrawTransaction.STATE_PROCESS:
+            notProcessedCnt += cnt
+        if rt.state == WithdrawTransaction.STATE_ACCEPTED:
+            processedCnt += cnt
+        if rt.state == WithdrawTransaction.STATE_REJECTED:
+            rejectedCnt += cnt
+
     return render(request,
                   'adminPanel/withdraw.html',
-                  {"caption": "Панель администратора: вывод"})
+                  {"caption": "Панель администратора: вывод",
+                   "RejectedCnt": rejectedCnt, "ProcessedCnt": processedCnt, "NotProcessedCnt": notProcessedCnt, })
 
 
 # отобразить список заявок по состоянию
@@ -137,7 +152,8 @@ def withdrawList(request, state):
     transactions = []
     for t in wt:
         transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
-                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance})
+                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance,
+                             "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()                             })
 
     # делаем массив с заголовками для каждого из состояний
     return render(request,

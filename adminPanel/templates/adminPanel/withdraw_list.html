@@ -35,6 +35,8 @@ cursor: default;
                 <th >Сумма</th>
                 <th >Киви</th>
                 <th></th>
+                <th></th>
+                <th></th>
             </tr>
             {% for t in transactions %}
             <tr>
@@ -62,7 +64,8 @@ cursor: default;
                 {% endifequal %}
                 <td class="rightOrient">
                     <a href="/consumer/withdraw/detail/{{t.tid}}/" class="btn btn-default">
-                        обсуждение
+                        обсуждение {% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
+                        {% endifnotequal %}
                     </a>
                 </td>
 

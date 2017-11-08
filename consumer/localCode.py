@@ -65,10 +65,3 @@ def getViewCnt(id, post_id, token):
     return int(r['response'][0]['views']['count'])
 
 
-def generateData():
-    arr = []
-    for mc in ConsumerMarketCamp.objects.filter(joinType=1):
-        arr.append({'link': str(mc.link),
-                    'cnt': str(mc.viewCnt),
-                    'id': str(mc.pk)})
-    return arr

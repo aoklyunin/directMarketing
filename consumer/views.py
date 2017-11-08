@@ -37,7 +37,6 @@ def withdrawDetail(request, tid):
     else:
         wt.comments.filter(author=wt.consumer.user, readed=False).update(readed=True)
 
-
     # получаем последние шесть коммментариев
     comments = []
     for c in wt.comments.order_by('-dt')[:6]:
@@ -89,14 +88,14 @@ def index(request):
             us.user.last_name = form.cleaned_data['second_name']
             us.save()
 
-
     # получаем заявки на внесение у текущего пользователя
     rts = WithdrawTransaction.objects.filter(consumer=us).order_by('-dt')
     transactions = []
     for t in rts:
         transactions.append(
             {"date": t.dt.strftime("%d.%m %H:%M"), "value": t.value, "state": WithdrawTransaction.states[t.state],
-             "tid": t.id})
+             "tid": t.id, "notReadedCnt": t.comments.exclude(author=t.consumer.user).filter(readed=False).count()})
+
     # передаём форму для изменения данных
     form = ConsumerForm(initial={'name': us.user.first_name, 'second_name': us.user.last_name, 'qiwi': us.qiwi})
     template = 'consumer/index.html'

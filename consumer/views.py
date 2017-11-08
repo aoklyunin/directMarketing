@@ -202,12 +202,12 @@ def detailCampany(request, tid):
     m = MarketCamp.objects.get(id=tid)
 
     if not (is_member(request.user, "admins") or (is_member(request.user, "consumers"))):
-        return HttpResponseRedirect('/')
+        return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только администраторам и исполнителям')
 
     try:
         us = Consumer.objects.get(user=request.user)
     except:
-        return HttpResponseRedirect('/')
+        return getErrorPage(request, 'Ошибка поиска', 'Исполнитель не найден')
 
     try:
         cm = ConsumerMarketCamp.objects.get(marketCamp=m, consumer=us)

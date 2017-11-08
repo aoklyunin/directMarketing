@@ -274,7 +274,6 @@ def listBlocked(request):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
-    print(Consumer.objects.filter(blocked=True))
     # делаем массив с заголовками для каждого из состояний
     return render(request,
                   'adminPanel/blocked_list.html',
@@ -292,6 +291,6 @@ def freeBlocked(request, c_id):
         c.blocked = False
         c.save()
     except:
-        HttpResponseRedirect('/')
+        return getErrorPage(request, 'Ошибка поиска', 'Исполнитель не найден')
 
-    return HttpResponseRedirect('/adminPanel/cheaters/list/1/')
+    return HttpResponseRedirect('/adminPanel/blocked/list/')

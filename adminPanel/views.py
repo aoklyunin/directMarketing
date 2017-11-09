@@ -69,7 +69,7 @@ def replenishList(request, state):
     transactions = []
     for t in rt:
         transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.customer.qiwi,
-                             "tid": t.id,
+                             "tid": t.id,"comment":t.paymentComment,
                              "notReadedCnt": t.comments.filter(author=t.customer.user, readed=False).count()})
 
     return render(request,

@@ -10,7 +10,8 @@ def index(request):
     it = InfoText.objects.get(pageName="index")
     context = {
         "user": request.user,
-        "it": it
+        "it": it,
+        "caption": "DRPR"
     }
     return render(request, template, context)
 
@@ -31,7 +32,8 @@ def customer(request):
     it = InfoText.objects.get(pageName="customer")
     context = {
         "user": request.user,
-        "it": it
+        "it": it,
+        "caption": "Заказчику",
     }
     return render(request, template, context)
 
@@ -41,7 +43,8 @@ def consumer(request):
     it = InfoText.objects.get(pageName="consumer")
     context = {
         "user": request.user,
-        "it": it
+        "it": it,
+        "caption": "Исполнителю",
     }
     return render(request, template, context)
 

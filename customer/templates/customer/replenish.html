@@ -9,16 +9,16 @@
 
                         <h3 class="thin text-center">Укажите сумму пополнения</h3>
                         <p class="text-center text-muted">Для пополнения баланса переведите деньги на указанный QIWI-кошелёк, после
-                        чего нажмите на кнопку "оплачено" в деталях заявки</p>
+                            чего нажмите на кнопку "оплачено" в деталях заявки.<br> Комментарий к платежу:<br> <div id="comment"><b>{{form.comment.value}}</b></div></p>
 
-                        <form method="post">
+                        <form method="post" id="form">
 
                             <hr>
                                 <b> Номер QIWI кошелька: {{ qiwi }} </b><br><br>
                             {% csrf_token %}
                             <div class="col-lg-4">
                                     {% bootstrap_field form.value %}
-
+                                    {{ form.comment}}
                             </div><br>
                             <div class="row widget">
 
@@ -30,3 +30,6 @@
                         </form>
 
 {% endblock %}
+
+
+

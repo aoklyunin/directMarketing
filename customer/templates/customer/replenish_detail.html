@@ -11,6 +11,7 @@
 <b> Номер QIWI кошелька: {{ qiwi }} </b><br>
 Сумма: {{value}}
 <br>
+{%if comment %} Комментарий к платежу:  <b>{{comment}}</b>{%else%} Комменатрий к платежу не указывать {%endif%}
 
 <H3> Состояние :
     <div class="
@@ -21,6 +22,7 @@
                 "> {{state_val}}
     </div>
 </H3>
+
 
 {% if need_pay %}
     <div class="text-help">

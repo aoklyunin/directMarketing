@@ -81,7 +81,7 @@ class PaymentForm(forms.Form):
     value = forms.FloatField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '100.00'}),
                              label="Cумма")
     # пароль
-    comment = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Пароль'}), label="",required=False)
+    comment = forms.CharField(widget=forms.HiddenInput(), label="",required=False)
 
 
 # форма логина

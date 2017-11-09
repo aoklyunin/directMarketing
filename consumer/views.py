@@ -142,7 +142,7 @@ def withdraw(request):
                 if u.balance - u.frozenBalance < v:
                     messages.error(request, "У Вас недостаточно средств")
                 else:
-                    t = WithdrawTransaction.objects.create(consumer=u, value=v, paymentComment=c)
+                    t = WithdrawTransaction.objects.create(consumer=u, value=v)
                     u.frozenBalance += v
                     u.save()
                     t.save()
@@ -150,7 +150,7 @@ def withdraw(request):
 
     template = 'consumer/withdraw.html'
     context = {
-        "form": PaymentForm(initial={"comment": genRandomString(6)}),
+        "form": PaymentForm(),
         "balance": u.balance - u.frozenBalance,
         "caption": "Заявка на вывод средств"
     }

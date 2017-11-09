@@ -4,6 +4,7 @@ from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
 from mainApp.forms import CustomerForm, PaymentForm, CommentForm
+from mainApp.localCode import genRandomString
 from mainApp.models import Comment
 from mainApp.views import getErrorPage, autorizedOnlyError, processComment
 
@@ -173,13 +174,13 @@ def replenish(request):
         # строим форму на основе запроса
         form = PaymentForm(request.POST)
         if form.is_valid():
-            t = ReplenishTransaction.objects.create(customer=u, value=form.cleaned_data["value"])
+            t = ReplenishTransaction.objects.create(customer=u, value=form.cleaned_data["value"], paymentComment=form.cleaned_data["comment"])
             return HttpResponseRedirect('/customer/replenish/detail/' + str(t.pk) + "/")
 
     template = 'customer/replenish.html'
     qiwi = "+7 921 583 28 98"
     context = {
-        "form": PaymentForm(),
+        "form": PaymentForm(initial={"comment": genRandomString(6)}),
         "qiwi": qiwi,
         "caption": "Пополнение баланса"
     }
@@ -224,6 +225,7 @@ def replenish_detail(request, tid):
         "state_val": ReplenishTransaction.states[rt.state],
         "state": rt.state,
         "value": rt.value,
+        "comment": rt.paymentComment,
         "qiwi": "+7 921 583 28 98",
         "comments": comments,
         "from_av": from_av,

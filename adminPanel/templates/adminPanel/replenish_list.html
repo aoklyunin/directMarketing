@@ -29,6 +29,7 @@
                 <th >Дата</th>
                 <th >Сумма</th>
                 <th >Киви</th>
+                <th >Комментарий</th>
                 <th> </th>
                 <th></th>
                 <th></th>
@@ -38,6 +39,7 @@
                 <td> {{t.date}}</td>
                 <td class="text-success"> {{t.value}}</td>
                 <td> {{t.qiwi}}</td>
+                <td> {{t.comment}}</td>
                 {% ifequal state 1 %}
                 <td class="leftBorder">
                     <a href="/adminPanel/replenish/accept/{{t.tid}}/" class="btn btn-success">

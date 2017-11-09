@@ -13,7 +13,7 @@
 
                             <hr>
                             <p>Доступно к выводу: {{balance}}, больше этой суммы Вы вывести не можете.
-                                Комментарий к платежу: <div id="comment"><b>{{form.comment.value}}</b></div>
+                              </div>
                             </p>
                             {% csrf_token %}
                             <div class="col-lg-4">
@@ -29,18 +29,5 @@
 </div>
                         </form>
 
-
-{% endblock %}
-
-{% block footer_script %}
-
-<script>
- $("#form").submit( function(eventObj) {
-      $('<input />').attr('type', 'hidden')
-          .attr('comment',  $("#comment").val())
-          .appendTo('#form');
-      return true;
-  });
-  </script>
 
 {% endblock %}

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import csv
 from datetime import datetime
+
+import six
 from dateutil.parser import parse
 
 import re
@@ -11,10 +13,13 @@ import scipy.stats as st
 from urllib.request import urlopen
 
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from adminPanel.models import AdminUser
-from consumer.models import Consumer
+from consumer.localCode import leaveCampany
+from consumer.models import Consumer, ConsumerMarketCamp
 from customer.models import Customer
+from django.core.mail import send_mail
 
 
 # бот вк 79854490925:ZsePLV1nXg
@@ -97,7 +102,7 @@ def getFollowersUsers(id, token, lst):
                 try:
                     if r not in lst:
                         ucd = getUserCreatedDate(r)
-                       # print(ucd)
+                        # print(ucd)
                         if ucd > 100:
                             k = checkBotUser(r, token)
                             if k < -0.1:
@@ -132,13 +137,47 @@ def getUsType(user):
             except:
                 return 0
 
+
 def getUserCreatedDate(id):
     req = 'http://vk.com/foaf.php?id=' + str(id)
-    #print(req)
+    # print(req)
     content = urlopen(req).read()
 
     result = re.findall(r'ya:created dc:date="[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+\+[0-9]+:[0-9]+"', str(content))
-    #print(result[0][20:45])
+    # print(result[0][20:45])
     dt = parse(result[0][20:45])
 
-    return (datetime.now()-dt.replace(tzinfo=None)).days
+    return (datetime.now() - dt.replace(tzinfo=None)).days
+
+
+def closeMarketCamp(mc):
+    delta = mc.targetViewCnt - mc.curViewCnt
+    if delta < 0:
+        cmCnt = ConsumerMarketCamp.objects.filter(marketCamp=mc).count()
+        minusCnt = cmCnt / abs(delta)
+    else:
+        minusCnt = 0
+
+    for cm in ConsumerMarketCamp.objects.filter(marketCamp=mc):
+        leaveCampany(cm.consumer, minusCnt)
+
+    mc.isActive = False
+    mc.save()
+
+
+def test():
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'from@example.com',
+        ['aoklyunin@gmail.com'],
+        fail_silently=False,
+    )
+
+
+class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return (six.text_type(user.pk) + six.text_type(timestamp)) + six.text_type(user.is_active)
+
+
+account_activation_token = AccountActivationTokenGenerator()

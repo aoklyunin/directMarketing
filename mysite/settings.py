@@ -168,3 +168,9 @@ STATIC_URL = '/static/'
 VK_APP_ID = '5229876'
 VK_API_SECRET = 'JwZwPypPy8Z1LkAxrast'
 
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'directprinfo@gmail.com'
+EMAIL_HOST_PASSWORD = 'directprinfo1234567'
+EMAIL_PORT = 587

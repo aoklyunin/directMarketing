@@ -1,0 +1,6 @@
+{% autoescape off %}
+Привет {{ user.first_name }}, спасибо за регистрацию на площадке http://www.drpr.online
+Если Вы не регистрировались, проигнорируйте это сообщение.
+Для завершения регистрации пройдите по ссылке:
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{% endautoescape %}

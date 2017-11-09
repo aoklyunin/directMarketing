@@ -123,7 +123,19 @@
 Base Page
 
 {% endblock %}
-
+<div class="container">
+    {% if messages %}
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            {% for message in messages %}
+            <div {% if message.tags %} class="alert {{ message.tags }}" {% endif %}>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
 
 <footer id="footer" class="top-space">
 

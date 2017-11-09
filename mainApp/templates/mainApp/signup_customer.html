@@ -1,53 +1,12 @@
-{% extends "progressus/base.html" %}
+{% extends "progressus/simpleMinPanelPage.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
-
-{# Load CSS and JavaScript #}
 {% bootstrap_css %}
-{% bootstrap_javascript %}
-
-
-{# Load the tag library #}
 {% load bootstrap3 %}
 
-{% block title %} Регистрация {%endblock %}
+{% block page %}
 
-
-{% block menu %}
-                <li ><a href="/">Главная</a></li>
-                <li><a href="/about/">О нас</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Как это работает<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/customer/">Заказчику</a></li>
-                        <li><a href="/consumer/">Исполнителю</a></li>
-                    </ul>
-                </li>
-                <li><a href="/contact/">Контакты</a></li>
-
-               {% endblock %}
-
-
-  {% block content %}
-
-
-	<header id="head" class="secondary"></header>
-
-	<!-- container -->
-	<div class="container">
-
-		<div class="row">
-			
-			<!-- Article main content -->
-			<article class="col-xs-12 maincontent">
-				<header class="page-header">
-					<h1 class="page-title">Регистрация компании</h1>
-				</header>
-				
-				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-					<div class="panel panel-default">
-						<div class="panel-body">
 							<h3 class="thin text-center">Регистрация нового аккаунта</h3>
 							<p class="text-center text-muted">Если вы уже зарегистрированы, <a href="/signin/">Войдите</a>.</p>
 							<hr>
@@ -88,30 +47,5 @@
 									</div>
 								</div>
 							</form>
-						</div>
-						<div class="container">
 
-					</div>
-					</div>
-
-				</div>
-
-			</article>
-			<!-- /Article -->
-<div class="container">
-    {% if messages %}
-    <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
-            {% for message in messages %}
-            <div {% if message.tags %} class="alert {{ message.tags }}" {% endif %}>
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-</div>
-		</div>
-	</div>	<!-- /container -->
-	
  {% endblock %}

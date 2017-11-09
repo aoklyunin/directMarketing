@@ -31,7 +31,7 @@ def getRepostedCompanies(u, token):
     reposts = getReposts(u, token)
     lstM = []
     lstID = []
-    for m in MarketCamp.objects.all():
+    for m in MarketCamp.objects.filter(isActive=True):
         for r in reposts:
             if (m.vkPostID == r["cpid"]) and (r["copy_owner_id"] == MarketCamp.group_id):
                 lstM.append(m)
@@ -44,16 +44,16 @@ def getNotRepostedCompanies(lstRM):
     lstM = []
     for r in lstRM:
         lst.append(r.pk)
-    for m in MarketCamp.objects.exclude(pk__in=lst):
+    for m in MarketCamp.objects.filer(isActive=True).exclude(pk__in=lst):
         lstM.append(m)
     return [lstM]
 
 
-def leaveCampany(mc):
+def leaveCampany(mc,minusCnt=0):
     print("Leave company called")
     mc.joinType = 2
     if mc.cheated == ConsumerMarketCamp.STATE_NOT_CHEATED:
-        mc.consumer.balance += mc.viewCnt * mc.marketCamp.viewPrice
+        mc.consumer.balance += (mc.viewCnt-minusCnt) * mc.marketCamp.viewPrice
     mc.consumer.save()
     mc.save()
     print("saved")

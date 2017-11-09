@@ -31,6 +31,8 @@ urlpatterns = [
     url(r'^tehsupport/list/(?P<state>[0-9]+)/$', mainApp.views.tehSupportList),
     url(r'^tehsupport/detail/(?P<tid>[0-9]+)/$', mainApp.views.detailTehSupport),
     url(r'^tehsupport/close/(?P<tid>[0-9]+)/$', mainApp.views.closeTehSupport),
+    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        mainApp.views.activate, name='activate'),
     url(r'^', mainApp.staticViews.index, name='index')
 
 ]

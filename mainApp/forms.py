@@ -15,7 +15,7 @@ class RegisterConsumerForm(forms.Form):
         label="Повторите пароль")
 
     # почта
-    mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'example@gmail.com'}),
+    mail = forms.EmailField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'example@gmail.com'}),
                            label="Адрес эл. почты")
 
     acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/terms/consumer/'>Условиями</a>")
@@ -29,7 +29,7 @@ class RegisterCustomerForm(RegisterConsumerForm):
     second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Форд'}),
                                   label="Фамилия")
     # почта
-    mail = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'henry@ford.com'}),
+    mail = forms.EmailField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'henry@ford.com'}),
                            label="Адрес эл. почты")
 
     acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/terms/customer/'>Условиями</a>")
@@ -49,7 +49,7 @@ class CustomerForm(forms.Form):
 # форма логина
 class LoginForm(forms.Form):
     # имя пользователя
-    login = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Адрес почты'}),
+    login = forms.EmailField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Адрес почты'}),
                             label="")
     # пароль
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}), label="")

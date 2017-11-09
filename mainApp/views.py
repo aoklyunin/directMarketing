@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth import login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
 from django.core.urlresolvers import reverse
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
 
 from mainApp.code import is_member
 from mainApp.forms import CommentForm
+from mainApp.localCode import account_activation_token
 from mainApp.models import Comment, TehSupport
-
+from django.contrib.auth.models import User
 
 def test(request):
     return render_to_response('mainApp/test.html')
@@ -85,7 +89,7 @@ def tehSupportList(request, state):
     # если пользователь не админ,
     if not request.user.is_authenticated():
         # переадресация на страницу с ошибкой
-        return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только зарегестрированным пользователям')
+            return getErrorPage(request, 'Ошибка доступа', 'Эта страница доступна только зарегестрированным пользователям')
 
         # формируем удобный список для вывода на страницу
     transactions = []
@@ -167,3 +171,26 @@ def closeTehSupport(request, tid):
     t.save()
 
     return HttpResponseRedirect('/tehsupport/')
+
+
+# активация аккаунта
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        if is_member(user, "admins"):
+            return HttpResponseRedirect("/adminPanel/")
+        if is_member(user, "consumers"):
+            return HttpResponseRedirect("/consumer/")
+        if is_member(user, "customers"):
+            return HttpResponseRedirect("/customer/")
+        return HttpResponseRedirect('/')
+    else:
+        return getErrorPage(request, 'Ошибка токена', 'Токен неверен или пользователь не найден')
+

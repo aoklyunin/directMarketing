@@ -2,15 +2,22 @@
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from consumer.models import Consumer
 from customer.models import Customer
 from mainApp.code import is_member
 from mainApp.forms import RegisterCustomerForm, RegisterConsumerForm, LoginForm
+from mainApp.localCode import account_activation_token
 from mainApp.models import InfoText
+from mainApp.views import getErrorPage
 
 
 def signin(request):
@@ -33,7 +40,8 @@ def signin(request):
                     return HttpResponseRedirect("/customer/")
                 return HttpResponseRedirect('/')
             else:
-                messages.error(request, "пара логин-пароль не найдена")
+                messages.error(request, "пара логин-пароль не найдена или пользователь не подтверждён")
+
     form = LoginForm()
 
     template = 'mainApp/signin.html'
@@ -54,6 +62,19 @@ def signup(request):
         "caption": "Регистрация"
     }
     return render(request, template, context)
+
+
+def writeMsgConfim(request, to_email, user):
+    current_site = get_current_site(request)
+    message = render_to_string('mainApp/mailVerification.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+    })
+    mail_subject = 'Activate your blog account.'
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    email.send()
 
 
 def signup_customer(request):
@@ -85,14 +106,19 @@ def signup_customer(request):
                         # задаём ему имя и фамилию
                         user.first_name = name
                         user.last_name = second_name
+                        user.is_active = False
                         # созраняем пользователя
                         user.save()
-                        auth.login(request, user)
+                        g = Group.objects.get(name='customers')
+                        g.user_set.add(user)
+
+                        # auth.login(request, user)
                         # создаём студента
                         c = Customer.objects.create(user=user)
                         # сохраняем студента
                         c.save()
-                        return HttpResponseRedirect("/customer/")
+                        writeMsgConfim(request, mail, user)
+                        return mailConfirmPage(request, user)
                     else:
                         messages.error("Ошибка создания пользователя")
                 except:
@@ -111,6 +137,16 @@ def signup_customer(request):
         "user": request.user,
         "form": form,
         "caption": "Регистрация заказчика"
+    }
+    return render(request, template, context)
+
+
+def mailConfirmPage(request, user):
+    template = 'progressus/simpleMinPanelPage.html'
+    context = {
+        "user": user,
+        "text": "Для входа Вам необходимо подтвердить свою электронную почту. Письмо с инструкцией будет выслано Вам в ближайшее время.",
+        "caption": "Подтвердите свою почту",
     }
     return render(request, template, context)
 
@@ -137,12 +173,18 @@ def signup_consumer(request):
                                                     password=password)
                     # если получилось создать пользователя
                     if user:
-                        auth.login(request, user)
+                        # auth.login(request, user)
+                        user.is_active = False
+                        user.save()
+                        g = Group.objects.get(name='consumers')
+                        g.user_set.add(user)
+
                         # создаём студента
                         c = Consumer.objects.create(user=user)
                         # сохраняем студента
                         c.save()
-                        return HttpResponseRedirect("/consumer/")
+                        writeMsgConfim(request, mail, user)
+                        return mailConfirmPage(request, user)
                     else:
                         messages.error("Ошибка создания пользователя")
 

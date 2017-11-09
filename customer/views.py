@@ -38,11 +38,23 @@ def index(request):
             us.save()
 
     # получаем заявки на внесение у текущего пользователя
-    rts = ReplenishTransaction.objects.filter(customer=us).order_by('-dt')
+    rts = ReplenishTransaction.objects.filter(customer=us).order_by('-dt')[:7]
     transactions = []
     for t in rts:
+        if t.state == 0:
+            stateClass = "text-muted"
+        elif t.state == 1:
+            stateClass = "text-info"
+        elif t.state == 2:
+            stateClass = "text-danger"
+        elif t.state == 3:
+            stateClass = "text-success"
+        else:
+            stateClass = ""
+
         transactions.append(
-            {"date": t.dt.strftime("%d.%m %H:%M"), "value": t.value, "state": ReplenishTransaction.states[t.state],
+            {"date": t.dt.strftime("%d.%m"), "value": t.value, "stateClass": stateClass,
+             "state": ReplenishTransaction.states[t.state],
              "tid": t.id, "notReadedCnt": t.comments.exclude(author=t.customer.user).filter(readed=False).count()})
     # передаём форму для изменения данных
     form = CustomerForm(initial={'name': us.companyName, 'qiwi': us.qiwi})

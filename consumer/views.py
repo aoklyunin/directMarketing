@@ -89,13 +89,23 @@ def index(request):
             us.user.last_name = form.cleaned_data['second_name']
             us.save()
 
-
     # получаем заявки на внесение у текущего пользователя
-    rts = WithdrawTransaction.objects.filter(consumer=us).order_by('-dt')
+    rts = WithdrawTransaction.objects.filter(consumer=us).order_by('-dt')[:7]
     transactions = []
     for t in rts:
+        if t.state == 0:
+            stateClass = "text-muted"
+        elif t.state == 1:
+            stateClass = "text-info"
+        elif t.state == 2:
+            stateClass = "text-danger"
+        elif t.state == 3:
+            stateClass = "text-success"
+        else:
+            stateClass = ""
         transactions.append(
-            {"date": t.dt.strftime("%d.%m %H:%M"), "value": t.value, "state": WithdrawTransaction.states[t.state],
+            {"date": t.dt.strftime("%d.%m"), "value": t.value, "stateClass": stateClass,
+             "state": WithdrawTransaction.states[t.state],
              "tid": t.id, "notReadedCnt": t.comments.exclude(author=t.consumer.user).filter(readed=False).count()})
 
     # передаём форму для изменения данных

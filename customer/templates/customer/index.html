@@ -61,7 +61,7 @@
                     <tr>
                     <td> {{t.date}}</td>
                     <td class="text-primary"> {{t.value}}</td>
-                    <td> {{t.state}}</td>
+                    <td class="{{t.stateClass}}">  {{t.state}}</td>
                     <td><a href="/customer/replenish/detail/{{t.tid}}/" class="btn btn-default">Детали {% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
                         {% endifnotequal %}</a></td>
                     </tr>

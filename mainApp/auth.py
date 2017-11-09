@@ -166,6 +166,7 @@ def signup_consumer(request):
                 # получаем данные из формы
                 mail = form.cleaned_data["mail"]
                 password = form.cleaned_data["password"]
+                name = form.cleaned_data["name"]
                 try:
                     # создаём пользователя
                     user = User.objects.create_user(username=mail,
@@ -175,6 +176,7 @@ def signup_consumer(request):
                     if user:
                         # auth.login(request, user)
                         user.is_active = False
+                        user.first_name = name
                         user.save()
                         g = Group.objects.get(name='consumers')
                         g.user_set.add(user)

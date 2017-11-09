@@ -14,7 +14,12 @@
     {% csrf_token %}
 
     <div class="top-margin">
-        {% bootstrap_field form.mail %}
+        <div class="col-sm-6">
+            {% bootstrap_field form.name %}
+        </div>
+        <div class="col-sm-6">
+            {% bootstrap_field form.mail %}
+        </div>
     </div>
 
     <div class="row top-margin">

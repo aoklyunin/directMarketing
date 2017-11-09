@@ -19,12 +19,12 @@ class RegisterConsumerForm(forms.Form):
                            label="Адрес эл. почты")
 
     acceptedTerms = forms.BooleanField(label="Я ознакомлен с <a href='/terms/consumer/'>Условиями</a>")
+    # имя
+    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Генри'}), label="Имя")
 
 
 # форма регистрации
 class RegisterCustomerForm(RegisterConsumerForm):
-    # имя
-    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Генри'}), label="Имя")
     # фамилия
     second_name = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'Форд'}),
                                   label="Фамилия")

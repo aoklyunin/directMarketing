@@ -1,4 +1,4 @@
-{% extends "progressus/simplePanelPage.html" %}
+{% extends "progressus/simpleMinPanelPage.html" %}
 
 {% load staticfiles %}
 {% load bootstrap3 %}
@@ -12,7 +12,9 @@
                         <form method="post">
 
                             <hr>
+                            <p>Доступно к выводу: {{balance}}, больше этой суммы Вы вывести не можете.
 
+                            </p>
                             {% csrf_token %}
                             <div class="col-lg-4">
                                     {% bootstrap_field form.value %}

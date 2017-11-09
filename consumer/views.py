@@ -11,6 +11,7 @@ from mainApp.code import is_member
 from mainApp.forms import PaymentForm, CommentForm
 from mainApp.models import Comment
 from mainApp.views import getErrorPage, processComment, autorizedOnlyError
+from django.contrib import messages
 
 
 # ошибка доступа Админ или Исполнитель
@@ -96,10 +97,8 @@ def index(request):
         if t.state == 0:
             stateClass = "text-muted"
         elif t.state == 1:
-            stateClass = "text-info"
-        elif t.state == 2:
             stateClass = "text-danger"
-        elif t.state == 3:
+        elif t.state == 2:
             stateClass = "text-success"
         else:
             stateClass = ""
@@ -130,16 +129,26 @@ def withdraw(request):
 
     # обработка формы
     if request.method == 'POST':
-        # строим форму на основе запроса
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            t = WithdrawTransaction.objects.create(consumer=u, value=form.cleaned_data["value"])
-            t.save()
-            return HttpResponseRedirect('/consumer/balance/')
+        if u.blocked:
+            messages.error(request, "Вы заблокированы, поэтому вывод средств невозможен")
+        else:
+            # строим форму на основе запроса
+            form = PaymentForm(request.POST)
+            if form.is_valid():
+                v = form.cleaned_data["value"]
+                if u.balance - u.frozenBalance < v:
+                    messages.error(request, "У Вас недостаточно средств")
+                else:
+                    t = WithdrawTransaction.objects.create(consumer=u, value=v)
+                    u.frozenBalance += v
+                    u.save()
+                    t.save()
+                    return HttpResponseRedirect('/consumer/balance/')
 
     template = 'consumer/withdraw.html'
     context = {
         "form": PaymentForm(),
+        "balance": u.balance-u.frozenBalance,
         "caption": "Заявка на вывод средств"
     }
     return render(request, template, context)

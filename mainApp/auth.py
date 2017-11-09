@@ -209,5 +209,9 @@ def signup_consumer(request):
 
 
 def signout(request):
-    logout(request)
+    try:
+        logout(request)
+    except:
+        pass
+
     return HttpResponseRedirect("/")

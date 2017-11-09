@@ -13,17 +13,19 @@ class Consumer(models.Model):
     # пользователь
     user = models.OneToOneField(User)
     # ссылка на VK
-    vk_token = models.TextField(max_length=10000, default="")
+    vk_token = models.TextField(max_length=10000, default="", blank=True)
     # id
     vk_id = models.IntegerField(default=0)
     # ссылка на инсту
-    insta_link = models.TextField(max_length=10000, default="")
+    insta_link = models.TextField(max_length=10000, default="", blank=True)
     # ссылка на инсту
-    fb_link = models.TextField(max_length=10000, default="")
+    fb_link = models.TextField(max_length=10000, default="", blank=True)
     # Баланс
     balance = models.FloatField(default=0)
+    # замороженный баланс
+    frozenBalance = models.FloatField(default=0)
     # Киви-кошелёк
-    qiwi = models.TextField(max_length=100, default="")
+    qiwi = models.TextField(max_length=100, default="", blank=True)
     # автоматический вывод
     autoWithDraw = models.BooleanField(default=True)
     # автоматическое участие во всех кампаниях

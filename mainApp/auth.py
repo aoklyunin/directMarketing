@@ -11,10 +11,11 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
+from adminPanel.models import AdminUser
 from consumer.models import Consumer
 from customer.models import Customer
 from mainApp.code import is_member
-from mainApp.forms import RegisterCustomerForm, RegisterConsumerForm, LoginForm
+from mainApp.forms import RegisterCustomerForm, RegisterConsumerForm, LoginForm, RegisterAdminForm
 from mainApp.localCode import account_activation_token
 from mainApp.models import InfoText
 from mainApp.views import getErrorPage
@@ -33,7 +34,7 @@ def signin(request):
                 # входим на сайт
                 auth.login(request, user)
                 if is_member(user, "admins"):
-                    return HttpResponseRedirect("/adminPanel/")
+                    return HttpResponseRedirect("/")
                 if is_member(user, "consumers"):
                     return HttpResponseRedirect("/consumer/")
                 if is_member(user, "customers"):
@@ -204,6 +205,60 @@ def signup_consumer(request):
         "form": form,
         "caption": "Регистрация исполнителя"
 
+    }
+    return render(request, template, context)
+
+
+def signup_admin(request):
+    if not request.user.is_staff:
+        return getErrorPage(request, "Ошибка", "Эта страница доступна только владельцу площадки")
+
+    if request.method == 'POST':
+        # строим форму на основе запроса
+        form = RegisterAdminForm(request.POST)
+        if form.is_valid():
+            # проверяем, что пароли совпадают
+            if form.cleaned_data["password"] != form.cleaned_data["rep_password"]:
+                # выводим сообщение и перезаполняем форму
+                messages.error(request, "пароли не совпадают")
+                form = RegisterConsumerForm(initial={'mail': form.cleaned_data["mail"],
+                                                     'acceptedTerms': True})
+            else:
+                # получаем данные из формы
+                mail = form.cleaned_data["mail"]
+                password = form.cleaned_data["password"]
+                try:
+                    # создаём пользователя
+                    user = User.objects.create_user(username=mail,
+                                                    email=mail,
+                                                    password=password)
+                    # если получилось создать пользователя
+                    if user:
+                        auth.login(request, user)
+                        g = Group.objects.get(name='admins')
+                        g.user_set.add(user)
+
+                        # создаём студента
+                        c = AdminUser.objects.create(user=user)
+                        # сохраняем студента
+                        c.save()
+                        return HttpResponseRedirect('/')
+                    else:
+                        messages.error("Ошибка создания пользователя")
+
+                except:
+                    # если не получилось создать пользователя, то выводим сообщение
+                    messages.error(request, "Такой пользователь уже существует")
+                    form = RegisterConsumerForm(initial={'mail': form.cleaned_data["mail"],
+                                                         'acceptedTerms': True})
+    else:
+        form = RegisterAdminForm()
+
+    template = 'registration/signup_admin.html'
+    context = {
+        "user": request.user,
+        "form": form,
+        "caption": "Регистрация исполнителя"
     }
     return render(request, template, context)
 

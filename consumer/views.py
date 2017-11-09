@@ -9,6 +9,7 @@ from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
 from customer.models import MarketCamp
 from mainApp.code import is_member
 from mainApp.forms import PaymentForm, CommentForm
+from mainApp.localCode import genRandomString
 from mainApp.models import Comment
 from mainApp.views import getErrorPage, processComment, autorizedOnlyError
 from django.contrib import messages
@@ -134,12 +135,14 @@ def withdraw(request):
         else:
             # строим форму на основе запроса
             form = PaymentForm(request.POST)
+            print(form)
             if form.is_valid():
                 v = form.cleaned_data["value"]
+                c = form.cleaned_data["comment"]
                 if u.balance - u.frozenBalance < v:
                     messages.error(request, "У Вас недостаточно средств")
                 else:
-                    t = WithdrawTransaction.objects.create(consumer=u, value=v)
+                    t = WithdrawTransaction.objects.create(consumer=u, value=v, paymentComment=c)
                     u.frozenBalance += v
                     u.save()
                     t.save()
@@ -147,8 +150,8 @@ def withdraw(request):
 
     template = 'consumer/withdraw.html'
     context = {
-        "form": PaymentForm(),
-        "balance": u.balance-u.frozenBalance,
+        "form": PaymentForm(initial={"comment": genRandomString(6)}),
+        "balance": u.balance - u.frozenBalance,
         "caption": "Заявка на вывод средств"
     }
     return render(request, template, context)

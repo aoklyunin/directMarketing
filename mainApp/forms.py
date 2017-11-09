@@ -5,6 +5,22 @@ from django import forms
 
 
 # форма регистрации
+class RegisterAdminForm(forms.Form):
+    # пароль
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
+                               label="Пароль")
+    # повтор пароля
+    rep_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
+        label="Повторите пароль")
+
+    # почта
+    mail = forms.EmailField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': 'example@gmail.com'}),
+                           label="Адрес эл. почты")
+
+
+
+# форма регистрации
 class RegisterConsumerForm(forms.Form):
     # пароль
     password = forms.CharField(widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 20, 'placeholder': 'qwerty123'}),
@@ -64,6 +80,8 @@ class PaymentForm(forms.Form):
     # имя пользователя
     value = forms.FloatField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '100.00'}),
                              label="Cумма")
+    # пароль
+    comment = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Пароль'}), label="",required=False)
 
 
 # форма логина

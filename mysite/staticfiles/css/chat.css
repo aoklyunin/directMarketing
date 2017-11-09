@@ -1,5 +1,5 @@
 .mytext{
-    border:0;padding:10px;background:whitesmoke;
+    border:0;padding:1px;background:whitesmoke;
 }
 .text{
     width:75%;display:flex;flex-direction:column;
@@ -25,8 +25,13 @@
     padding-right:10px;
 }
 .macro{
-    margin-top:5px;width:85%;border-radius:5px;padding:5px;display:flex;
+    margin-top:3px;width:85%;border-radius:5px;padding:5px;display:flex;
 }
+
+.bigMacro{
+    margin-top:3px;width:85%;border-radius:5px;padding:5px;display:flex;height:80px;
+}
+
 .msj-rta{
     float:right;background:whitesmoke;
 }
@@ -39,6 +44,14 @@
     overflow:hidden;
     padding:0;
 }
+
+.big_frame_chat{
+    background:#e0e0de;
+    height:100px;
+    overflow:hidden;
+    padding:0;
+}
+
 .frame_chat > div:last-of-type{
     position:absolute;bottom:5px;width:100%;display:flex;
 }
@@ -50,8 +63,16 @@ ul.messageList {
     bottom:32px;
     display:flex;
     flex-direction: column;
-
 }
+
+ul.bigMessageList {
+    list-style-type: none;
+    padding:18px;
+    width:100%;
+}
+
+
+
 .msj:before{
     width: 0;
     height: 0;
@@ -74,16 +95,16 @@ ul.messageList {
     border-width: 13px 13px 0 0;
     border-color: whitesmoke transparent transparent transparent;
 }
-input:focus{
+textarea:focus{
     outline: none;
 }
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+::-webkit-textarea-placeholder { /* Chrome/Opera/Safari */
     color: #d4d4d4;
 }
 ::-moz-placeholder { /* Firefox 19+ */
     color: #d4d4d4;
 }
-:-ms-input-placeholder { /* IE 10+ */
+:-ms-textarea-placeholder { /* IE 10+ */
     color: #d4d4d4;
 }
 :-moz-placeholder { /* Firefox 18- */

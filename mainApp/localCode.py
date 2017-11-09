@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import csv
+import random
+import string
 from datetime import datetime
 
 import six
@@ -181,3 +183,6 @@ class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
 
 
 account_activation_token = AccountActivationTokenGenerator()
+
+def genRandomString(n):
+    return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))

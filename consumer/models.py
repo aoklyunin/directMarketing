@@ -61,6 +61,8 @@ class WithdrawTransaction(models.Model):
     state = models.IntegerField(default=0)
     value = models.FloatField(default=0)
     dt = models.DateTimeField(default=django.utils.timezone.now())
+    # комментарий к платежу
+    paymentComment = models.TextField(max_length=10, default="", blank=True)
 
 
 class ConsumerMarketCamp(models.Model):

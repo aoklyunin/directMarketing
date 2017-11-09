@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^signout/$', mainApp.auth.signout),
     url(r'^signup/consumer/$', mainApp.auth.signup_consumer),
     url(r'^signup/customer/$', mainApp.auth.signup_customer),
+    url(r'^signup/admin/$', mainApp.auth.signup_admin),
     url(r'^test/$', mainApp.views.test),
 
     # Notice the expression does not end in $,

@@ -32,3 +32,9 @@
 {%endif%}
 <form action="" method="post">{% csrf_token %}</form>
 {% endblock %}
+
+
+{% block page_menu_links %}
+			<li><a href="/customer/">Заказчику</a></li>
+			<li class="active">Заявка</li>
+{% endblock %}

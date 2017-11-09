@@ -20,19 +20,21 @@
 
 {% block content %}
 
-<ol class="breadcrumb">
-			{% block page_menu %}
 
-			{% endblock %}
-		</ol>
 
 <!-- container -->
 <div class="container">
-    <div class="row">
 
+    <div class="row">
+ <ol class="breadcrumb">
+			{% block page_menu_links %}
+
+			{% endblock %}
+        </ol>
         <header class="page-header">
                 <h1 class="page-title">{{caption}}</h1>
         </header>
+
 
         <div class="row">
             <div class="col-sm-3 col-md-3 col-md-offset-1 col-sm-offset-1">

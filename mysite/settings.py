@@ -32,13 +32,13 @@ DEBUG = True
 
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
+    'mainApp',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainApp',
     'bootstrap3',
     'adminPanel',
     'consumer',
@@ -67,10 +67,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'mysite.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'debug': True,
@@ -170,7 +171,10 @@ VK_API_SECRET = 'JwZwPypPy8Z1LkAxrast'
 
 
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'directprinfo@gmail.com'
+SERVER_EMAIL = 'directprinfo@gmail.com'
 EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
 EMAIL_HOST_USER = 'directprinfo@gmail.com'
 EMAIL_HOST_PASSWORD = 'directprinfo1234567'
-EMAIL_PORT = 587
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

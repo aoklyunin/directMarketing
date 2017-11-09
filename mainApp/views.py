@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import login
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
 from django.core.urlresolvers import reverse
@@ -193,4 +195,3 @@ def activate(request, uidb64, token):
         return HttpResponseRedirect('/')
     else:
         return getErrorPage(request, 'Ошибка токена', 'Токен неверен или пользователь не найден')
-

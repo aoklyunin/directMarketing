@@ -44,7 +44,7 @@ def signin(request):
 
     form = LoginForm()
 
-    template = 'mainApp/signin.html'
+    template = 'registration/signin.html'
     context = {
         "user": request.user,
         "form": form,
@@ -54,7 +54,7 @@ def signin(request):
 
 
 def signup(request):
-    template = 'mainApp/signup.html'
+    template = 'registration/signup.html'
     it = InfoText.objects.get(pageName="signup")
     context = {
         "user": request.user,
@@ -66,7 +66,7 @@ def signup(request):
 
 def writeMsgConfim(request, to_email, user):
     current_site = get_current_site(request)
-    message = render_to_string('mainApp/mailVerification.html', {
+    message = render_to_string('registration/mailVerification.html', {
         'user': user,
         'domain': current_site.domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -131,7 +131,7 @@ def signup_customer(request):
     else:
         form = RegisterCustomerForm()
 
-    template = 'mainApp/signup_customer.html'
+    template = 'registration/signup_customer.html'
     # print(form)
     context = {
         "user": request.user,
@@ -196,7 +196,7 @@ def signup_consumer(request):
     else:
         form = RegisterConsumerForm()
 
-    template = 'mainApp/signup_consumer.html'
+    template = 'registration/signup_consumer.html'
     context = {
         "user": request.user,
         "form": form,

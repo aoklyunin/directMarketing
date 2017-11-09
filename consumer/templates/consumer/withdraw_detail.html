@@ -13,6 +13,11 @@
 {# Load the tag library #}
 {% load bootstrap3 %}
 
+{% block page_menu %}
+			<li><a href="/">Заказчику</a></li>
+			<li class="active">Заявка</li>
+{% endblock %}
+
 
 {% block chat_info %}
 <b> Номер QIWI кошелька: {{ qiwi }} </b><br>

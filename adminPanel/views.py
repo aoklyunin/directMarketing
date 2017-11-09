@@ -171,6 +171,8 @@ def withdrawReject(request, tid):
         return adminError(request)
 
     ts = WithdrawTransaction.objects.get(id=tid)
+    ts.consumer.frozenBalance -= ts.value
+    ts.consumer.save()
     ts.state = WithdrawTransaction.STATE_REJECTED
     ts.save()
 
@@ -189,6 +191,7 @@ def withdrawAccept(request, tid):
     if (ct.consumer.balance >= ct.value) and (ct.state != WithdrawTransaction.STATE_ACCEPTED):
         # вычетаем из баланса пользователя сумму
         ct.consumer.balance -= ct.value
+        ct.consumer.frozenBalance -= ct.value
         # сохраняем пользователя
         ct.consumer.save()
         # меняем состояние заявки

@@ -146,7 +146,7 @@ def withdraw(request):
                     u.frozenBalance += v
                     u.save()
                     t.save()
-                    return HttpResponseRedirect('/consumer/balance/')
+                    return HttpResponseRedirect('/consumer/withdraw/detail/'+str(t.pk)+'/')
 
     template = 'consumer/withdraw.html'
     context = {

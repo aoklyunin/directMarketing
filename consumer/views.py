@@ -89,6 +89,7 @@ def index(request):
             us.qiwi = form.cleaned_data['qiwi']
             us.user.first_name = form.cleaned_data['name']
             us.user.last_name = form.cleaned_data['second_name']
+            us.user.save()
             us.save()
 
     # получаем заявки на внесение у текущего пользователя

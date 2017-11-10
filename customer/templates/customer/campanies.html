@@ -4,7 +4,7 @@
 {% load bootstrap3 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-
+{% load user_tags %}
 
 {% block style_block %}
     .table td {
@@ -20,10 +20,26 @@
 
 {% endblock %}
 
-{% block page %}
 
-        {% if campanies %}
-<br><br>
+{% block page_menu_links %}
+     {% if request.user|has_group:"customers"%}
+			<li><a href="/customer/">Заказчику</a></li>
+			<li class="active">Кампании</li>
+        {% endif %}
+{% endblock %}
+
+
+
+{% block page %}
+{% if isAdmin %}
+
+{%else%}
+<a href="/customer/campany/create/" class="btn btn-success">Создать компанию</a>
+{%endif %}
+         {% if campanies %}
+<br>
+
+<br>
 
         <table class="table table-condensed">
             <tr>
@@ -36,6 +52,8 @@
             <th align="center">Проверена</th>
                 <th align="center">Время проведения</th>
                 <th></th>
+                <th></th>
+                <th></th>
             </tr>
             {% for t in campanies %}
             <tr>
@@ -44,25 +62,40 @@
                 <td align="center"> {{t.curViewCnt}}/{{t.targetViewCnt}}</td>
                 <td align="center"> {{t.platform}}</td>
                 <td align="center"> {% if t.isActive %}
-                    Запущена
+                    <div class="text-success"> Запущена</div>
                     {%else%}
-                    Готовится
+                    <div class="text-muted"> Готовится</div>
                     {%endif%}
                 </td>
                 <td align="center">
                     {% ifequal t.adminApproved 0 %}
+                    <div class="text-muted">
                         Обрабатывается
+                    </div>
                     {% endifequal %}
                     {% ifequal t.adminApproved 1 %}
+                       <div class="text-success">
                         Принята
+                       </div>
                     {% endifequal %}
                     {% ifequal t.adminApproved 2 %}
+                       <div class="text-danger">
                         Не принята
+                       </div>
                     {% endifequal %}
                 </td>
                 <td align="center"> ( {{t.startTime}}-{{t.endTime}})</td>
                 <td><a href="/customer/campany/detail/{{t.cid}}/" class="btn btn-default ">Подробнее{% ifnotequal 0 t.notReadedCnt%}<b>({{t.notReadedCnt}})</b>
                         {% endifnotequal %}</a></td>
+                {% ifequal t.adminApproved 1%}
+                    {% if t.isActive %}
+                        <td><a href="/customer/campany/stop/{{t.cid}}/" class="btn btn-danger" >Остановить</a></td>
+                    {%else%}
+                        <td><a href="/customer/campany/start/{{t.cid}}/" class="btn btn-action" {%if t.canNotStart %} disabled {%endif%}>Запустить</a></td>
+                    {% endif %}
+                {%else%}
+                <td></td>
+                {% endifequal %}
             </tr>
             {% endfor %}
         </table>

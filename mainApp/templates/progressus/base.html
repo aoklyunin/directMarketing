@@ -83,6 +83,7 @@
                         <li><a href="/adminPanel/cheaters/ ">Обманщики</a></li>
                         <li><a href="/adminPanel/blocked/list/ ">Заблокированные</a></li>
                         <li><a href="/customer/campanies/">Кампании</a></li>
+                            <li><a href="/tehsupport/">Тех. поддержка</a></li>
                     </ul>
                     </li>
                     {% endif %}
@@ -92,6 +93,7 @@
                         <ul class="dropdown-menu">
                         <li><a href="/customer/">Профиль</a></li>
                         <li><a href="/customer/campanies/">Кампании</a></li>
+                            <li><a href="/tehsupport/">Тех. поддержка</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -102,6 +104,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="/consumer/">Профиль</a></li>
                             <li><a href="/consumer/campanies/">Кампании</a></li>
+                            <li><a href="/tehsupport/">Тех. поддержка</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -228,6 +231,15 @@ Base Page
 <script src="{% static 'js/template.js'%}"></script>
 <script src="{% static 'js/locales/bootstrap-datetimepicker.ru.js'%}"></script>
 <script src="{% static 'js/moment.js'%}"></script>
+<script type="text/javascript">
+    var elems = document.getElementsByClassName('confirmation');
+    var confirmIt = function (e) {
+        if (!confirm('Вы уверены?')) e.preventDefault();
+    };
+    for (var i = 0, l = elems.length; i < l; i++) {
+        elems[i].addEventListener('click', confirmIt, false);
+    }
+</script>
 
 {% block footer_script %} {% endblock %}
 

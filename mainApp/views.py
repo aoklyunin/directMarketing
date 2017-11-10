@@ -70,7 +70,7 @@ def tehSupport(request):
 
     return render(request,
                   'mainApp/tehSupport.html',
-                  {"caption": "Панель администратора: внесение",
+                  {"caption": "Тех. поддержка: заявки",
                    "OpenedCnt": OpenedCnt, "ClosedCnt": ClosedCnt})
 
 

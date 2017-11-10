@@ -8,6 +8,7 @@
 
 
 {% block chat_info %}
+
 <b> Номер QIWI кошелька: {{ qiwi }} </b><br>
 Сумма: {{value}}
 <br>
@@ -27,11 +28,23 @@
 {% if need_pay %}
     <div class="text-help">
         Если вы уже сделали перевод, нажмите на кнопку "Перевод выполнен"
-    </div><br>
+    </div>
     <a href="/customer/replenish/set_payed/{{id}}/" class="btn btn-success">
         Перевод выполнен
     </a>
+<br>
 {%endif%}
+
+{% if canReject%}
+
+ <div class="text-help">
+       Вы можете отменить заявку. Ни в коем случае не делайте этого, если средства уже переведены.
+    </div>
+    <a href="/adminPanel/replenish/reject/{{id}}/" class="btn btn-danger confirmation">
+        Отменить заявку
+    </a>
+{%endif%}
+
 <form action="" method="post">{% csrf_token %}</form>
 {% endblock %}
 

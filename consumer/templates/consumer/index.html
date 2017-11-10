@@ -12,13 +12,7 @@
         <div class="row">
             <h3 class="thin text-center">Здравствуйте, {{u.user.first_name}} {{u.user.last_name}}!</h3>
             <p class="text-center text-muted">{{u.user.email}}</p>
-            {%if u.blocked %}
-                <div class="row">
-                    <div class="col-md-12" align="center">
-                        <h4>Вы заблокированы</h4>
-                    </div>
-                </div>
-        {%endif%}
+
         </div>
         <div class="row">
             <div class="col-md-12" align="center">
@@ -53,6 +47,15 @@
 
 
     <div class="row">
+          {%if u.blocked %}
+                <div class="row">
+                    <div class="col-md-12" align="center">
+                        <h3 class="text-danger">Вы заблокированы</h3>
+                        В случае, если Вы не понимаете, почему, обратитесь в <a href="/tehsupport/">тех.поддержку</a>
+                    </div>
+                </div>
+        {%endif%}
+
         <div class="col-md-12" align="center"><h3>Заявки на вывод</h3></div>
     </div>
     <div class="row">

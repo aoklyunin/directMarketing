@@ -69,7 +69,7 @@ def replenishList(request, state):
     transactions = []
     for t in rt:
         transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.customer.qiwi,
-                             "tid": t.id,"comment":t.paymentComment,
+                             "tid": t.id, "comment": t.paymentComment,
                              "notReadedCnt": t.comments.filter(author=t.customer.user, readed=False).count()})
 
     return render(request,
@@ -79,16 +79,22 @@ def replenishList(request, state):
 
 # Отклонить завку
 def replenishReject(request, tid):
+    ts = ReplenishTransaction.objects.get(id=tid)
+
     # если пользователь не админ,
-    if not is_member(request.user, "admins"):
+    if not (is_member(request.user, "admins") or ts.customer.user == request.user):
         # переадресация на страницу с ошибкой
         return adminError(request)
-
-    ts = ReplenishTransaction.objects.get(id=tid)
-    ts.state = ReplenishTransaction.STATE_REJECTED
-    ts.save()
-
-    return HttpResponseRedirect('/adminPanel/replenish/list/1/')
+    if ts.state == ReplenishTransaction.STATE_WAIT_FOR_PAY or ts.state == ReplenishTransaction.STATE_PROCESS:
+        ts.state = ReplenishTransaction.STATE_REJECTED
+        ts.save()
+    else:
+        return getErrorPage(request, "Ошибка отклонения заявки",
+                            "Отклонить заявку можно только если она находится в режиме ожидания оплаты или проверки")
+    if is_member(request.user, "admins"):
+        return HttpResponseRedirect('/adminPanel/replenish/list/1/')
+    else:
+        return HttpResponseRedirect('/customer/')
 
 
 # принять заявку
@@ -152,9 +158,10 @@ def withdrawList(request, state):
     # формируем удобный список для вывода на страницу
     transactions = []
     for t in wt:
-        transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
-                             "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance,
-                             "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()})
+        if not t.consumer.blocked:
+            transactions.append({"date": t.dt.strftime("%d.%m.%y"), "value": t.value, "qiwi": t.consumer.qiwi,
+                                 "tid": t.id, "canNotPay": t.value > t.consumer.balance, "balance": t.consumer.balance,
+                                 "notReadedCnt": t.comments.filter(author=t.consumer.user, readed=False).count()})
 
     # делаем массив с заголовками для каждого из состояний
     return render(request,
@@ -165,18 +172,26 @@ def withdrawList(request, state):
 
 # Отклонить завку
 def withdrawReject(request, tid):
+    ts = WithdrawTransaction.objects.get(id=tid)
+
     # если пользователь не админ,
-    if not is_member(request.user, "admins"):
+    if not (is_member(request.user, "admins") or ts.consumer.user == request.user):
         # переадресация на страницу с ошибкой
         return adminError(request)
 
-    ts = WithdrawTransaction.objects.get(id=tid)
-    ts.consumer.frozenBalance -= ts.value
-    ts.consumer.save()
-    ts.state = WithdrawTransaction.STATE_REJECTED
-    ts.save()
+    if ts.state == WithdrawTransaction.STATE_PROCESS:
+        ts.consumer.frozenBalance -= ts.value
+        ts.consumer.save()
+        ts.state = WithdrawTransaction.STATE_REJECTED
+        ts.save()
+    else:
+        return getErrorPage(request, "Ошибка отклонения заявки",
+                            "Отклонить заявку можно только если она проверяется")
 
-    return HttpResponseRedirect('/adminPanel/withdraw/list/0/')
+    if is_member(request.user, "admins"):
+        return HttpResponseRedirect('/adminPanel/replenish/list/0/')
+    else:
+        return HttpResponseRedirect('/consumer/')
 
 
 # Принять завку
@@ -187,6 +202,9 @@ def withdrawAccept(request, tid):
         return adminError(request)
 
     ct = WithdrawTransaction.objects.get(id=tid)
+    if ct.consumer.blocked:
+        return getErrorPage(request, "Ошибка вывода средств", "Пользователь заблокирован")
+
     # если баланс пользователя больше или равен сумме вывода и заяка ещё не принята
     if (ct.consumer.balance >= ct.value) and (ct.state != WithdrawTransaction.STATE_ACCEPTED):
         # вычетаем из баланса пользователя сумму

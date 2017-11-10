@@ -1,5 +1,8 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+
+from consumer.localCode import leaveCampany
+from consumer.models import ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
@@ -74,7 +77,7 @@ def index(request):
 def campanies(request):
     # проверяем, что пользователь - админ или заказчик этой маркетинговой кампании
     if is_member(request.user, "admins"):
-        cms = MarketCamp.objects.all().order_by('startTime')
+        cms = MarketCamp.objects.all().order_by('-startTime')
     elif is_member(request.user, "customers"):
         try:
             us = Customer.objects.get(user=request.user)
@@ -96,6 +99,7 @@ def campanies(request):
             {"viewPrice": t.viewPrice, "targetViewCnt": t.targetViewCnt,
              "platform": MarketCamp.platforms[t.platform],
              "cid": t.id, 'curViewCnt': t.curViewCnt, "isActive": t.isActive,
+             "canNotStart": t.budget > t.customer.balance,
              "startTime": t.startTime.strftime("%d.%m.%y"),
              "endTime": t.endTime.strftime("%d.%m.%y"),
              "adminApproved": t.adminApproved,
@@ -105,6 +109,7 @@ def campanies(request):
     template = 'customer/campanies.html'
     context = {
         'campanies': campanies,
+        'isAdmin' :is_member(request.user,"admins"),
         'caption': "Рекламные кампании"
     }
     return render(request, template, context)
@@ -135,7 +140,7 @@ def stopCampany(request, tid):
         return customerAdminError(request)
 
     # если кампания активна
-    if not mc.isActive:
+    if mc.isActive:
         # вычетаем из бюджета оплаченные просмотры
         mc.budget = mc.budget - mc.curViewCnt * mc.viewPrice
         # вычетаем из желаемого кол-ва просмотров выполненое
@@ -148,6 +153,11 @@ def stopCampany(request, tid):
         # делаем кампанию неактивной
         mc.isActive = False
         mc.save()
+        # убираем все исполнителей из кампании
+        for cm in ConsumerMarketCamp.objects.filter(marketCamp = mc):
+            leaveCampany(cm)
+
+
 
     return HttpResponseRedirect('/customer/campanies/')
 
@@ -174,7 +184,8 @@ def replenish(request):
         # строим форму на основе запроса
         form = PaymentForm(request.POST)
         if form.is_valid():
-            t = ReplenishTransaction.objects.create(customer=u, value=form.cleaned_data["value"], paymentComment=form.cleaned_data["comment"])
+            t = ReplenishTransaction.objects.create(customer=u, value=form.cleaned_data["value"],
+                                                    paymentComment=form.cleaned_data["comment"])
             return HttpResponseRedirect('/customer/replenish/detail/' + str(t.pk) + "/")
 
     template = 'customer/replenish.html'
@@ -224,6 +235,7 @@ def replenish_detail(request, tid):
         "caption": "Заявка на внесение средств №" + str(tid),
         "state_val": ReplenishTransaction.states[rt.state],
         "state": rt.state,
+        "canReject": rt.state == ReplenishTransaction.STATE_WAIT_FOR_PAY or rt.state == ReplenishTransaction.STATE_PROCESS,
         "value": rt.value,
         "comment": rt.paymentComment,
         "qiwi": "+7 921 583 28 98",

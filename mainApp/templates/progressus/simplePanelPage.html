@@ -14,7 +14,11 @@
 <div class="container">
 
     <div class="row">
+ <ol class="breadcrumb">
+			{% block page_menu_links %}
 
+			{% endblock %}
+        </ol>
         <header class="page-header">
             <h1 class="page-title">{% block h1%}{{caption}}{%endblock%}</h1>
         </header>

@@ -13,5 +13,3 @@ class ConsumerForm(forms.Form):
     qiwi = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 20, 'placeholder': '+7 999 888 77 66'}),
                            label="Киви-кошелёк")
 
-    # автоматическое участие
-    autoParticipate = forms.BooleanField(label="Автоматическое участие",required=False)

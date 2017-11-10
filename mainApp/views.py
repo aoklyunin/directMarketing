@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import login
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
-from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
@@ -49,7 +46,7 @@ def tehSupport(request):
     if is_member(request.user, "admins"):
         OpenedCnt = TehSupport.objects.filter(state=TehSupport.STATE_OPENED).count()
     else:
-        OpenedCnt = 0
+        OpenedCnt = TehSupport.objects.filter(state=TehSupport.STATE_OPENED,author=request.user).count()
 
     if is_member(request.user, "admins"):
         # Получаем кол-во непрочитанных сообщений

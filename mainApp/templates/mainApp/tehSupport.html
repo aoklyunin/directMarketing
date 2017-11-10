@@ -5,12 +5,28 @@
 {% load bootstrap3 %}
 {% bootstrap_css %}
 {% load bootstrap3 %}
-
+{% load user_tags %}
 
 {% block page %}
 <div class="row">
     <br><br>
-    <div class="col-sm-4 col-md-4">
+
+
+    {% if request.user|has_group:"admins"%}
+ <div class="col-sm-6 col-md-6">
+        <a href="/tehsupport/list/0/" class="btn btn-default">
+            Открытые{% ifnotequal 0 OpenedCnt%}<b>({{OpenedCnt}})</b>
+            {% endifnotequal %}
+        </a>
+    </div>
+    <div class="col-sm-6 col-md-6">
+       <a href="/tehsupport/list/1/" class="btn btn-success">
+            Закрытые{% ifnotequal 0 ClosedCnt%}<b>({{ClosedCnt}})</b>
+            {% endifnotequal %}
+        </a>
+    </div>
+    {% else %}
+     <div class="col-sm-4 col-md-4">
         <a href="/tehsupport/list/0/" class="btn btn-default">
             Открытые{% ifnotequal 0 OpenedCnt%}<b>({{OpenedCnt}})</b>
             {% endifnotequal %}
@@ -22,12 +38,12 @@
             {% endifnotequal %}
         </a>
     </div>
-
-    <div class="col-sm-4 col-md-4">
-       <a href="/tehsupport/create/" class="btn btn-primary">
+        <div class="col-sm-4 col-md-4">
+         <a href="/tehsupport/create/" class="btn btn-primary">
             Создать заявку
-        </a>
-    </div>
+            </a>
+        </div>
+    {% endif %}
       <br><br>
 </div>
 <div class="row">

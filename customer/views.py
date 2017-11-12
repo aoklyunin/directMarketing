@@ -1,13 +1,12 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
-from consumer.localCode import leaveCampany
 from consumer.models import ConsumerMarketCamp
 from customer.forms import MarketCampForm
 from customer.models import Customer, ReplenishTransaction, MarketCamp
 from mainApp.code import is_member
 from mainApp.forms import CustomerForm, PaymentForm, CommentForm
-from mainApp.localCode import genRandomString
+from mainApp.localCode import genRandomString, leaveCampany
 from mainApp.models import Comment
 from mainApp.views import getErrorPage, autorizedOnlyError, processComment
 

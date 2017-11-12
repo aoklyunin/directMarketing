@@ -3,13 +3,11 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 from consumer.form import ConsumerForm
-from consumer.localCode import postVK, leaveCampany, getRepostedCompanies, getViewCnt, \
-    getNotRepostedCompanies
 from consumer.models import Consumer, WithdrawTransaction, ConsumerMarketCamp
 from customer.models import MarketCamp
 from mainApp.code import is_member
 from mainApp.forms import PaymentForm, CommentForm
-from mainApp.localCode import genRandomString
+from mainApp.localCode import genRandomString, checkToken
 from mainApp.models import Comment
 from mainApp.views import getErrorPage, processComment, autorizedOnlyError
 from django.contrib import messages
@@ -112,9 +110,14 @@ def index(request):
     # передаём форму для изменения данных
     form = ConsumerForm(initial={'name': us.user.first_name, 'second_name': us.user.last_name, 'qiwi': us.qiwi})
     template = 'consumer/index.html'
+    if us.vk_token == "":
+        vkEnabled = False
+    else:
+        vkEnabled = checkToken(us.vk_token)
 
     context = {
         "u": us,
+        "vkEnabled": vkEnabled,
         "form": form,
         "transactions": transactions,
         "caption": "Профиль пользователя",

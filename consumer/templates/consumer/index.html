@@ -52,9 +52,18 @@
                     <div class="col-md-12" align="center">
                         <h3 class="text-danger">Вы заблокированы</h3>
                         В случае, если Вы не понимаете, почему, обратитесь в <a href="/tehsupport/">тех.поддержку</a>
-                    </div>
+                      </div>
                 </div>
         {%endif%}
+        <div class="row">
+             <div class="col-md-12" align="center">
+            {%if vkEnabled %}
+                ВК привязан
+            {%else%}
+                <a class="btn btn-primary" href="/consumer/vk/getCode/">Привязать ВК</a>
+            {%endif%}
+             </div>
+        </div>
 
         <div class="col-md-12" align="center"><h3>Заявки на вывод</h3></div>
     </div>

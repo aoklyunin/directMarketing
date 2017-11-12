@@ -2,13 +2,13 @@ import requests
 from django.shortcuts import render
 
 from consumer.views import consumerError
+from mainApp.localCode import postVK
 from mysite import settings
 from django.http import HttpResponseRedirect
 
-from consumer.localCode import postVK
 from consumer.models import Consumer
 
-href = 'http://directpr.herokuapp.com'
+href = 'http://drpr.online'
 
 
 def getCode(request):
